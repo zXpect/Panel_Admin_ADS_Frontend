@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* === 🌞 Tema Claro (Naranja + Grises Neutros) === */
+    --background: 0 0% 98%; /* Fondo gris muy claro */
+    --foreground: 0 0% 15%; /* Texto gris muy oscuro */
+    --card: 0 0% 100%; /* Blanco puro para tarjetas */
+    --card-foreground: 0 0% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 15%;
+    --primary: 24 90% 55%; /* Naranja vibrante */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 94%; /* Gris claro */
+    --secondary-foreground: 0 0% 15%;
+    --muted: 0 0% 96%; /* Gris muy claro */
+    --muted-foreground: 0 0% 45%;
+    --accent: 24 95% 50%; /* Naranja intenso */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 75% 55%; /* Rojo para acciones destructivas */
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 96%;
+    --ring: 24 90% 55%;
+    --radius: 0.5rem;
+
+    /* Paleta para gráficos con naranja y grises */
+    --chart-1: 24 90% 55%;
+    --chart-2: 0 0% 35%;
+    --chart-3: 24 80% 45%;
+    --chart-4: 0 0% 55%;
+    --chart-5: 24 70% 60%;
+  }
+
+  /* === 🌚 Tema Oscuro Admin (Grises Oscuros + Naranja) === */
+  .dark {
+    --background: 0 0% 8%; /* Gris carbón muy oscuro */
+    --foreground: 0 0% 95%; /* Texto gris muy claro */
+    --card: 0 0% 12%; /* Tarjetas gris oscuro */
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 24 90% 55%; /* Naranja vibrante que resalta */
+    --primary-foreground: 0 0% 10%;
+    --secondary: 0 0% 18%; /* Gris medio oscuro */
+    --secondary-foreground: 0 0% 95%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 24 95% 50%; /* Naranja intenso */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 20%; /* Bordes gris medio */
+    --input: 0 0% 15%;
+    --ring: 24 90% 55%;
+
+    /* Gráficos con naranja destacado y grises */
+    --chart-1: 24 90% 55%;
+    --chart-2: 0 0% 45%;
+    --chart-3: 24 80% 48%;
+    --chart-4: 0 0% 60%;
+    --chart-5: 24 70% 62%;
+  }
+
+  body {
+    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))] transition-colors duration-300;
+  }
+
+  /* === Efectos para Panel Admin === */
+  button:hover,
+  [role="button"]:hover {
+    @apply brightness-110 transition-all;
+  }
+
+  input,
+  select,
+  textarea {
+    @apply bg-[hsl(var(--input))] border border-[hsl(var(--border))] text-[hsl(var(--foreground))];
+  }
+
+  ::selection {
+    background-color: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  /* Efecto de enfoque con naranja */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-[hsl(var(--ring))] ring-offset-2 ring-offset-[hsl(var(--background))];
+  }
+}
