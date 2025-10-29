@@ -22,6 +22,8 @@ import { ClientsListPage } from '@/pages/clients/ClientsListPage';
 // Not Found
 import { NotFoundPage } from '@/pages/NotFoundPage';
 
+import BulkWorkersUpload from '@/pages/workers/BulkWorkersUpload';
+
 export const AppRoutes = () => {
   return (
     <Routes>
@@ -39,6 +41,7 @@ export const AppRoutes = () => {
         
         {/* Workers */}
         <Route path="/workers" element={<WorkersListPage />} />
+        <Route path="/workers/bulk-upload" element={<BulkWorkersUpload />} />
         <Route path="/workers/:id" element={<WorkerDetailPage />} />
         
         {/* Documents */}
@@ -52,7 +55,7 @@ export const AppRoutes = () => {
       </Route>
 
       {/* Not Found - debe ir al final */}
-      <Route path="*" element={<NotFoundPage />} />
+      <Route path="*" element={<NotFoundPage />} />   
     </Routes>
   );
 };
