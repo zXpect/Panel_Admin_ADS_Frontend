@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useErrorHandler } from "@/hooks/useErrorHandler";
+import { ErrorAlert } from "@/components/common/ErrorAlert";
 import { Eye, EyeOff, LogIn, Sun, Moon } from "lucide-react";
 
 export const LoginPage = () => {
   const { login, isLoggingIn } = useAuth();
+  const { error, clearError, handleError, getFieldError } = useErrorHandler();
   const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -27,25 +29,37 @@ export const LoginPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    clearError();
 
-    if (!formData.username.trim() || !formData.password.trim()) {
-      setErrorMessage("Por favor, completa todos los campos.");
+    // Validación del lado del cliente
+    if (!formData.username.trim()) {
+      handleError(new Error("Por favor, ingresa tu usuario"), false);
       return;
     }
 
-    setErrorMessage(null);
+    if (!formData.password.trim()) {
+      handleError(new Error("Por favor, ingresa tu contraseña"), false);
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      handleError(new Error("La contraseña debe tener al menos 6 caracteres"), false);
+      return;
+    }
 
     login(formData, {
-      onError: (error: any) => {
-        const message =
-          error.response?.data?.detail ||
-          "Usuario o contraseña incorrectos. Inténtalo de nuevo.";
-        setErrorMessage(message);
+      onError: (err: any) => {
+        handleError(err, false); // No mostrar toast, usaremos el ErrorAlert
       },
     });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Limpiar error al empezar a escribir
+    if (error) {
+      clearError();
+    }
+    
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -58,6 +72,7 @@ export const LoginPage = () => {
       <button
         onClick={() => setDarkMode(!darkMode)}
         className="absolute top-5 right-5 p-2 rounded-full bg-white dark:bg-neutral-800 shadow-md border border-gray-200 dark:border-neutral-700 text-gray-700 dark:text-gray-200 hover:scale-105 transition-transform"
+        aria-label={darkMode ? "Activar modo claro" : "Activar modo oscuro"}
       >
         {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
       </button>
@@ -66,7 +81,7 @@ export const LoginPage = () => {
         <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-neutral-800 transition-colors duration-300">
           {/* Logo / Título */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
               <LogIn className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
@@ -76,6 +91,17 @@ export const LoginPage = () => {
               Panel de Administración
             </p>
           </div>
+
+          {/* Alerta de Error */}
+          {error && (
+            <div className="mb-6">
+              <ErrorAlert
+                variant="error"
+                message={error.message}
+                onClose={clearError}
+              />
+            </div>
+          )}
 
           {/* Formulario */}
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -94,9 +120,20 @@ export const LoginPage = () => {
                 required
                 value={formData.username}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400 dark:placeholder-gray-500"
+                disabled={isLoggingIn}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400 dark:placeholder-gray-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+                  getFieldError('username')
+                    ? 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-950/20'
+                    : 'border-gray-300 dark:border-neutral-700 bg-white dark:bg-neutral-800'
+                } text-gray-900 dark:text-gray-100`}
                 placeholder="Ingresa tu usuario"
+                autoComplete="username"
               />
+              {getFieldError('username') && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {getFieldError('username')}
+                </p>
+              )}
             </div>
 
             {/* Contraseña */}
@@ -115,13 +152,21 @@ export const LoginPage = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400 dark:placeholder-gray-500"
+                  disabled={isLoggingIn}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder-gray-400 dark:placeholder-gray-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+                    getFieldError('password')
+                      ? 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-950/20'
+                      : 'border-gray-300 dark:border-neutral-700 bg-white dark:bg-neutral-800'
+                  } text-gray-900 dark:text-gray-100`}
                   placeholder="Ingresa tu contraseña"
+                  autoComplete="current-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition"
+                  disabled={isLoggingIn}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition disabled:opacity-50"
+                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
                 >
                   {showPassword ? (
                     <EyeOff className="w-5 h-5" />
@@ -130,20 +175,18 @@ export const LoginPage = () => {
                   )}
                 </button>
               </div>
+              {getFieldError('password') && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {getFieldError('password')}
+                </p>
+              )}
             </div>
-
-            {/* Error */}
-            {errorMessage && (
-              <div className="bg-red-50 dark:bg-red-950 border border-red-300 dark:border-red-800 text-red-700 dark:text-red-300 rounded-lg px-4 py-2 text-sm">
-                {errorMessage}
-              </div>
-            )}
 
             {/* Botón de envío */}
             <button
               type="submit"
               disabled={isLoggingIn}
-              className="w-full bg-primary hover:brightness-110 text-primary-foreground py-3 rounded-lg font-medium transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full bg-primary hover:brightness-110 text-primary-foreground py-3 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
             >
               {isLoggingIn ? (
                 <>
@@ -160,8 +203,13 @@ export const LoginPage = () => {
           </form>
 
           {/* Footer */}
-          <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-            <p>Sistema de administración del equipo de ADS</p>
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Sistema de administración del equipo de ADS
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-500 mt-2">
+              ¿Problemas para iniciar sesión? Contacta al administrador
+            </p>
           </div>
         </div>
       </div>
