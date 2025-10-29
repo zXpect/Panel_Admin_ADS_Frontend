@@ -7,7 +7,10 @@ export const API_ENDPOINTS = {
 
   // Dashboard
   DASHBOARD: {
-    STATS: '/api/dashboard/stats/',
+    STATS: '/api/dashboard/stats',
+    WEEKLY_TRENDS: '/api/dashboard/weekly-trends',
+    MONTHLY_TRENDS: '/api/dashboard/monthly-trends',
+    ACTIVITY_STATS: '/api/dashboard/activity-stats', 
   },
 
   // Workers
@@ -23,6 +26,10 @@ export const API_ENDPOINTS = {
     VERIFICATION_STATUS: (id: string) => `/api/workers/${id}/verification_status/`,
     LOCATION: (id: string) => `/api/workers/${id}/location/`,
     ADD_RATING: (id: string) => `/api/workers/${id}/add_rating/`,
+    
+    // Carga masiva
+    BULK_UPLOAD: '/api/workers/bulk-upload/',
+    BULK_TEMPLATE: '/api/workers/bulk-upload-template/',
   },
 
   // Documents
