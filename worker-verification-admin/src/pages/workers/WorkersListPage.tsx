@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useWorkers } from '@/hooks/useWorkers';
 import { usePagination } from '@/hooks/usePagination';
-import { Search, Eye, Phone, Mail, MapPin, Star, Plus, Edit, Trash2 } from 'lucide-react';
+import { Search, Eye, Phone, Mail, MapPin, Star, Plus, Edit, Trash2, Upload } from 'lucide-react';
 import { formatPrice, getInitials } from '@/lib/utils/helpers';
 import { Pagination } from '@/components/common/Pagination';
 import { WorkerFormModal } from '@/components/features/workers/WorkerFormModal';
@@ -115,13 +115,22 @@ export const WorkersListPage = () => {
             Total: {workers.length} trabajadores
           </p>
         </div>
-        <button
-          onClick={handleCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg hover:opacity-90 transition-colors"
-        >
-          <Plus className="w-5 h-5" />
-          <span>Nuevo Trabajador</span>
-        </button>
+        <div className="flex gap-3">
+          <Link
+            to="/workers/bulk-upload"
+            className="flex items-center gap-2 px-4 py-2 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg hover:opacity-90 transition-colors"
+          >
+            <Upload className="w-5 h-5" />
+            <span>Carga Masiva</span>
+          </Link>
+          <button
+            onClick={handleCreate}
+            className="flex items-center gap-2 px-4 py-2 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg hover:opacity-90 transition-colors"
+          >
+            <Plus className="w-5 h-5" />
+            <span>Nuevo Trabajador</span>
+          </button>
+        </div>
       </div>
 
       {/* Filtros */}
