@@ -39,34 +39,36 @@ export const DocumentReviewModal = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 transition-all">
+    <div className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center z-50 transition-all animate-in fade-in duration-300">
       <div
-        className="w-full max-w-lg p-6 relative rounded-2xl shadow-xl border transition-all duration-300"
+        className="w-full max-w-lg p-8 relative rounded-2xl shadow-2xl border-2 transition-all duration-300 animate-in zoom-in-95"
         style={{
           backgroundColor: "hsl(var(--background))",
           color: "hsl(var(--foreground))",
           borderColor: "hsl(var(--border))",
         }}
       >
-        {/* Botón cerrar */}
+        {/* Botón cerrar mejorado */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 hover:opacity-80 transition-opacity"
+          className="absolute top-4 right-4 w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[hsl(var(--muted))] transition-all duration-200 group"
           style={{
             color: "hsl(var(--muted-foreground))",
           }}
         >
-          <X className="w-5 h-5" />
+          <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
         </button>
 
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-5">
-          <FileText
-            className="w-6 h-6"
-            style={{ color: "hsl(var(--muted-foreground))" }}
-          />
+        {/* Header mejorado */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-12 h-12 rounded-xl bg-[hsl(var(--primary))]/10 flex items-center justify-center">
+            <FileText
+              className="w-6 h-6"
+              style={{ color: "hsl(var(--primary))" }}
+            />
+          </div>
           <h2
-            className="text-xl font-semibold"
+            className="text-2xl font-bold"
             style={{ color: "hsl(var(--foreground))" }}
           >
             {title}
@@ -124,64 +126,52 @@ export const DocumentReviewModal = ({
           )}
         </div>
 
-        {/* Ver documento */}
+        {/* Ver documento mejorado */}
         <a
           href={doc.fileUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg shadow-sm mb-6 transition-colors hover:opacity-90"
-          style={{
-            backgroundColor: "hsl(var(--muted))",
-            color: "hsl(var(--muted-foreground))",
-          }}
+          className="group inline-flex items-center gap-3 px-5 py-3 rounded-xl shadow-md mb-6 transition-all duration-300 hover:shadow-lg hover:scale-105 border-2 bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] border-[hsl(var(--primary))]/20 hover:bg-[hsl(var(--primary))]/20"
         >
-          <ExternalLink className="w-4 h-4" />
-          Ver Documento
+          <ExternalLink className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+          <span className="font-semibold">Ver Documento</span>
         </a>
 
-        {/* Acciones */}
+        {/* Acciones mejoradas */}
         {doc.status === "pending" && (
           <div
-            className="pt-4 space-y-3 border-t"
+            className="pt-6 space-y-4 border-t-2"
             style={{ borderColor: "hsl(var(--border))" }}
           >
-            <textarea
-              placeholder="Escribe la razón del rechazo..."
-              value={rejectionReason}
-              onChange={(e) => setRejectionReason(e.target.value)}
-              className="w-full rounded-lg px-3 py-2 text-sm resize-none transition-all focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent"
-              style={{
-                backgroundColor: "hsl(var(--muted))",
-                color: "hsl(var(--foreground))",
-                border: "1px solid hsl(var(--border))",
-              }}
-              rows={3}
-            />
+            <div>
+              <label className="block text-sm font-semibold mb-2 text-[hsl(var(--foreground))]">
+                Razón de rechazo (opcional)
+              </label>
+              <textarea
+                placeholder="Escribe aquí la razón del rechazo si corresponde..."
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                className="w-full rounded-xl px-4 py-3 text-sm resize-none transition-all duration-200 focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent border-2 bg-[hsl(var(--muted))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] focus:bg-[hsl(var(--background))]"
+                rows={3}
+              />
+            </div>
 
             <div className="flex gap-3">
               <button
                 onClick={() => onApprove(doc)}
                 disabled={isApproving}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{
-                  backgroundColor: "hsl(var(--chart-1))",
-                  color: "hsl(var(--background))",
-                }}
+                className="group flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold shadow-md transition-all duration-300 hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 bg-[hsl(var(--chart-2))] text-white hover:bg-[hsl(var(--chart-2))]/90"
               >
-                <CheckCircle className="w-4 h-4" />
+                <CheckCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 Aprobar
               </button>
 
               <button
                 onClick={handleRejectClick}
                 disabled={isRejecting}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{
-                  backgroundColor: "hsl(var(--destructive))",
-                  color: "hsl(var(--background))",
-                }}
+                className="group flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold shadow-md transition-all duration-300 hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 bg-[hsl(var(--destructive))] text-white hover:bg-[hsl(var(--destructive))]/90"
               >
-                <XCircle className="w-4 h-4" />
+                <XCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 Rechazar
               </button>
             </div>
