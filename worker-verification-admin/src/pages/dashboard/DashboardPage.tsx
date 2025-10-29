@@ -1,13 +1,52 @@
 import { useQuery } from '@tanstack/react-query';
 import { dashboardService } from '@/api/services/dashboardService';
-import { Users, UserCheck, FileText, Clock } from 'lucide-react';
+import { Users, UserCheck, Clock, TrendingUp, Activity, CheckCircle2, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { WORKER_CATEGORIES } from '@/lib/utils/constants';
+import { useState } from 'react';
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from 'recharts';
+
+import {
+  DashboardStats,
+  TrendsResponse,
+  WeeklyTrend,
+  MonthlyTrend
+} from '@/types/api.types';
+
+const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
 
 export const DashboardPage = () => {
+  const [trendView, setTrendView] = useState<'weekly' | 'monthly'>('weekly');
+
   const { data: stats, isLoading } = useQuery({
     queryKey: ['dashboard', 'stats'],
     queryFn: () => dashboardService.getStats(),
+  });
+
+  const { data: weeklyTrends, isLoading: isLoadingWeekly } = useQuery({
+    queryKey: ['dashboard', 'weekly-trends'],
+    queryFn: () => dashboardService.getWeeklyTrends(),
+    enabled: trendView === 'weekly',
+  });
+
+  const { data: monthlyTrends, isLoading: isLoadingMonthly } = useQuery({
+    queryKey: ['dashboard', 'monthly-trends'],
+    queryFn: () => dashboardService.getMonthlyTrends(),
+    enabled: trendView === 'monthly',
   });
 
   if (isLoading) {
@@ -23,6 +62,32 @@ export const DashboardPage = () => {
     return acc + count;
   }, 0);
 
+  const verifiedWorkers = stats?.workers.verified || 0;
+  const processedDocuments = stats?.documents.processed || 0;
+
+  const categoryData = WORKER_CATEGORIES.map(category => ({
+    name: category,
+    value: stats?.workers.byCategory?.[category] || 0
+  })).filter(item => item.value > 0);
+
+  const documentTypeData = [
+    { name: 'Hoja de Vida', value: stats?.documents.pendingByType?.hojaDeVida || 0 },
+    { name: 'Antecedentes', value: stats?.documents.pendingByType?.antecedentesJudiciales || 0 },
+    { name: 'Títulos', value: stats?.documents.pendingByType?.titulos || 0 },
+    { name: 'Cartas', value: stats?.documents.pendingByType?.cartasRecomendacion || 0 }
+  ].filter(item => item.value > 0);
+
+  const workerStatusData = [
+    { name: 'En Línea', value: stats?.workers.online || 0 },
+    { name: 'Disponibles', value: Math.max(0, (stats?.workers.available || 0) - (stats?.workers.online || 0)) },
+    { name: 'Ocupados', value: Math.max(0, (stats?.workers.total || 0) - (stats?.workers.available || 0)) }
+  ].filter(item => item.value > 0);
+
+  const trendsData = trendView === 'weekly' ? weeklyTrends?.trends : monthlyTrends?.trends;
+  const trendsSummary = trendView === 'weekly' ? weeklyTrends?.summary : monthlyTrends?.summary;
+  const isLoadingTrends = trendView === 'weekly' ? isLoadingWeekly : isLoadingMonthly;
+  const activityRate = stats?.workers.total ? Math.round((stats.workers.online / stats.workers.total) * 100) : 0;
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -31,11 +96,11 @@ export const DashboardPage = () => {
         <p className="text-[hsl(var(--muted-foreground))] mt-1">Resumen general del sistema</p>
       </div>
 
-      {/* Stats Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* KPI Principal Cards - 3 columnas */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Total Workers */}
         <Link to="/workers" className="block">
-          <div className="bg-[hsl(var(--card))] dark:bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer border border-[hsl(var(--border))]">
+          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer border border-[hsl(var(--border))]">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-[hsl(var(--muted-foreground))] uppercase tracking-wide">
@@ -43,25 +108,30 @@ export const DashboardPage = () => {
                 </p>
                 <p className="text-3xl font-bold text-[hsl(var(--foreground))] mt-2">{totalWorkersFiltered}</p>
               </div>
-              <div className="w-14 h-14 bg-[hsl(var(--primary))]/10 dark:bg-[hsl(var(--primary))]/20 rounded-lg flex items-center justify-center">
+              <div className="w-14 h-14 bg-[hsl(var(--primary))]/10 rounded-lg flex items-center justify-center">
                 <Users className="w-7 h-7 text-[hsl(var(--primary))]" />
               </div>
             </div>
-            <div className="mt-3 text-sm text-[hsl(var(--muted-foreground))]">
-              <span className="text-[hsl(var(--chart-2))] dark:text-[hsl(var(--chart-2))] font-medium">
-                {stats?.workers.available || 0} disponibles
-              </span>
-              {' · '}
-              <span className="text-[hsl(var(--primary))] font-medium">
-                {stats?.workers.online || 0} en línea
-              </span>
+            <div className="mt-4 flex items-center justify-between text-sm">
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 rounded-full bg-[hsl(var(--chart-2))]"></div>
+                <span className="text-[hsl(var(--muted-foreground))]">
+                  {stats?.workers.available || 0} disponibles
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 rounded-full bg-[hsl(var(--primary))]"></div>
+                <span className="text-[hsl(var(--muted-foreground))]">
+                  {stats?.workers.online || 0} en línea
+                </span>
+              </div>
             </div>
           </div>
         </Link>
 
         {/* Total Clients */}
         <Link to="/clients" className="block">
-          <div className="bg-[hsl(var(--card))] dark:bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer border border-[hsl(var(--border))]">
+          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer border border-[hsl(var(--border))]">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-[hsl(var(--muted-foreground))] uppercase tracking-wide">
@@ -71,70 +141,307 @@ export const DashboardPage = () => {
                   {stats?.clients.total || 0}
                 </p>
               </div>
-              <div className="w-14 h-14 bg-[hsl(var(--accent))]/10 dark:bg-[hsl(var(--accent))]/20 rounded-lg flex items-center justify-center">
+              <div className="w-14 h-14 bg-[hsl(var(--accent))]/10 rounded-lg flex items-center justify-center">
                 <UserCheck className="w-7 h-7 text-[hsl(var(--accent))]" />
               </div>
+            </div>
+            <div className="mt-4 text-sm flex items-center gap-1">
+              <TrendingUp className="w-4 h-4 text-[hsl(var(--chart-2))]" />
+              <span className="text-[hsl(var(--muted-foreground))]">Clientes activos</span>
             </div>
           </div>
         </Link>
 
         {/* Pending Documents */}
         <Link to="/documents/pending" className="block">
-          <div className="bg-[hsl(var(--card))] dark:bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer border border-[hsl(var(--border))]">
+          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer border border-[hsl(var(--border))]">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-[hsl(var(--muted-foreground))] uppercase tracking-wide">
                   Documentos Pendientes
                 </p>
                 <p className="text-3xl font-bold text-[hsl(var(--foreground))] mt-2">
-                  {stats?.documents.pendingTotal || 0}
+                  {stats?.documents.pending || 0}
                 </p>
               </div>
-              <div className="w-14 h-14 bg-[hsl(var(--chart-5))]/10 dark:bg-[hsl(var(--chart-5))]/20 rounded-lg flex items-center justify-center">
+              <div className="w-14 h-14 bg-[hsl(var(--chart-5))]/10 rounded-lg flex items-center justify-center">
                 <Clock className="w-7 h-7 text-[hsl(var(--chart-5))]" />
               </div>
             </div>
-            <div className="mt-3 text-sm text-[hsl(var(--muted-foreground))]">Requieren revisión</div>
-          </div>
-        </Link>
-
-        {/* Documents by Type */}
-        <div className="bg-[hsl(var(--card))] dark:bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 border border-[hsl(var(--border))]">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-sm font-medium text-[hsl(var(--muted-foreground))] uppercase tracking-wide">
-              Por Tipo
-            </p>
-            <div className="w-14 h-14 bg-[hsl(var(--chart-3))]/10 dark:bg-[hsl(var(--chart-3))]/20 rounded-lg flex items-center justify-center">
-              <FileText className="w-7 h-7 text-[hsl(var(--chart-3))]" />
+            <div className="mt-4 text-sm text-[hsl(var(--muted-foreground))]">
+              Requieren revisión
             </div>
           </div>
-          <div className="space-y-2 text-sm">
-            {Object.entries(stats?.documents.pendingByType || {}).map(([label, value]) => (
-              <div key={label} className="flex justify-between">
-                <span className="text-[hsl(var(--muted-foreground))] capitalize">{label.replace(/([A-Z])/g, ' $1')}</span>
-                <span className="font-medium text-[hsl(var(--foreground))]">{value || 0}</span>
-              </div>
-            ))}
+        </Link>
+      </div>
+
+      {/* Métricas Secundarias - 4 columnas compactas */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-[hsl(var(--card))] rounded-xl shadow-sm p-4 border border-[hsl(var(--border))]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[hsl(var(--chart-2))]/10 rounded-lg flex items-center justify-center">
+              <CheckCircle2 className="w-5 h-5 text-[hsl(var(--chart-2))]" />
+            </div>
+            <div>
+              <p className="text-xs text-[hsl(var(--muted-foreground))] uppercase">Verificados</p>
+              <p className="text-xl font-bold text-[hsl(var(--foreground))]">{verifiedWorkers}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-[hsl(var(--card))] rounded-xl shadow-sm p-4 border border-[hsl(var(--border))]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[hsl(var(--chart-4))]/10 rounded-lg flex items-center justify-center">
+              <Activity className="w-5 h-5 text-[hsl(var(--chart-4))]" />
+            </div>
+            <div>
+              <p className="text-xs text-[hsl(var(--muted-foreground))] uppercase">Tasa Actividad</p>
+              <p className="text-xl font-bold text-[hsl(var(--foreground))]">{activityRate}%</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-[hsl(var(--card))] rounded-xl shadow-sm p-4 border border-[hsl(var(--border))]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[hsl(var(--chart-2))]/10 rounded-lg flex items-center justify-center">
+              <FileText className="w-5 h-5 text-[hsl(var(--chart-2))]" />
+            </div>
+            <div>
+              <p className="text-xs text-[hsl(var(--muted-foreground))] uppercase">Aprobados</p>
+              <p className="text-xl font-bold text-[hsl(var(--foreground))]">{stats?.documents.approved || 0}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-[hsl(var(--card))] rounded-xl shadow-sm p-4 border border-[hsl(var(--border))]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[hsl(var(--chart-2))]/10 rounded-lg flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-[hsl(var(--chart-2))]" />
+            </div>
+            <div>
+              <p className="text-xs text-[hsl(var(--muted-foreground))] uppercase">Tasa Aprobación</p>
+              <p className="text-xl font-bold text-[hsl(var(--foreground))]">
+                {processedDocuments > 0
+                  ? Math.round(((stats?.documents.approved || 0) / processedDocuments) * 100)
+                  : 0}%
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Workers by Category */}
-      {stats?.workers.byCategory && (
-        <div className="bg-[hsl(var(--card))] dark:bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 border border-[hsl(var(--border))]">
-          <h2 className="text-lg font-semibold text-[hsl(var(--foreground))] mb-4">
-            Trabajadores por Categoría
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
-            {WORKER_CATEGORIES.map((category) => (
-              <div key={category} className="bg-[hsl(var(--muted))] dark:bg-[hsl(var(--secondary))] rounded-lg p-4 flex flex-col items-center justify-center">
-                <p className="text-2xl font-bold text-[hsl(var(--foreground))]">
-                  {stats.workers.byCategory[category] || 0}
-                </p>
-                <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1 text-center">{category}</p>
-              </div>
-            ))}
+      {/* Gráficas Principales - Layout 2x2 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Tendencias */}
+        <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 border border-[hsl(var(--border))] lg:col-span-2">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-lg font-semibold text-[hsl(var(--foreground))]">
+              Tendencia de Actividad
+            </h2>
+            <div className="inline-flex rounded-lg border border-[hsl(var(--border))] p-1 bg-[hsl(var(--muted))]">
+              <button
+                onClick={() => setTrendView('weekly')}
+                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${trendView === 'weekly'
+                    ? 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]'
+                    : 'text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]'
+                  }`}
+              >
+                Semanal
+              </button>
+              <button
+                onClick={() => setTrendView('monthly')}
+                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${trendView === 'monthly'
+                    ? 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]'
+                    : 'text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]'
+                  }`}
+              >
+                Mensual
+              </button>
+            </div>
           </div>
+          {isLoadingTrends ? (
+            <div className="flex items-center justify-center h-[300px]">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(var(--primary))]"></div>
+            </div>
+          ) : trendsData && trendsData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={trendsData}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-[hsl(var(--muted))]" opacity={0.3} />
+                <XAxis 
+                  dataKey={trendView === 'weekly' ? 'day' : 'week'}
+                  className="text-[hsl(var(--muted-foreground))]"
+                  style={{ fontSize: '12px' }}
+                />
+                <YAxis
+                  className="text-[hsl(var(--muted-foreground))]"
+                  style={{ fontSize: '12px' }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'hsl(var(--popover))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px',
+                    color: 'hsl(var(--popover-foreground))'
+                  }}
+                />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="workers"
+                  stroke="hsl(var(--primary))"
+                  strokeWidth={2}
+                  name="Trabajadores registrados"
+                  dot={{ fill: 'hsl(var(--primary))', r: 4 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="documents"
+                  stroke="hsl(var(--chart-2))"
+                  strokeWidth={2}
+                  name="Documentos procesados"
+                  dot={{ fill: 'hsl(var(--chart-2))', r: 4 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="documentsUploaded"
+                  stroke="hsl(var(--chart-5))"
+                  strokeWidth={2}
+                  name="Documentos subidos"
+                  dot={{ fill: 'hsl(var(--chart-5))', r: 4 }}
+                  strokeDasharray="5 5"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex items-center justify-center h-[300px] text-[hsl(var(--muted-foreground))]">
+              No hay datos disponibles
+            </div>
+          )}
+                    {trendsSummary && (
+            <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4 pt-4 border-t border-[hsl(var(--border))]">
+              <div className="text-center">
+                <p className="text-sm text-[hsl(var(--muted-foreground))]">Total Trabajadores Activos</p>
+                <p className="text-2xl font-bold text-[hsl(var(--foreground))]">{trendsSummary.totalWorkersActive}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-sm text-[hsl(var(--muted-foreground))]">Docs Procesados</p>
+                <p className="text-2xl font-bold text-[hsl(var(--chart-2))]">{trendsSummary.totalDocsProcessed}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-sm text-[hsl(var(--muted-foreground))]">Docs Subidos</p>
+                <p className="text-2xl font-bold text-[hsl(var(--chart-5))]">{trendsSummary.totalDocsUploaded}</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Trabajadores por Categoría */}
+        {categoryData.length > 0 && (
+          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 border border-[hsl(var(--border))]">
+            <h2 className="text-lg font-semibold text-[hsl(var(--foreground))] mb-6">
+              Trabajadores por Categoría
+            </h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={categoryData}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-[hsl(var(--muted))]" opacity={0.3} />
+                <XAxis
+                  dataKey="name"
+                  className="text-[hsl(var(--muted-foreground))]"
+                  style={{ fontSize: '11px' }}
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                />
+                <YAxis
+                  className="text-[hsl(var(--muted-foreground))]"
+                  style={{ fontSize: '12px' }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'hsl(var(--popover))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px',
+                    color: 'hsl(var(--popover-foreground))'
+                  }}
+                />
+                <Bar dataKey="value" name="Trabajadores" radius={[8, 8, 0, 0]}>
+                  {categoryData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+
+        {/* Estado de Trabajadores */}
+        {workerStatusData.length > 0 && (
+          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 border border-[hsl(var(--border))]">
+            <h2 className="text-lg font-semibold text-[hsl(var(--foreground))] mb-6">
+              Estado de Trabajadores
+            </h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={workerStatusData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {workerStatusData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={['hsl(var(--chart-2))', 'hsl(var(--primary))', 'hsl(var(--chart-5))'][index]} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'hsl(var(--popover))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px',
+                    color: 'hsl(var(--popover-foreground))'
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </div>
+
+      {/* Documentos Pendientes por Tipo - Ancho Completo */}
+      {documentTypeData.length > 0 && (
+        <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 border border-[hsl(var(--border))]">
+          <h2 className="text-lg font-semibold text-[hsl(var(--foreground))] mb-6">
+            Documentos Pendientes por Tipo
+          </h2>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={documentTypeData} layout="vertical">
+              <CartesianGrid strokeDasharray="3 3" className="stroke-[hsl(var(--muted))]" opacity={0.3} />
+              <XAxis
+                type="number"
+                className="text-[hsl(var(--muted-foreground))]"
+                style={{ fontSize: '12px' }}
+              />
+              <YAxis
+                type="category"
+                dataKey="name"
+                className="text-[hsl(var(--muted-foreground))]"
+                style={{ fontSize: '12px' }}
+                width={120}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'hsl(var(--popover))',
+                  border: '1px solid hsl(var(--border))',
+                  borderRadius: '8px',
+                  color: 'hsl(var(--popover-foreground))'
+                }}
+              />
+              <Bar dataKey="value" fill="hsl(var(--chart-5))" radius={[0, 8, 8, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       )}
     </div>
