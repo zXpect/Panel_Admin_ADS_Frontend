@@ -61,3 +61,24 @@ export interface WorkerStatistics {
   online: number;
   by_category: Record<string, number>;
 }
+
+export interface BulkUploadResult {
+  total_processed: number;
+  successful: number;
+  failed: number;
+  success_details: Array<{
+    row: number;
+    email: string;
+    name: string;
+    user_id: string;
+    password?: string;
+    auth_existed: boolean;
+  }>;
+  error_details: Array<{
+    row: number;
+    email: string;
+    name: string;
+    error: string;
+  }>;
+  execution_time: number;
+}
