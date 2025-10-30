@@ -1,16 +1,20 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+import { AlertTriangle, RefreshCw, Home, Download, Copy } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { logger } from '@/lib/utils/logger';
+import toast from 'react-hot-toast';
 
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
+  onError?: (error: Error, errorInfo: ErrorInfo) => void;
 }
 
 interface State {
   hasError: boolean;
   error: Error | null;
   errorInfo: ErrorInfo | null;
+  errorId: string | null;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
@@ -18,38 +22,130 @@ export class ErrorBoundary extends Component<Props, State> {
     hasError: false,
     error: null,
     errorInfo: null,
+    errorId: null,
   };
 
-  public static getDerivedStateFromError(error: Error): State {
+  public static getDerivedStateFromError(error: Error): Partial<State> {
     return {
       hasError: true,
       error,
-      errorInfo: null,
     };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Error capturado por ErrorBoundary:', error, errorInfo);
-    
+    const errorId = `err_boundary_${Date.now()}`;
+
+    // Logging estructurado
+    logger.critical('React Error Boundary triggered', {
+      error: {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+      },
+      componentStack: errorInfo.componentStack,
+      errorId,
+      url: window.location.href,
+      userAgent: navigator.userAgent,
+    });
+
     this.setState({
       error,
       errorInfo,
+      errorId,
     });
 
-    // Aquí podrías enviar el error a un servicio de logging como Sentry
-    // logErrorToService(error, errorInfo);
+    // Llamar al callback personalizado si existe
+    if (this.props.onError) {
+      this.props.onError(error, errorInfo);
+    }
+
+    // En producción, aquí se podría enviar a un servicio de logging externo
+    // como Sentry, LogRocket, etc.
+    // if (import.meta.env.PROD) {
+    //   sendToErrorTrackingService(error, errorInfo, errorId);
+    // }
   }
 
   private handleReset = () => {
+    logger.info('Error boundary reset');
+
     this.setState({
       hasError: false,
       error: null,
       errorInfo: null,
+      errorId: null,
     });
   };
 
   private handleReload = () => {
+    logger.info('Page reload requested from error boundary');
     window.location.reload();
+  };
+
+  private copyErrorDetails = () => {
+    const { error, errorInfo, errorId } = this.state;
+
+    const errorDetails = JSON.stringify(
+      {
+        errorId,
+        timestamp: new Date().toISOString(),
+        error: {
+          name: error?.name,
+          message: error?.message,
+          stack: error?.stack,
+        },
+        componentStack: errorInfo?.componentStack,
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+      },
+      null,
+      2
+    );
+
+    navigator.clipboard
+      .writeText(errorDetails)
+      .then(() => {
+        toast.success('Detalles del error copiados al portapapeles');
+        logger.info('Error details copied to clipboard', { errorId });
+      })
+      .catch((err) => {
+        toast.error('No se pudieron copiar los detalles del error');
+        logger.error('Failed to copy error details', err);
+      });
+  };
+
+  private downloadErrorLog = () => {
+    const { error, errorInfo, errorId } = this.state;
+
+    const errorLog = {
+      errorId,
+      timestamp: new Date().toISOString(),
+      error: {
+        name: error?.name,
+        message: error?.message,
+        stack: error?.stack,
+      },
+      componentStack: errorInfo?.componentStack,
+      url: window.location.href,
+      userAgent: navigator.userAgent,
+      recentLogs: logger.getErrorLogs().slice(-20), // Últimos 20 errores
+    };
+
+    const blob = new Blob([JSON.stringify(errorLog, null, 2)], {
+      type: 'application/json',
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `error-report-${errorId}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    logger.info('Error log downloaded', { errorId });
+    toast.success('Reporte de error descargado');
   };
 
   public render() {
@@ -79,12 +175,39 @@ export class ErrorBoundary extends Component<Props, State> {
               estamos trabajando para solucionarlo.
             </p>
 
-            {/* Error Details (only in development) */}
-            {process.env.NODE_ENV === 'development' && this.state.error && (
-              <div className="mb-6 p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg">
-                <p className="text-sm font-semibold text-red-800 dark:text-red-300 mb-2">
-                  Detalles del error (solo visible en desarrollo):
+            {/* Error ID */}
+            {this.state.errorId && (
+              <div className="mb-4 p-3 bg-gray-100 dark:bg-neutral-800 rounded-lg">
+                <p className="text-xs text-gray-600 dark:text-gray-400 text-center font-mono">
+                  ID de Error: {this.state.errorId}
                 </p>
+              </div>
+            )}
+
+            {/* Error Details (only in development) */}
+            {import.meta.env.DEV && this.state.error && (
+              <div className="mb-6 p-4 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-semibold text-red-800 dark:text-red-300">
+                    Detalles del error (solo visible en desarrollo):
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={this.copyErrorDetails}
+                      className="p-1.5 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-colors"
+                      title="Copiar detalles"
+                    >
+                      <Copy className="w-4 h-4 text-red-600 dark:text-red-400" />
+                    </button>
+                    <button
+                      onClick={this.downloadErrorLog}
+                      className="p-1.5 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition-colors"
+                      title="Descargar reporte"
+                    >
+                      <Download className="w-4 h-4 text-red-600 dark:text-red-400" />
+                    </button>
+                  </div>
+                </div>
                 <pre className="text-xs text-red-700 dark:text-red-400 overflow-x-auto whitespace-pre-wrap break-words">
                   {this.state.error.toString()}
                 </pre>
