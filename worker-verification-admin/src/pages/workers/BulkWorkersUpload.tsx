@@ -164,29 +164,40 @@ const BulkWorkersUpload: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 transition-colors">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
-            Carga Masiva de Trabajadores
-          </h1>
-          <p className="text-[hsl(var(--muted-foreground))] mt-1">
-            Sube un archivo Excel con los datos de múltiples trabajadores
-          </p>
+    <div className="space-y-6 animate-in fade-in duration-500">
+      {/* Header mejorado */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-[hsl(var(--primary))]/10 via-[hsl(var(--card))] to-[hsl(var(--primary))]/5
+                      rounded-2xl shadow-lg border border-[hsl(var(--border))] p-6">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(var(--primary))]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-[hsl(var(--primary))]/20 flex items-center justify-center">
+              <Upload className="w-6 h-6 text-[hsl(var(--primary))]" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
+                Carga Masiva de Trabajadores
+              </h1>
+              <p className="text-[hsl(var(--muted-foreground))] mt-1 font-medium">
+                Sube un archivo Excel con los datos de múltiples trabajadores
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={handleDownloadTemplate}
+            disabled={isDownloadingTemplate}
+            className="group flex items-center gap-2 px-5 py-3 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]
+                       rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold
+                       disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isDownloadingTemplate ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Download className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            )}
+            <span>Descargar Plantilla</span>
+          </button>
         </div>
-        <button
-          onClick={handleDownloadTemplate}
-          disabled={isDownloadingTemplate}
-className="flex items-center gap-2 px-4 py-2 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg hover:opacity-90 transition-colors"
-        >
-          {isDownloadingTemplate ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
-          ) : (
-            <Download className="w-5 h-5" />
-          )}
-          <span>Descargar Plantilla</span>
-        </button>
       </div>
 
       {/* Instrucciones */}

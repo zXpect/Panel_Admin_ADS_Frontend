@@ -7,16 +7,17 @@ import {
   UserCheck,
   ChevronLeft,
   ChevronRight,
+  Sparkles,
 } from 'lucide-react';
 import { useUIStore } from '@/store/uiStore';
 import { cn } from '@/lib/utils/helpers';
 import * as Tooltip from '@radix-ui/react-tooltip';
 
 const menuItems = [
-  { title: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
-  { title: 'Trabajadores', icon: Users, path: '/workers' },
-  { title: 'Documentos', icon: FileText, path: '/documents/pending' },
-  { title: 'Clientes', icon: UserCheck, path: '/clients' },
+  { title: 'Dashboard', icon: LayoutDashboard, path: '/dashboard', color: 'primary' },
+  { title: 'Trabajadores', icon: Users, path: '/workers', color: 'chart-1' },
+  { title: 'Documentos', icon: FileText, path: '/documents/pending', color: 'chart-5' },
+  { title: 'Clientes', icon: UserCheck, path: '/clients', color: 'accent' },
 ];
 
 export const Sidebar = () => {
@@ -26,34 +27,60 @@ export const Sidebar = () => {
   return (
     <aside
       className={cn(
-        'fixed left-0 top-0 h-screen z-50 flex flex-col transition-all duration-500',
-        'bg-white border-r border-[hsl(var(--border))] dark:bg-[hsl(var(--background))] dark:border-[hsl(var(--border))]',
+        'fixed left-0 top-0 h-screen z-50 flex flex-col transition-all duration-500 shadow-xl',
+        'bg-gradient-to-b from-[hsl(var(--card))] to-[hsl(var(--background))]',
+        'border-r-2 border-[hsl(var(--border))]',
         sidebarOpen ? 'w-64' : 'w-16'
       )}
     >
-      {/* Logo */}
-      <div className="h-16 flex items-center justify-between px-4 border-b border-[hsl(var(--border))] dark:border-[hsl(var(--border))]">
+      {/* Logo mejorado con gradiente y decoración */}
+      <div className="h-16 flex items-center justify-between px-4 border-b-2 border-[hsl(var(--border))] relative overflow-hidden">
+        {/* Efecto decorativo de fondo */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-[hsl(var(--primary))]/5 rounded-full blur-3xl"></div>
+
         {sidebarOpen && (
-          <h1 className="text-xl font-extrabold text-[hsl(var(--primary))] transition-all duration-500">
-            WV Admin
-          </h1>
+          <div className="flex items-center gap-2 z-10">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/70
+                            flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-300">
+              <Sparkles className="w-5 h-5 text-[hsl(var(--primary-foreground))]" />
+            </div>
+            <h1 className="text-xl font-black bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--primary))]/70
+                           bg-clip-text text-transparent">
+              ADS Admin
+            </h1>
+          </div>
         )}
+
+        {!sidebarOpen && (
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/70
+                          flex items-center justify-center shadow-lg mx-auto">
+            <Sparkles className="w-5 h-5 text-[hsl(var(--primary-foreground))]" />
+          </div>
+        )}
+
         <button
           onClick={toggleSidebar}
-          className="p-2 rounded-lg hover:bg-[hsl(var(--muted))] dark:hover:bg-[hsl(var(--secondary))] transition-colors duration-300"
+          className={cn(
+            "p-2 rounded-xl hover:bg-[hsl(var(--primary))]/10 transition-all duration-300 z-10",
+            "border border-transparent hover:border-[hsl(var(--primary))]/20",
+            "hover:shadow-md group",
+            !sidebarOpen && "absolute top-1/2 -translate-y-1/2 right-2"
+          )}
         >
           {sidebarOpen ? (
-            <ChevronLeft className="w-5 h-5 text-[hsl(var(--muted-foreground))] transition-transform duration-300" />
+            <ChevronLeft className="w-5 h-5 text-[hsl(var(--muted-foreground))] group-hover:text-[hsl(var(--primary))]
+                                    transition-all duration-300 group-hover:-translate-x-1" />
           ) : (
-            <ChevronRight className="w-5 h-5 text-[hsl(var(--muted-foreground))] transition-transform duration-300" />
+            <ChevronRight className="w-5 h-5 text-[hsl(var(--muted-foreground))] group-hover:text-[hsl(var(--primary))]
+                                     transition-all duration-300 group-hover:translate-x-1" />
           )}
         </button>
       </div>
 
-      {/* Menu Items */}
-      <nav className="p-4 space-y-2 flex-1 overflow-y-auto">
+      {/* Menu Items mejorado */}
+      <nav className="p-3 space-y-1.5 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-[hsl(var(--muted))]">
         <Tooltip.Provider>
-          {menuItems.map((item) => {
+          {menuItems.map((item, index) => {
             const isActive = location.pathname.startsWith(item.path);
             const Icon = item.icon;
 
@@ -63,33 +90,61 @@ export const Sidebar = () => {
                   <Link
                     to={item.path}
                     className={cn(
-                      'group flex items-center gap-3 px-3 py-2 rounded-xl relative transition-all duration-500 overflow-hidden',
-                      'hover:translate-x-1 hover:shadow-lg hover:bg-[hsl(var(--primary))]/10 dark:hover:bg-[hsl(var(--primary))]/20',
+                      'group flex items-center gap-3 px-3 py-3 rounded-xl relative transition-all duration-300 overflow-hidden',
+                      'hover:scale-105 hover:shadow-lg',
                       isActive
-                        ? 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] shadow-xl'
-                        : 'text-[hsl(var(--muted-foreground))]'
+                        ? 'bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--primary))]/80 text-[hsl(var(--primary-foreground))] shadow-xl'
+                        : 'text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]'
                     )}
+                    style={{
+                      animationDelay: `${index * 50}ms`
+                    }}
                   >
+                    {/* Efecto de brillo en hover */}
+                    <span className={cn(
+                      "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                      "bg-gradient-to-r from-transparent via-white/10 to-transparent",
+                      "-translate-x-full group-hover:translate-x-full",
+                      "transition-transform duration-1000"
+                    )} />
+
                     {/* Glow animado cuando está activo */}
                     {isActive && (
-                      <span className="absolute inset-0 bg-[hsl(var(--primary))]/20 rounded-xl animate-pulse pointer-events-none" />
+                      <>
+                        <span className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--primary))]/40 via-[hsl(var(--primary))]/20 to-transparent rounded-xl animate-pulse" />
+                        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-r-full shadow-lg" />
+                      </>
                     )}
 
-                    <Icon
-                      className={cn(
-                        'w-5 h-5 flex-shrink-0 transition-colors duration-300 z-10',
-                        isActive ? 'text-[hsl(var(--primary-foreground))]' : 'text-[hsl(var(--muted-foreground))]'
-                      )}
-                    />
+                    {/* Icono con fondo decorativo */}
+                    <div className={cn(
+                      "relative w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 z-10",
+                      isActive
+                        ? "bg-white/20 shadow-inner"
+                        : "bg-[hsl(var(--muted))]/50 group-hover:bg-[hsl(var(--primary))]/10"
+                    )}>
+                      <Icon className={cn(
+                        'w-5 h-5 transition-all duration-300',
+                        isActive
+                          ? 'text-[hsl(var(--primary-foreground))] scale-110'
+                          : 'text-[hsl(var(--muted-foreground))] group-hover:text-[hsl(var(--primary))] group-hover:scale-110'
+                      )} />
+                    </div>
+
                     {sidebarOpen && (
-                      <span className="text-sm font-medium z-10 transition-all duration-300">
+                      <span className={cn(
+                        "text-sm font-semibold z-10 transition-all duration-300",
+                        isActive && "tracking-wide"
+                      )}>
                         {item.title}
                       </span>
                     )}
 
-                    {/* Selector animado a la izquierda */}
-                    {isActive && (
-                      <span className="absolute left-0 top-0 bottom-0 w-1 bg-[hsl(var(--accent))] rounded-r-xl" />
+                    {/* Indicador de flecha cuando está activo */}
+                    {isActive && sidebarOpen && (
+                      <span className="ml-auto text-[hsl(var(--primary-foreground))] z-10 animate-pulse">
+                        •
+                      </span>
                     )}
                   </Link>
                 </Tooltip.Trigger>
@@ -99,10 +154,13 @@ export const Sidebar = () => {
                     <Tooltip.Content
                       side="right"
                       align="center"
-                      className="bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))] text-xs rounded-md px-3 py-1 shadow-md select-none animate-fadeIn"
+                      sideOffset={10}
+                      className="bg-[hsl(var(--popover))] text-[hsl(var(--popover-foreground))] text-sm font-medium
+                                 rounded-xl px-4 py-2 shadow-xl border border-[hsl(var(--border))]
+                                 animate-in fade-in-0 zoom-in-95 duration-200"
                     >
                       {item.title}
-                      <Tooltip.Arrow className="fill-[hsl(var(--secondary))]" />
+                      <Tooltip.Arrow className="fill-[hsl(var(--popover))]" />
                     </Tooltip.Content>
                   </Tooltip.Portal>
                 )}
@@ -112,10 +170,36 @@ export const Sidebar = () => {
         </Tooltip.Provider>
       </nav>
 
-      {/* Footer / Branding */}
+      {/* Footer mejorado */}
       {sidebarOpen && (
-        <div className="px-4 py-3 border-t border-[hsl(var(--border))] text-[hsl(var(--muted-foreground))] text-sm">
-          Admin Panel © 2025
+        <div className="px-4 py-4 border-t-2 border-[hsl(var(--border))] bg-[hsl(var(--muted))]/30 relative overflow-hidden">
+          {/* Efecto decorativo */}
+          <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-[hsl(var(--primary))]/5 to-transparent"></div>
+
+          <div className="relative z-10 space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-[hsl(var(--chart-2))] animate-pulse"></div>
+              <span className="text-xs font-semibold text-[hsl(var(--foreground))]">
+                Sistema Activo
+              </span>
+            </div>
+            <p className="text-xs text-[hsl(var(--muted-foreground))] font-medium">
+              Admin Panel © 2025
+            </p>
+            <div className="flex items-center gap-1 text-xs text-[hsl(var(--muted-foreground))]">
+              <span>Versión</span>
+              <span className="px-2 py-0.5 bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] rounded-md font-mono font-semibold">
+                1.0.0
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Footer compacto cuando está cerrado */}
+      {!sidebarOpen && (
+        <div className="p-2 border-t-2 border-[hsl(var(--border))] flex justify-center">
+          <div className="w-2 h-2 rounded-full bg-[hsl(var(--chart-2))] animate-pulse"></div>
         </div>
       )}
     </aside>

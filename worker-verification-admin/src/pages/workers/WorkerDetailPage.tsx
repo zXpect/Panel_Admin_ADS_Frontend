@@ -44,64 +44,75 @@ export const WorkerDetailPage = () => {
   }
 
   return (
-    <div className="space-y-6 transition-colors">
-      {/* Botón volver */}
+    <div className="space-y-6 animate-in fade-in duration-500">
+      {/* Botón volver mejorado */}
       <Link
         to="/workers"
-        className="inline-flex items-center gap-2 text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]"
+        className="inline-flex items-center gap-2 text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]
+                   transition-all duration-200 hover:gap-3 group"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
         <span>Volver a trabajadores</span>
       </Link>
 
-      {/* Tarjeta principal */}
-      <div className="bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] border border-[hsl(var(--border))] rounded-xl shadow-sm p-6">
-        <div className="flex items-start gap-6">
-          <div className="w-24 h-24 rounded-full bg-[hsl(var(--primary))] flex items-center justify-center text-[hsl(var(--primary-foreground))] text-3xl font-bold shadow-sm">
+      {/* Tarjeta principal mejorada */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-[hsl(var(--primary))]/10 via-[hsl(var(--card))] to-[hsl(var(--primary))]/5
+                      rounded-2xl shadow-lg border-2 border-[hsl(var(--border))] p-8">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[hsl(var(--primary))]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        <div className="relative z-10 flex items-start gap-6">
+          <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/70
+                          flex items-center justify-center text-[hsl(var(--primary-foreground))] text-3xl font-bold shadow-xl
+                          transform hover:scale-110 transition-transform duration-300">
             {getInitials(worker.name, worker.lastName)}
           </div>
 
           <div className="flex-1">
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between flex-wrap gap-4">
               <div>
-                <h1 className="text-3xl font-bold">{worker.name} {worker.lastName}</h1>
-                <p className="text-lg text-[hsl(var(--muted-foreground))] mt-1">{worker.work}</p>
+                <h1 className="text-4xl font-bold text-[hsl(var(--foreground))]">{worker.name} {worker.lastName}</h1>
+                <p className="text-xl text-[hsl(var(--muted-foreground))] mt-2 font-medium">{worker.work}</p>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 {worker.isOnline ? (
-                  <span className="px-3 py-1 rounded-full bg-[hsl(var(--success))]/20 text-[hsl(var(--success))] text-sm font-medium">
+                  <span className="px-4 py-2 rounded-full bg-[hsl(var(--chart-3))]/20 text-[hsl(var(--chart-3))] text-sm font-semibold
+                                   border border-[hsl(var(--chart-3))]/30 shadow-sm">
                     En línea
                   </span>
                 ) : (
-                  <span className="px-3 py-1 rounded-full bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] text-sm font-medium">
+                  <span className="px-4 py-2 rounded-full bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] text-sm font-semibold
+                                   border border-[hsl(var(--border))] shadow-sm">
                     Desconectado
                   </span>
                 )}
                 {worker.isAvailable ? (
-                  <span className="px-3 py-1 rounded-full bg-[hsl(var(--chart-2))]/20 text-[hsl(var(--chart-2))] text-sm font-medium">
+                  <span className="px-4 py-2 rounded-full bg-[hsl(var(--chart-2))]/20 text-[hsl(var(--chart-2))] text-sm font-semibold
+                                   border border-[hsl(var(--chart-2))]/30 shadow-sm">
                     Disponible
                   </span>
                 ) : (
-                  <span className="px-3 py-1 rounded-full bg-[hsl(var(--destructive))]/20 text-[hsl(var(--destructive))] text-sm font-medium">
+                  <span className="px-4 py-2 rounded-full bg-[hsl(var(--destructive))]/20 text-[hsl(var(--destructive))] text-sm font-semibold
+                                   border border-[hsl(var(--destructive))]/30 shadow-sm">
                     No disponible
                   </span>
                 )}
               </div>
             </div>
 
-            {/* Contacto */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-[hsl(var(--muted-foreground))]">
+            {/* Contacto mejorado */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 text-[hsl(var(--muted-foreground))]">
               {worker.email && (
-                <div className="flex items-center gap-2">
-                  <Mail className="w-5 h-5" />
-                  <span>{worker.email}</span>
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-[hsl(var(--background))]/50 hover:bg-[hsl(var(--background))]
+                                transition-colors duration-300">
+                  <Mail className="w-5 h-5 text-[hsl(var(--primary))]" />
+                  <span className="font-medium">{worker.email}</span>
                 </div>
               )}
               {worker.phone && (
-                <div className="flex items-center gap-2">
-                  <Phone className="w-5 h-5" />
-                  <span>{worker.phone}</span>
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-[hsl(var(--background))]/50 hover:bg-[hsl(var(--background))]
+                                transition-colors duration-300">
+                  <Phone className="w-5 h-5 text-[hsl(var(--primary))]" />
+                  <span className="font-medium">{worker.phone}</span>
                 </div>
               )}
             </div>
@@ -109,73 +120,87 @@ export const WorkerDetailPage = () => {
         </div>
       </div>
 
-      {/* Métricas */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {/* Métricas mejoradas */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { icon: Star, label: 'Calificación', value: worker.rating.toFixed(1), extra: `${worker.totalRatings} reseñas` },
-          { icon: DollarSign, label: 'Precio/hora', value: worker.pricePerHour > 0 ? formatPrice(worker.pricePerHour) : 'N/A' },
-          { icon: Briefcase, label: 'Experiencia', value: worker.experience || 'N/A' },
-          { icon: MapPin, label: 'Ubicación', value: worker.latitude ? `${worker.latitude.toFixed(4)}, ${worker.longitude?.toFixed(4)}` : 'No registrada' },
-        ].map(({ icon: Icon, label, value, extra }) => (
-          <div key={label} className="bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-xl p-6 shadow-sm">
-            <div className="flex items-center gap-2 text-[hsl(var(--muted-foreground))] mb-2">
-              <Icon className="w-5 h-5" />
-              <span className="text-sm font-medium">{label}</span>
+          { icon: Star, label: 'Calificación', value: worker.rating.toFixed(1), extra: `${worker.totalRatings} reseñas`, color: 'chart-2' },
+          { icon: DollarSign, label: 'Precio/hora', value: worker.pricePerHour > 0 ? formatPrice(worker.pricePerHour) : 'N/A', color: 'primary' },
+          { icon: Briefcase, label: 'Experiencia', value: worker.experience || 'N/A', color: 'chart-1' },
+          { icon: MapPin, label: 'Ubicación', value: worker.latitude ? `${worker.latitude.toFixed(4)}, ${worker.longitude?.toFixed(4)}` : 'No registrada', color: 'chart-4' },
+        ].map(({ icon: Icon, label, value, extra, color }) => (
+          <div key={label} className="group bg-[hsl(var(--card))] border-2 border-[hsl(var(--border))] rounded-2xl p-6 shadow-md
+                                       hover:shadow-xl hover:border-[hsl(var(--${color}))]/30 transition-all duration-300
+                                       transform hover:scale-105 hover:-translate-y-1">
+            <div className={`flex items-center gap-2 text-[hsl(var(--${color}))] mb-3`}>
+              <div className={`w-10 h-10 rounded-lg bg-[hsl(var(--${color}))]/10 flex items-center justify-center
+                              group-hover:bg-[hsl(var(--${color}))]/20 group-hover:scale-110 transition-all duration-300`}>
+                <Icon className="w-5 h-5" />
+              </div>
+              <span className="text-sm font-semibold text-[hsl(var(--muted-foreground))] uppercase tracking-wide">{label}</span>
             </div>
-            <p className="text-2xl font-bold">{value}</p>
-            {extra && <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1">{extra}</p>}
+            <p className="text-3xl font-bold text-[hsl(var(--foreground))] group-hover:text-[hsl(var(--${color}))] transition-colors">{value}</p>
+            {extra && <p className="text-sm text-[hsl(var(--muted-foreground))] mt-2 font-medium">{extra}</p>}
           </div>
         ))}
       </div>
 
-      {/* Descripción */}
+      {/* Descripción mejorada */}
       {worker.description && (
-        <div className="bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-xl p-6 shadow-sm">
-          <h2 className="text-lg font-semibold mb-4">Descripción</h2>
-          <p className="text-[hsl(var(--muted-foreground))]">{worker.description}</p>
+        <div className="bg-[hsl(var(--card))] border-2 border-[hsl(var(--border))] rounded-2xl p-6 shadow-md
+                        hover:shadow-xl transition-all duration-300">
+          <h2 className="text-xl font-bold mb-4 text-[hsl(var(--foreground))]">Descripción</h2>
+          <p className="text-[hsl(var(--muted-foreground))] leading-relaxed">{worker.description}</p>
         </div>
       )}
 
-      {/* Estado de documentos */}
+      {/* Estado de documentos mejorado */}
       {requirements && (
-        <div className="bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-xl p-6 shadow-sm">
-          <h2 className="text-lg font-semibold mb-4">Estado de Documentos</h2>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-[hsl(var(--foreground))]">Hoja de Vida</span>
+        <div className="bg-[hsl(var(--card))] border-2 border-[hsl(var(--border))] rounded-2xl p-6 shadow-md
+                        hover:shadow-xl transition-all duration-300">
+          <h2 className="text-xl font-bold mb-6 text-[hsl(var(--foreground))]">Estado de Documentos</h2>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-[hsl(var(--background))]/50
+                            hover:bg-[hsl(var(--background))] transition-colors duration-300">
+              <span className="font-semibold text-[hsl(var(--foreground))]">Hoja de Vida</span>
               {requirements.hasHojaVida ? (
-                <CheckCircle className="w-5 h-5 text-[hsl(var(--success))]" />
+                <CheckCircle className="w-6 h-6 text-[hsl(var(--chart-2))]" />
               ) : (
-                <XCircle className="w-5 h-5 text-[hsl(var(--destructive))]" />
+                <XCircle className="w-6 h-6 text-[hsl(var(--destructive))]" />
               )}
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-[hsl(var(--foreground))]">Antecedentes Judiciales</span>
+            <div className="flex items-center justify-between p-4 rounded-xl bg-[hsl(var(--background))]/50
+                            hover:bg-[hsl(var(--background))] transition-colors duration-300">
+              <span className="font-semibold text-[hsl(var(--foreground))]">Antecedentes Judiciales</span>
               {requirements.hasAntecedentes ? (
-                <CheckCircle className="w-5 h-5 text-[hsl(var(--success))]" />
+                <CheckCircle className="w-6 h-6 text-[hsl(var(--chart-2))]" />
               ) : (
-                <XCircle className="w-5 h-5 text-[hsl(var(--destructive))]" />
+                <XCircle className="w-6 h-6 text-[hsl(var(--destructive))]" />
               )}
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-[hsl(var(--foreground))]">Cartas de Recomendación</span>
-              <span className="text-sm text-[hsl(var(--muted-foreground))]">
-                {requirements.cartasCount} / 3
+            <div className="flex items-center justify-between p-4 rounded-xl bg-[hsl(var(--background))]/50
+                            hover:bg-[hsl(var(--background))] transition-colors duration-300">
+              <span className="font-semibold text-[hsl(var(--foreground))]">Cartas de Recomendación</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold text-[hsl(var(--muted-foreground))]">
+                  {requirements.cartasCount} / 3
+                </span>
                 {requirements.hasMinimumCartas && (
-                  <CheckCircle className="w-5 h-5 text-[hsl(var(--success))] inline ml-2" />
+                  <CheckCircle className="w-6 h-6 text-[hsl(var(--chart-2))]" />
                 )}
-              </span>
+              </div>
             </div>
 
-            <div className="pt-3 border-t border-[hsl(var(--border))]">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold">Documentación Completa</span>
+            <div className="pt-4 border-t-2 border-[hsl(var(--border))]">
+              <div className="flex items-center justify-between p-4 rounded-xl bg-[hsl(var(--primary))]/5">
+                <span className="font-bold text-[hsl(var(--foreground))]">Documentación Completa</span>
                 {requirements.isComplete ? (
-                  <span className="px-3 py-1 bg-[hsl(var(--success))]/20 text-[hsl(var(--success))] rounded-full text-sm font-medium">
+                  <span className="px-4 py-2 bg-[hsl(var(--chart-2))]/20 text-[hsl(var(--chart-2))] rounded-full text-sm font-bold
+                                   border border-[hsl(var(--chart-2))]/30 shadow-sm">
                     Completa
                   </span>
                 ) : (
-                  <span className="px-3 py-1 bg-[hsl(var(--warning))]/20 text-[hsl(var(--warning))] rounded-full text-sm font-medium">
+                  <span className="px-4 py-2 bg-[hsl(var(--chart-5))]/20 text-[hsl(var(--chart-5))] rounded-full text-sm font-bold
+                                   border border-[hsl(var(--chart-5))]/30 shadow-sm">
                     Incompleta
                   </span>
                 )}
@@ -185,25 +210,28 @@ export const WorkerDetailPage = () => {
 
           <Link
             to={`/documents/review/${worker.id}`}
-            className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg hover:opacity-90 transition-all font-medium"
+            className="mt-6 w-full group flex items-center justify-center gap-2 px-6 py-3 bg-[hsl(var(--primary))]
+                       text-[hsl(var(--primary-foreground))] rounded-xl hover:shadow-lg transition-all duration-300
+                       font-semibold hover:scale-105"
           >
-            <Clock className="w-4 h-4" />
+            <Clock className="w-5 h-5 group-hover:scale-110 transition-transform" />
             <span>Revisar Documentos</span>
           </Link>
         </div>
       )}
 
-      {/* Información adicional */}
-      <div className="bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-xl p-6 shadow-sm">
-        <h2 className="text-lg font-semibold mb-4">Información Adicional</h2>
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <span className="text-[hsl(var(--muted-foreground))]">ID:</span>
-            <span className="ml-2 text-[hsl(var(--foreground))] font-mono">{worker.id}</span>
+      {/* Información adicional mejorada */}
+      <div className="bg-[hsl(var(--card))] border-2 border-[hsl(var(--border))] rounded-2xl p-6 shadow-md
+                      hover:shadow-xl transition-all duration-300">
+        <h2 className="text-xl font-bold mb-4 text-[hsl(var(--foreground))]">Información Adicional</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-4 rounded-xl bg-[hsl(var(--background))]/50 hover:bg-[hsl(var(--background))] transition-colors duration-300">
+            <span className="text-sm text-[hsl(var(--muted-foreground))] font-medium uppercase tracking-wide">ID</span>
+            <p className="text-lg text-[hsl(var(--foreground))] font-mono font-semibold mt-1">{worker.id}</p>
           </div>
-          <div>
-            <span className="text-[hsl(var(--muted-foreground))]">Registrado:</span>
-            <span className="ml-2 text-[hsl(var(--foreground))]">{formatDate(worker.timestamp)}</span>
+          <div className="p-4 rounded-xl bg-[hsl(var(--background))]/50 hover:bg-[hsl(var(--background))] transition-colors duration-300">
+            <span className="text-sm text-[hsl(var(--muted-foreground))] font-medium uppercase tracking-wide">Registrado</span>
+            <p className="text-lg text-[hsl(var(--foreground))] font-semibold mt-1">{formatDate(worker.timestamp)}</p>
           </div>
         </div>
       </div>

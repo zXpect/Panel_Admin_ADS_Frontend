@@ -89,38 +89,48 @@ export const DashboardPage = () => {
   const activityRate = stats?.workers.total ? Math.round((stats.workers.online / stats.workers.total) * 100) : 0;
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-4xl font-bold text-[hsl(var(--foreground))]">Dashboard</h1>
-        <p className="text-[hsl(var(--muted-foreground))] mt-1">Resumen general del sistema</p>
+    <div className="space-y-8 animate-in fade-in duration-500">
+      {/* Header mejorado */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-[hsl(var(--primary))]/10 via-[hsl(var(--card))] to-[hsl(var(--primary))]/5 rounded-2xl shadow-lg border border-[hsl(var(--border))] p-8">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(var(--primary))]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-3">
+            <div className="w-14 h-14 rounded-xl bg-[hsl(var(--primary))]/20 flex items-center justify-center">
+              <Activity className="w-7 h-7 text-[hsl(var(--primary))]" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold text-[hsl(var(--foreground))]">Dashboard</h1>
+              <p className="text-[hsl(var(--muted-foreground))] mt-1">Resumen general del sistema</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* KPI Principal Cards - 3 columnas */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Total Workers */}
-        <Link to="/workers" className="block">
-          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer border border-[hsl(var(--border))]">
+        <Link to="/workers" className="block group">
+          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 hover:shadow-xl transition-all duration-300 cursor-pointer border border-[hsl(var(--border))] hover:border-[hsl(var(--primary))]/40 transform hover:scale-[1.02] hover:-translate-y-1">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-[hsl(var(--muted-foreground))] uppercase tracking-wide">
                   Total Trabajadores
                 </p>
-                <p className="text-3xl font-bold text-[hsl(var(--foreground))] mt-2">{totalWorkersFiltered}</p>
+                <p className="text-3xl font-bold text-[hsl(var(--foreground))] mt-2 transition-colors group-hover:text-[hsl(var(--primary))]">{totalWorkersFiltered}</p>
               </div>
-              <div className="w-14 h-14 bg-[hsl(var(--primary))]/10 rounded-lg flex items-center justify-center">
+              <div className="w-14 h-14 bg-[hsl(var(--primary))]/10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:bg-[hsl(var(--primary))]/20 group-hover:scale-110">
                 <Users className="w-7 h-7 text-[hsl(var(--primary))]" />
               </div>
             </div>
             <div className="mt-4 flex items-center justify-between text-sm">
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-[hsl(var(--chart-2))]"></div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[hsl(var(--chart-2))] animate-pulse"></div>
                 <span className="text-[hsl(var(--muted-foreground))]">
                   {stats?.workers.available || 0} disponibles
                 </span>
               </div>
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-[hsl(var(--primary))]"></div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[hsl(var(--primary))] animate-pulse"></div>
                 <span className="text-[hsl(var(--muted-foreground))]">
                   {stats?.workers.online || 0} en línea
                 </span>
@@ -130,45 +140,46 @@ export const DashboardPage = () => {
         </Link>
 
         {/* Total Clients */}
-        <Link to="/clients" className="block">
-          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer border border-[hsl(var(--border))]">
+        <Link to="/clients" className="block group">
+          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 hover:shadow-xl transition-all duration-300 cursor-pointer border border-[hsl(var(--border))] hover:border-[hsl(var(--accent))]/40 transform hover:scale-[1.02] hover:-translate-y-1">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-[hsl(var(--muted-foreground))] uppercase tracking-wide">
                   Total Clientes
                 </p>
-                <p className="text-3xl font-bold text-[hsl(var(--foreground))] mt-2">
+                <p className="text-3xl font-bold text-[hsl(var(--foreground))] mt-2 transition-colors group-hover:text-[hsl(var(--accent))]">
                   {stats?.clients.total || 0}
                 </p>
               </div>
-              <div className="w-14 h-14 bg-[hsl(var(--accent))]/10 rounded-lg flex items-center justify-center">
+              <div className="w-14 h-14 bg-[hsl(var(--accent))]/10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:bg-[hsl(var(--accent))]/20 group-hover:scale-110">
                 <UserCheck className="w-7 h-7 text-[hsl(var(--accent))]" />
               </div>
             </div>
-            <div className="mt-4 text-sm flex items-center gap-1">
-              <TrendingUp className="w-4 h-4 text-[hsl(var(--chart-2))]" />
+            <div className="mt-4 text-sm flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-[hsl(var(--chart-2))] group-hover:animate-pulse" />
               <span className="text-[hsl(var(--muted-foreground))]">Clientes activos</span>
             </div>
           </div>
         </Link>
 
         {/* Pending Documents */}
-        <Link to="/documents/pending" className="block">
-          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 hover:shadow-lg transition-shadow cursor-pointer border border-[hsl(var(--border))]">
+        <Link to="/documents/pending" className="block group">
+          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 hover:shadow-xl transition-all duration-300 cursor-pointer border border-[hsl(var(--border))] hover:border-[hsl(var(--chart-5))]/40 transform hover:scale-[1.02] hover:-translate-y-1">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-[hsl(var(--muted-foreground))] uppercase tracking-wide">
                   Documentos Pendientes
                 </p>
-                <p className="text-3xl font-bold text-[hsl(var(--foreground))] mt-2">
+                <p className="text-3xl font-bold text-[hsl(var(--foreground))] mt-2 transition-colors group-hover:text-[hsl(var(--chart-5))]">
                   {stats?.documents.pending || 0}
                 </p>
               </div>
-              <div className="w-14 h-14 bg-[hsl(var(--chart-5))]/10 rounded-lg flex items-center justify-center">
+              <div className="w-14 h-14 bg-[hsl(var(--chart-5))]/10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:bg-[hsl(var(--chart-5))]/20 group-hover:scale-110">
                 <Clock className="w-7 h-7 text-[hsl(var(--chart-5))]" />
               </div>
             </div>
-            <div className="mt-4 text-sm text-[hsl(var(--muted-foreground))]">
+            <div className="mt-4 text-sm text-[hsl(var(--muted-foreground))] flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-[hsl(var(--chart-5))] animate-pulse"></div>
               Requieren revisión
             </div>
           </div>
@@ -177,50 +188,50 @@ export const DashboardPage = () => {
 
       {/* Métricas Secundarias - 4 columnas compactas */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-[hsl(var(--card))] rounded-xl shadow-sm p-4 border border-[hsl(var(--border))]">
+        <div className="group bg-[hsl(var(--card))] rounded-xl shadow-sm p-4 border border-[hsl(var(--border))] hover:shadow-md hover:border-[hsl(var(--chart-2))]/30 transition-all duration-300 hover:scale-105">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[hsl(var(--chart-2))]/10 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-[hsl(var(--chart-2))]/10 rounded-lg flex items-center justify-center transition-all group-hover:bg-[hsl(var(--chart-2))]/20 group-hover:scale-110">
               <CheckCircle2 className="w-5 h-5 text-[hsl(var(--chart-2))]" />
             </div>
             <div>
               <p className="text-xs text-[hsl(var(--muted-foreground))] uppercase">Verificados</p>
-              <p className="text-xl font-bold text-[hsl(var(--foreground))]">{verifiedWorkers}</p>
+              <p className="text-xl font-bold text-[hsl(var(--foreground))] group-hover:text-[hsl(var(--chart-2))] transition-colors">{verifiedWorkers}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-[hsl(var(--card))] rounded-xl shadow-sm p-4 border border-[hsl(var(--border))]">
+        <div className="group bg-[hsl(var(--card))] rounded-xl shadow-sm p-4 border border-[hsl(var(--border))] hover:shadow-md hover:border-[hsl(var(--chart-4))]/30 transition-all duration-300 hover:scale-105">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[hsl(var(--chart-4))]/10 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-[hsl(var(--chart-4))]/10 rounded-lg flex items-center justify-center transition-all group-hover:bg-[hsl(var(--chart-4))]/20 group-hover:scale-110">
               <Activity className="w-5 h-5 text-[hsl(var(--chart-4))]" />
             </div>
             <div>
               <p className="text-xs text-[hsl(var(--muted-foreground))] uppercase">Tasa Actividad</p>
-              <p className="text-xl font-bold text-[hsl(var(--foreground))]">{activityRate}%</p>
+              <p className="text-xl font-bold text-[hsl(var(--foreground))] group-hover:text-[hsl(var(--chart-4))] transition-colors">{activityRate}%</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-[hsl(var(--card))] rounded-xl shadow-sm p-4 border border-[hsl(var(--border))]">
+        <div className="group bg-[hsl(var(--card))] rounded-xl shadow-sm p-4 border border-[hsl(var(--border))] hover:shadow-md hover:border-[hsl(var(--chart-2))]/30 transition-all duration-300 hover:scale-105">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[hsl(var(--chart-2))]/10 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-[hsl(var(--chart-2))]/10 rounded-lg flex items-center justify-center transition-all group-hover:bg-[hsl(var(--chart-2))]/20 group-hover:scale-110">
               <FileText className="w-5 h-5 text-[hsl(var(--chart-2))]" />
             </div>
             <div>
               <p className="text-xs text-[hsl(var(--muted-foreground))] uppercase">Aprobados</p>
-              <p className="text-xl font-bold text-[hsl(var(--foreground))]">{stats?.documents.approved || 0}</p>
+              <p className="text-xl font-bold text-[hsl(var(--foreground))] group-hover:text-[hsl(var(--chart-2))] transition-colors">{stats?.documents.approved || 0}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-[hsl(var(--card))] rounded-xl shadow-sm p-4 border border-[hsl(var(--border))]">
+        <div className="group bg-[hsl(var(--card))] rounded-xl shadow-sm p-4 border border-[hsl(var(--border))] hover:shadow-md hover:border-[hsl(var(--chart-2))]/30 transition-all duration-300 hover:scale-105">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[hsl(var(--chart-2))]/10 rounded-lg flex items-center justify-center">
+            <div className="w-10 h-10 bg-[hsl(var(--chart-2))]/10 rounded-lg flex items-center justify-center transition-all group-hover:bg-[hsl(var(--chart-2))]/20 group-hover:scale-110">
               <TrendingUp className="w-5 h-5 text-[hsl(var(--chart-2))]" />
             </div>
             <div>
               <p className="text-xs text-[hsl(var(--muted-foreground))] uppercase">Tasa Aprobación</p>
-              <p className="text-xl font-bold text-[hsl(var(--foreground))]">
+              <p className="text-xl font-bold text-[hsl(var(--foreground))] group-hover:text-[hsl(var(--chart-2))] transition-colors">
                 {processedDocuments > 0
                   ? Math.round(((stats?.documents.approved || 0) / processedDocuments) * 100)
                   : 0}%
@@ -233,26 +244,31 @@ export const DashboardPage = () => {
       {/* Gráficas Principales - Layout 2x2 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Tendencias */}
-        <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 border border-[hsl(var(--border))] lg:col-span-2">
+        <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-6 border-2 border-[hsl(var(--border))] lg:col-span-2 hover:shadow-lg transition-shadow duration-300">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-semibold text-[hsl(var(--foreground))]">
-              Tendencia de Actividad
-            </h2>
-            <div className="inline-flex rounded-lg border border-[hsl(var(--border))] p-1 bg-[hsl(var(--muted))]">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-[hsl(var(--primary))]/10 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-[hsl(var(--primary))]" />
+              </div>
+              <h2 className="text-lg font-bold text-[hsl(var(--foreground))]">
+                Tendencia de Actividad
+              </h2>
+            </div>
+            <div className="inline-flex rounded-xl border-2 border-[hsl(var(--border))] p-1 bg-[hsl(var(--muted))] shadow-sm">
               <button
                 onClick={() => setTrendView('weekly')}
-                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${trendView === 'weekly'
-                    ? 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]'
-                    : 'text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]'
+                className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-300 ${trendView === 'weekly'
+                    ? 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] shadow-md'
+                    : 'text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] hover:bg-[hsl(var(--background))]'
                   }`}
               >
                 Semanal
               </button>
               <button
                 onClick={() => setTrendView('monthly')}
-                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${trendView === 'monthly'
-                    ? 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]'
-                    : 'text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]'
+                className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-300 ${trendView === 'monthly'
+                    ? 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] shadow-md'
+                    : 'text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] hover:bg-[hsl(var(--background))]'
                   }`}
               >
                 Mensual
