@@ -1,7 +1,31 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import toast from 'react-hot-toast';
+import { parseApiError, handleApiError } from '@/lib/utils/errorHandler';
+import { logger } from '@/lib/utils/logger';
+import { ErrorCode } from '@/types/error.types';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+
+// ============================================
+// CONFIGURACIÓN
+// ============================================
+
+/**
+ * Configuración de retry
+ */
+const RETRY_CONFIG = {
+  maxRetries: 3,
+  retryDelay: 1000, // ms
+  retryableStatusCodes: [408, 429, 500, 502, 503, 504],
+  retryableErrorCodes: [ErrorCode.TIMEOUT, ErrorCode.NETWORK_ERROR, ErrorCode.SERVICE_UNAVAILABLE],
+};
+
+/**
+ * Generar ID único para requests (útil para debugging)
+ */
+function generateRequestId(): string {
+  return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+}
 
 // Crear instancia de Axios
 export const axiosInstance = axios.create({
@@ -12,7 +36,10 @@ export const axiosInstance = axios.create({
   timeout: 30000, // 30 segundos
 });
 
-// Variable para evitar múltiples toasts del mismo error
+// ============================================
+// GESTIÓN DE REFRESH TOKEN
+// ============================================
+
 let isRefreshing = false;
 let failedQueue: Array<{
   resolve: (value?: any) => void;
@@ -32,30 +59,102 @@ const processQueue = (error: any = null, token: string | null = null) => {
 };
 
 // ============================================
+// UTILIDADES DE RETRY
+// ============================================
+
+/**
+ * Calcula el delay para retry con backoff exponencial
+ */
+function getRetryDelay(retryCount: number): number {
+  return RETRY_CONFIG.retryDelay * Math.pow(2, retryCount - 1);
+}
+
+/**
+ * Verifica si un error puede ser reintentado
+ */
+function shouldRetry(error: AxiosError, retryCount: number): boolean {
+  if (retryCount >= RETRY_CONFIG.maxRetries) {
+    return false;
+  }
+
+  const status = error.response?.status;
+
+  // Reintentar errores de red
+  if (!error.response) {
+    return true;
+  }
+
+  // Reintentar códigos de estado específicos
+  if (status && RETRY_CONFIG.retryableStatusCodes.includes(status)) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Ejecuta un retry de la petición
+ */
+async function retryRequest(
+  config: InternalAxiosRequestConfig & { _retryCount?: number }
+): Promise<AxiosResponse> {
+  const retryCount = config._retryCount || 0;
+  const delay = getRetryDelay(retryCount + 1);
+
+  logger.warn(
+    `Retrying request (attempt ${retryCount + 1}/${RETRY_CONFIG.maxRetries})`,
+    {
+      url: config.url,
+      method: config.method,
+      delay,
+    }
+  );
+
+  // Esperar antes de reintentar
+  await new Promise(resolve => setTimeout(resolve, delay));
+
+  // Incrementar contador de reintentos
+  config._retryCount = retryCount + 1;
+
+  return axiosInstance(config);
+}
+
+// ============================================
 // REQUEST INTERCEPTOR
 // ============================================
 axiosInstance.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig & { _requestId?: string; _startTime?: number }) => {
+    // Agregar token de autenticación
     const token = localStorage.getItem('access_token');
-    
+
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Log de requests en desarrollo
-    if (import.meta.env.DEV) {
-      console.log(`[API Request] ${config.method?.toUpperCase()} ${config.url}`, {
+    // Agregar request ID para tracking
+    const requestId = generateRequestId();
+    config._requestId = requestId;
+    config._startTime = Date.now();
+
+    if (config.headers) {
+      config.headers['X-Request-ID'] = requestId;
+    }
+
+    // Logging estructurado
+    logger.debug(
+      `API Request: ${config.method?.toUpperCase()} ${config.url}`,
+      {
+        requestId,
         params: config.params,
         data: config.data,
-      });
-    }
-    
+        headers: config.headers,
+      }
+    );
+
     return config;
   },
   (error: AxiosError) => {
-    if (import.meta.env.DEV) {
-      console.error('[API Request Error]', error);
-    }
+    logger.error('Request Interceptor Error', error);
     return Promise.reject(error);
   }
 );
@@ -64,51 +163,101 @@ axiosInstance.interceptors.request.use(
 // RESPONSE INTERCEPTOR
 // ============================================
 axiosInstance.interceptors.response.use(
-  (response) => {
-    // Log de responses exitosas en desarrollo
-    if (import.meta.env.DEV) {
-      console.log(`[API Response] ${response.config.method?.toUpperCase()} ${response.config.url}`, {
+  (response: AxiosResponse & { config: InternalAxiosRequestConfig & { _requestId?: string; _startTime?: number } }) => {
+    // Calcular duración de la petición
+    const duration = response.config._startTime
+      ? Date.now() - response.config._startTime
+      : 0;
+
+    // Logging de respuestas exitosas
+    logger.debug(
+      `API Response: ${response.config.method?.toUpperCase()} ${response.config.url}`,
+      {
+        requestId: response.config._requestId,
         status: response.status,
+        duration,
         data: response.data,
+      }
+    );
+
+    // Log de performance si la petición tardó mucho
+    if (duration > 5000) {
+      logger.warn('Slow API Response', {
+        url: response.config.url,
+        duration,
       });
     }
 
     return response;
   },
   async (error: AxiosError) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+      _retryCount?: number;
+      _requestId?: string;
+      _startTime?: number;
+    };
 
-    // Log de errores en desarrollo
-    if (import.meta.env.DEV) {
-      console.error('[API Error]', {
-        url: error.config?.url,
-        method: error.config?.method,
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message,
-      });
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
+
+    const requestId = originalRequest._requestId;
+    const retryCount = originalRequest._retryCount || 0;
+
+    // Parsear el error con nuestro sistema mejorado
+    const apiError = parseApiError(error, requestId);
+
+    // Logging del error
+    logger.logApiError(apiError, {
+      route: window.location.pathname,
+      action: `${originalRequest.method?.toUpperCase()} ${originalRequest.url}`,
+    });
+
+    // ============================================
+    // RETRY LOGIC
+    // ============================================
+    if (shouldRetry(error, retryCount) && !originalRequest._retry) {
+      try {
+        return await retryRequest(originalRequest);
+      } catch (retryError) {
+        // Si el retry también falla, continuar con el flujo normal de errores
+        logger.error('Retry failed after max attempts', {
+          requestId,
+          retryCount: RETRY_CONFIG.maxRetries,
+          url: originalRequest.url,
+        });
+      }
     }
 
     // ============================================
     // Manejo de errores sin respuesta (red)
     // ============================================
     if (!error.response) {
-      toast.error(
-        'No se pudo conectar con el servidor. Verifica tu conexión a internet.',
-        { duration: 5000 }
-      );
+      // Solo mostrar toast si no es un retry
+      if (retryCount === 0) {
+        handleApiError(error, {
+          showToast: true,
+          customMessage: apiError.userMessage,
+        });
+      }
       return Promise.reject(error);
     }
 
     const { status, data } = error.response;
 
     // ============================================
-    // 401 - Token expirado o inválido
+    // 401 - Token expirado o inválido (Refresh Token Logic)
     // ============================================
     if (status === 401 && !originalRequest._retry) {
-      // Evitar mostrar toast si estamos en la página de login
       const isLoginPage = window.location.pathname.includes('/login');
-      
+
+      logger.warn('Unauthorized request, attempting token refresh', {
+        requestId,
+        url: originalRequest.url,
+        isLoginPage,
+      });
+
       if (isRefreshing) {
         // Si ya se está refrescando el token, poner en cola
         return new Promise((resolve, reject) => {
@@ -130,26 +279,30 @@ axiosInstance.interceptors.response.use(
 
       try {
         const refreshToken = localStorage.getItem('refresh_token');
-        
+
         if (refreshToken) {
+          logger.info('Attempting to refresh access token');
+
           // Intentar refrescar el token
           const response = await axios.post(`${BASE_URL}/api/auth/token/refresh/`, {
             refresh: refreshToken,
           });
 
           const { access } = response.data;
-          
+
           // Guardar nuevo token
           localStorage.setItem('access_token', access);
-          
+
+          logger.info('Token refreshed successfully');
+
           // Procesar cola de peticiones fallidas
           processQueue(null, access);
-          
+
           // Reintentar la petición original con el nuevo token
           if (originalRequest.headers) {
             originalRequest.headers.Authorization = `Bearer ${access}`;
           }
-          
+
           isRefreshing = false;
           return axiosInstance(originalRequest);
         } else {
@@ -157,126 +310,67 @@ axiosInstance.interceptors.response.use(
         }
       } catch (refreshError) {
         // Si falla el refresh, limpiar tokens y redirigir a login
+        logger.error('Token refresh failed', refreshError);
+
         processQueue(refreshError, null);
         isRefreshing = false;
-        
+
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('user');
-        
+
         if (!isLoginPage) {
           toast.error('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.', {
             duration: 4000,
           });
-          
+
           // Redirigir al login después de un breve delay
           setTimeout(() => {
             window.location.href = '/login';
           }, 1500);
         }
-        
+
         return Promise.reject(refreshError);
       }
     }
 
     // ============================================
-    // Manejo de otros códigos de estado
+    // Manejo inteligente de notificaciones de errores
     // ============================================
-    
-    // Solo mostrar toast si no es un GET (para evitar toasts en cargas de página)
-    const shouldShowToast = error.config?.method !== 'get' || status === 401;
 
-    switch (status) {
-      case 400:
-        if (shouldShowToast) {
-          toast.error(
-            (data as any)?.detail || 
-            (data as any)?.message || 
-            'Solicitud inválida. Verifica los datos enviados.',
-            { duration: 4000 }
-          );
-        }
-        break;
+    // Determinar si debe mostrar toast (evitar toasts duplicados en GETs)
+    const shouldShowToast =
+      originalRequest.method?.toLowerCase() !== 'get' ||
+      status === 401 ||
+      status === 403;
 
-      case 403:
-        if (shouldShowToast) {
-          toast.error('No tienes permisos para realizar esta acción.', {
-            duration: 4000,
-          });
-        }
-        break;
+    // Determinar duración del toast según severidad
+    const toastDuration =
+      apiError.severity === 'critical' || apiError.severity === 'high'
+        ? 6000
+        : 4000;
 
-      case 404:
-        // Solo mostrar toast para 404 en operaciones que no sean GET
-        if (error.config?.method !== 'get') {
-          toast.error(
-            (data as any)?.detail || 'El recurso solicitado no fue encontrado.',
-            { duration: 4000 }
-          );
-        }
-        break;
-
-      case 409:
-        toast.error(
-          (data as any)?.detail || 'Ya existe un registro con estos datos.',
-          { duration: 4000 }
-        );
-        break;
-
-      case 422:
-        // Error de validación
-        const validationMessage = (data as any)?.detail;
-        if (typeof validationMessage === 'string') {
-          toast.error(validationMessage, { duration: 5000 });
-        } else if (Array.isArray(validationMessage)) {
-          // FastAPI validation errors
-          const errorMessages = validationMessage
-            .map((err: any) => {
-              const field = err.loc?.[err.loc.length - 1] || '';
-              return field ? `${field}: ${err.msg}` : err.msg;
-            })
-            .join(', ');
-          toast.error(`Errores de validación: ${errorMessages}`, {
-            duration: 6000,
-          });
-        } else {
-          toast.error('Los datos enviados no son válidos.', { duration: 4000 });
-        }
-        break;
-
-      case 429:
-        toast.error(
-          'Demasiadas solicitudes. Por favor, espera un momento e inténtalo de nuevo.',
-          { duration: 5000 }
-        );
-        break;
-
-      case 500:
-        toast.error(
-          'Error interno del servidor. Por favor, inténtalo de nuevo más tarde.',
-          { duration: 5000 }
-        );
-        break;
-
-      case 502:
-      case 503:
-      case 504:
-        toast.error(
-          'El servidor no está disponible temporalmente. Por favor, inténtalo más tarde.',
-          { duration: 5000 }
-        );
-        break;
-
-      default:
-        // Error genérico
-        if (shouldShowToast && status >= 400) {
-          const errorMessage = 
-            (data as any)?.detail || 
-            (data as any)?.message || 
-            'Ha ocurrido un error inesperado.';
-          
-          toast.error(errorMessage, { duration: 4000 });
-        }
+    // Mostrar notificación de error usando nuestro sistema mejorado
+    if (shouldShowToast) {
+      // Usar handleApiError solo para logging, no para toast (evitar duplicados)
+      handleApiError(error, {
+        showToast: true,
+        toastDuration,
+        customMessage: apiError.userMessage,
+        context: {
+          route: window.location.pathname,
+          action: `${originalRequest.method?.toUpperCase()} ${originalRequest.url}`,
+        },
+      });
+    } else {
+      // Solo logging sin toast
+      handleApiError(error, {
+        showToast: false,
+        context: {
+          route: window.location.pathname,
+          action: `${originalRequest.method?.toUpperCase()} ${originalRequest.url}`,
+        },
+      });
     }
 
     return Promise.reject(error);
