@@ -33,23 +33,23 @@ export const LoginPage = () => {
 
     // Validación del lado del cliente
     if (!formData.username.trim()) {
-      handleError(new Error("Por favor, ingresa tu usuario"), false);
+      handleError(new Error("Por favor, ingresa tu usuario"), { showToast: false });
       return;
     }
 
     if (!formData.password.trim()) {
-      handleError(new Error("Por favor, ingresa tu contraseña"), false);
+      handleError(new Error("Por favor, ingresa tu contraseña"), { showToast: false });
       return;
     }
 
     if (formData.password.length < 6) {
-      handleError(new Error("La contraseña debe tener al menos 6 caracteres"), false);
+      handleError(new Error("La contraseña debe tener al menos 6 caracteres"), { showToast: false });
       return;
     }
 
     login(formData, {
       onError: (err: any) => {
-        handleError(err, false); // No mostrar toast, usaremos el ErrorAlert
+        handleError(err, { showToast: false }); // No mostrar toast, usaremos el ErrorAlert
       },
     });
   };
