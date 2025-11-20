@@ -19,6 +19,16 @@ const DEFAULT_ERROR_MESSAGE = 'Ha ocurrido un error inesperado';
 const DEFAULT_NETWORK_ERROR_MESSAGE = 'No se pudo conectar con el servidor. Verifica tu conexión a internet.';
 
 /**
+ * Convierte detail a string de forma segura
+ */
+const detailToString = (detail: string | any[] | DjangoValidationError | undefined, fallback: string): string => {
+  if (typeof detail === 'string') return detail;
+  if (Array.isArray(detail)) return detail.join(', ');
+  if (detail && typeof detail === 'object') return JSON.stringify(detail);
+  return fallback;
+};
+
+/**
  * Mapeo de códigos de estado HTTP a categorías de error
  */
 const STATUS_TO_CATEGORY: Record<number, ErrorCategory> = {
@@ -238,7 +248,7 @@ export function parseApiError(error: unknown, requestId?: string): ApiError {
 
       case 401: {
         return {
-          message: data?.detail || 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.',
+          message: detailToString(data?.detail, 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.'),
           code: ErrorCode.UNAUTHORIZED,
           status,
           severity,
@@ -255,7 +265,7 @@ export function parseApiError(error: unknown, requestId?: string): ApiError {
 
       case 403: {
         return {
-          message: data?.detail || 'No tienes permisos para realizar esta acción.',
+          message: detailToString(data?.detail, 'No tienes permisos para realizar esta acción.'),
           code: ErrorCode.FORBIDDEN,
           status,
           severity,
@@ -272,7 +282,7 @@ export function parseApiError(error: unknown, requestId?: string): ApiError {
 
       case 404: {
         return {
-          message: data?.detail || 'El recurso solicitado no fue encontrado.',
+          message: detailToString(data?.detail, 'El recurso solicitado no fue encontrado.'),
           code: ErrorCode.NOT_FOUND,
           status,
           severity,
@@ -289,7 +299,7 @@ export function parseApiError(error: unknown, requestId?: string): ApiError {
 
       case 409: {
         return {
-          message: data?.detail || 'Ya existe un registro con estos datos.',
+          message: detailToString(data?.detail, 'Ya existe un registro con estos datos.'),
           code: ErrorCode.CONFLICT,
           status,
           severity,
@@ -365,7 +375,7 @@ export function parseApiError(error: unknown, requestId?: string): ApiError {
           requestId,
           retryable: true,
           userMessage: 'Error del servidor. Intenta más tarde.',
-          technicalMessage: data?.detail || 'Internal Server Error',
+          technicalMessage: detailToString(data?.detail, 'Internal Server Error'),
         };
       }
 
@@ -389,7 +399,7 @@ export function parseApiError(error: unknown, requestId?: string): ApiError {
       }
 
       default: {
-        const userMessage = data?.detail || data?.message || DEFAULT_ERROR_MESSAGE;
+        const userMessage = detailToString(data?.detail, '') || detailToString(data?.message, DEFAULT_ERROR_MESSAGE);
 
         return {
           message: userMessage,

@@ -1,11 +1,9 @@
 // src/hooks/useClients.ts
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { clientService } from '@/api/services/clientService';
 import { ClientFilters } from '@/types/client.types';
-import toast from 'react-hot-toast';
 
 export const useClients = (filters?: ClientFilters) => {
-  const queryClient = useQueryClient();
 
   // Query para listar clientes
   const clientsQuery = useQuery({

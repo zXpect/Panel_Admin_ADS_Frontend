@@ -20,12 +20,6 @@ import {
   ResponsiveContainer
 } from 'recharts';
 
-import {
-  DashboardStats,
-  TrendsResponse,
-  WeeklyTrend,
-  MonthlyTrend
-} from '@/types/api.types';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
 
@@ -381,7 +375,7 @@ export const DashboardPage = () => {
                   }}
                 />
                 <Bar dataKey="value" name="Trabajadores" radius={[8, 8, 0, 0]}>
-                  {categoryData.map((entry, index) => (
+                  {categoryData.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Bar>
@@ -408,7 +402,7 @@ export const DashboardPage = () => {
                   fill="#8884d8"
                   dataKey="value"
                 >
-                  {workerStatusData.map((entry, index) => (
+                  {workerStatusData.map((_entry, index) => (
                     <Cell key={`cell-${index}`} fill={['hsl(var(--chart-2))', 'hsl(var(--primary))', 'hsl(var(--chart-5))'][index]} />
                   ))}
                 </Pie>

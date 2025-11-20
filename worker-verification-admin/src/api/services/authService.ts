@@ -1,7 +1,6 @@
 import axiosInstance from '../axiosConfig';
 import { API_ENDPOINTS } from '../endpoints';
 import { LoginCredentials, AuthTokens } from '@/types/auth.types';
-import { ApiResponse } from '@/types/api.types';
 
 export const authService = {
   /**
