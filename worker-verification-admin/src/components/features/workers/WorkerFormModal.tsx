@@ -85,31 +85,31 @@ export const WorkerFormModal = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+      <div className="flex min-h-screen items-center justify-center p-0 sm:px-4 sm:pt-4 sm:pb-20 text-center sm:block">
         {/* Overlay */}
         <div
           className="fixed inset-0 bg-[hsl(var(--foreground))]/50 backdrop-blur-sm transition-opacity"
           onClick={onClose}
         />
 
-        {/* Modal */}
-        <div className="inline-block align-bottom bg-[hsl(var(--background))] rounded-2xl text-left overflow-hidden shadow-xl border border-[hsl(var(--border))] transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+        {/* Modal - full screen on mobile */}
+        <div className="relative w-full h-full sm:h-auto sm:inline-block align-bottom bg-[hsl(var(--background))] sm:rounded-2xl text-left overflow-hidden shadow-xl border-0 sm:border border-[hsl(var(--border))] transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl">
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[hsl(var(--border))]">
-            <h3 className="text-lg font-semibold text-[hsl(var(--foreground))]">
+          <div className="sticky top-0 z-10 flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[hsl(var(--border))] bg-[hsl(var(--background))]">
+            <h3 className="text-base sm:text-lg font-semibold text-[hsl(var(--foreground))]">
               {worker ? 'Editar Trabajador' : 'Crear Trabajador'}
             </h3>
             <button
               onClick={onClose}
-              className="text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors"
+              className="text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] transition-colors p-1"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="px-6 py-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="px-4 sm:px-6 py-4 max-h-[calc(100vh-120px)] sm:max-h-none overflow-y-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {[
                 { name: 'name', label: 'Nombre *', type: 'text', required: true },
                 { name: 'lastName', label: 'Apellido *', type: 'text', required: true },
@@ -173,19 +173,19 @@ export const WorkerFormModal = ({
             </div>
 
             {/* Buttons */}
-            <div className="flex gap-3 mt-6 pt-4 border-t border-[hsl(var(--border))]">
+            <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 mt-6 pt-4 border-t border-[hsl(var(--border))]">
               <button
                 type="button"
                 onClick={onClose}
                 disabled={isSubmitting}
-                className="flex-1 px-4 py-2 text-sm font-medium text-[hsl(var(--foreground))] bg-[hsl(var(--muted))] border border-[hsl(var(--border))] rounded-lg hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))] transition-colors disabled:opacity-50"
+                className="flex-1 px-4 py-2.5 sm:py-2 text-sm font-medium text-[hsl(var(--foreground))] bg-[hsl(var(--muted))] border border-[hsl(var(--border))] rounded-lg hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))] transition-colors disabled:opacity-50"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 px-4 py-2 text-sm font-medium text-[hsl(var(--primary-foreground))] bg-[hsl(var(--primary))] rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-2.5 sm:py-2 text-sm font-medium text-[hsl(var(--primary-foreground))] bg-[hsl(var(--primary))] rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Guardando...' : worker ? 'Actualizar' : 'Crear'}
               </button>

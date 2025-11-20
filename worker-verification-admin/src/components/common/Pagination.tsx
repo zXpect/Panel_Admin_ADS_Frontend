@@ -48,21 +48,26 @@ export const Pagination = ({
   };
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 bg-[hsl(var(--card))] border-t border-[hsl(var(--border))] sm:px-6">
-      <div className="flex justify-between sm:hidden">
+    <div className="flex items-center justify-between px-3 sm:px-4 py-3 bg-[hsl(var(--card))] border-t border-[hsl(var(--border))] sm:px-6">
+      <div className="flex flex-1 items-center justify-between sm:hidden">
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-[hsl(var(--foreground))] bg-[hsl(var(--card))] border border-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="relative inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-[hsl(var(--foreground))] bg-[hsl(var(--card))] border border-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          Anterior
+          <ChevronLeft className="w-4 h-4 mr-1" />
+          Ant.
         </button>
+        <span className="text-sm text-[hsl(var(--muted-foreground))]">
+          {currentPage} / {totalPages}
+        </span>
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="relative ml-3 inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-[hsl(var(--foreground))] bg-[hsl(var(--card))] border border-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="relative inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-[hsl(var(--foreground))] bg-[hsl(var(--card))] border border-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          Siguiente
+          Sig.
+          <ChevronRight className="w-4 h-4 ml-1" />
         </button>
       </div>
 
