@@ -106,44 +106,46 @@ export const WorkersListPage = () => {
   return (
     <div className="space-y-6 transition-colors animate-in fade-in duration-500">
       {/* Header mejorado */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[hsl(var(--primary))]/10 via-[hsl(var(--card))] to-[hsl(var(--primary))]/5 rounded-2xl shadow-lg border border-[hsl(var(--border))] p-6">
+      <div className="relative overflow-hidden bg-gradient-to-br from-[hsl(var(--primary))]/10 via-[hsl(var(--card))] to-[hsl(var(--primary))]/5 rounded-2xl shadow-lg border border-[hsl(var(--border))] p-4 sm:p-6">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(var(--primary))]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-        <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-[hsl(var(--primary))]/20 flex items-center justify-center">
-              <Search className="w-6 h-6 text-[hsl(var(--primary))]" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[hsl(var(--primary))]/20 flex items-center justify-center">
+              <Search className="w-5 h-5 sm:w-6 sm:h-6 text-[hsl(var(--primary))]" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[hsl(var(--foreground))]">
                 Trabajadores
               </h1>
-              <p className="text-[hsl(var(--muted-foreground))] mt-1 font-medium">
+              <p className="text-sm sm:text-base text-[hsl(var(--muted-foreground))] mt-1 font-medium">
                 Total: {workers.length} trabajadores
               </p>
             </div>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
             <Link
               to="/workers/bulk-upload"
-              className="group flex items-center gap-2 px-5 py-3 bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))] rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold"
+              className="group flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-3 bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))] rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold text-sm sm:text-base"
             >
-              <Upload className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-              <span>Carga Masiva</span>
+              <Upload className="w-4 h-4 sm:w-5 sm:h-5 group-hover:rotate-12 transition-transform" />
+              <span className="hidden sm:inline">Carga Masiva</span>
+              <span className="sm:hidden">Masiva</span>
             </Link>
             <button
               onClick={handleCreate}
-              className="group flex items-center gap-2 px-5 py-3 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold"
+              className="group flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-3 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold text-sm sm:text-base"
             >
-              <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
-              <span>Nuevo Trabajador</span>
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5 group-hover:rotate-90 transition-transform" />
+              <span className="hidden sm:inline">Nuevo Trabajador</span>
+              <span className="sm:hidden">Nuevo</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* Filtros */}
-      <div className="bg-[hsl(var(--card))] rounded-2xl shadow p-6 border border-[hsl(var(--border))] transition-colors">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="bg-[hsl(var(--card))] rounded-2xl shadow p-4 sm:p-6 border border-[hsl(var(--border))] transition-colors">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
           {/* Búsqueda */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[hsl(var(--muted-foreground))]" />
@@ -205,12 +207,12 @@ export const WorkersListPage = () => {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {paginatedItems.map((worker) => (
               <div
                 key={worker.id}
                 className="group bg-[hsl(var(--card))] rounded-2xl shadow-md hover:shadow-xl
-                           transition-all duration-300 p-6 flex flex-col border-2 border-[hsl(var(--border))]
+                           transition-all duration-300 p-4 sm:p-6 flex flex-col border-2 border-[hsl(var(--border))]
                            hover:border-[hsl(var(--primary))]/30 transform hover:scale-[1.02] hover:-translate-y-1"
               >
                 {/* Header */}

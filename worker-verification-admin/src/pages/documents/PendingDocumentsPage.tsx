@@ -25,21 +25,19 @@ export const PendingDocumentsPage = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       {/* Header mejorado */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[hsl(var(--chart-5))]/10 via-[hsl(var(--card))] to-[hsl(var(--chart-5))]/5 rounded-2xl shadow-lg border border-[hsl(var(--border))] p-6">
+      <div className="relative overflow-hidden bg-gradient-to-br from-[hsl(var(--chart-5))]/10 via-[hsl(var(--card))] to-[hsl(var(--chart-5))]/5 rounded-2xl shadow-lg border border-[hsl(var(--border))] p-4 sm:p-6">
         <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(var(--chart-5))]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-        <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-[hsl(var(--chart-5))]/20 flex items-center justify-center">
-              <Clock className="w-6 h-6 text-[hsl(var(--chart-5))]" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
-                Documentos Pendientes
-              </h1>
-              <p className="text-[hsl(var(--muted-foreground))] mt-1 font-medium">
-                {pendingDocuments.length} documento(s) requieren revisión
-              </p>
-            </div>
+        <div className="relative z-10 flex items-center gap-3">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[hsl(var(--chart-5))]/20 flex items-center justify-center">
+            <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-[hsl(var(--chart-5))]" />
+          </div>
+          <div>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[hsl(var(--foreground))]">
+              Docs Pendientes
+            </h1>
+            <p className="text-sm sm:text-base text-[hsl(var(--muted-foreground))] mt-1 font-medium">
+              {pendingDocuments.length} requieren revisión
+            </p>
           </div>
         </div>
       </div>
@@ -61,35 +59,35 @@ export const PendingDocumentsPage = () => {
                          hover:border-[hsl(var(--primary))]/30 transition-all duration-300 hover:shadow-xl"
             >
               {/* Header de trabajador mejorado */}
-              <div className="p-6 border-b-2 border-[hsl(var(--border))] flex items-center justify-between flex-wrap gap-4">
+              <div className="p-4 sm:p-6 border-b-2 border-[hsl(var(--border))] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/70
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/70
                                   flex items-center justify-center shadow-md">
-                    <User className="w-6 h-6 text-[hsl(var(--primary-foreground))]" />
+                    <User className="w-5 h-5 sm:w-6 sm:h-6 text-[hsl(var(--primary-foreground))]" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[hsl(var(--foreground))]">
-                      Trabajador ID: {workerId}
+                    <h3 className="font-bold text-sm sm:text-base text-[hsl(var(--foreground))]">
+                      Trabajador ID: {workerId.slice(0, 8)}...
                     </h3>
-                    <p className="text-sm text-[hsl(var(--muted-foreground))] font-medium">
+                    <p className="text-xs sm:text-sm text-[hsl(var(--muted-foreground))] font-medium">
                       {docs.length} documento(s) pendiente(s)
                     </p>
                   </div>
                 </div>
                 <Link
                   to={`/documents/review/${workerId}`}
-                  className="group flex items-center gap-2 px-5 py-3 rounded-xl bg-[hsl(var(--primary))]
+                  className="group flex items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-3 rounded-xl bg-[hsl(var(--primary))]
                              text-[hsl(var(--primary-foreground))] font-semibold hover:shadow-lg
-                             transition-all duration-300 hover:scale-105"
+                             transition-all duration-300 hover:scale-105 text-sm sm:text-base"
                 >
                   <Eye className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                  <span>Revisar Todos</span>
+                  <span>Revisar</span>
                 </Link>
               </div>
 
               {/* Grid de documentos mejorado */}
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="p-4 sm:p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                   {docs.map((doc) => (
                     <div
                       key={doc.id}
