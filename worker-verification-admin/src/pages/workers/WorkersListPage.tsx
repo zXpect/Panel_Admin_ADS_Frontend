@@ -104,13 +104,17 @@ export const WorkersListPage = () => {
   }
 
   return (
-    <div className="space-y-6 transition-colors animate-in fade-in duration-500">
-      {/* Header mejorado */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[hsl(var(--primary))]/10 via-[hsl(var(--card))] to-[hsl(var(--primary))]/5 rounded-2xl shadow-lg border border-[hsl(var(--border))] p-4 sm:p-6">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(var(--primary))]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+    <div className="space-y-6">
+      {/* Header mejorado con animaciones */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-[hsl(var(--primary))]/10 via-[hsl(var(--card))] to-[hsl(var(--primary))]/5 rounded-2xl shadow-lg border border-[hsl(var(--border))] p-4 sm:p-6 animate-slide-down">
+        {/* Fondo animado */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(var(--primary))]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-[hsl(var(--accent))]/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 animate-pulse" style={{ animationDelay: '1s' }}></div>
+        </div>
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[hsl(var(--primary))]/20 flex items-center justify-center">
+          <div className="flex items-center gap-3 animate-slide-in-left">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[hsl(var(--primary))]/20 flex items-center justify-center transform hover:scale-110 hover:rotate-6 transition-all duration-300 shine-effect">
               <Search className="w-5 h-5 sm:w-6 sm:h-6 text-[hsl(var(--primary))]" />
             </div>
             <div>
@@ -122,20 +126,20 @@ export const WorkersListPage = () => {
               </p>
             </div>
           </div>
-          <div className="flex gap-2 sm:gap-3">
+          <div className="flex gap-2 sm:gap-3 animate-slide-in-right">
             <Link
               to="/workers/bulk-upload"
-              className="group flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-3 bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))] rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold text-sm sm:text-base"
+              className="group flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-3 bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))] rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 font-semibold text-sm sm:text-base shine-effect"
             >
-              <Upload className="w-4 h-4 sm:w-5 sm:h-5 group-hover:rotate-12 transition-transform" />
+              <Upload className="w-4 h-4 sm:w-5 sm:h-5 group-hover:rotate-12 transition-transform duration-300" />
               <span className="hidden sm:inline">Carga Masiva</span>
               <span className="sm:hidden">Masiva</span>
             </Link>
             <button
               onClick={handleCreate}
-              className="group flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-3 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold text-sm sm:text-base"
+              className="group flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-2 sm:py-3 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 font-semibold text-sm sm:text-base shine-effect"
             >
-              <Plus className="w-4 h-4 sm:w-5 sm:h-5 group-hover:rotate-90 transition-transform" />
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5 group-hover:rotate-90 transition-transform duration-300" />
               <span className="hidden sm:inline">Nuevo Trabajador</span>
               <span className="sm:hidden">Nuevo</span>
             </button>
@@ -144,7 +148,7 @@ export const WorkersListPage = () => {
       </div>
 
       {/* Filtros */}
-      <div className="bg-[hsl(var(--card))] rounded-2xl shadow p-4 sm:p-6 border border-[hsl(var(--border))] transition-colors">
+      <div className="bg-[hsl(var(--card))] rounded-2xl shadow p-4 sm:p-6 border border-[hsl(var(--border))] animate-fade-in">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
           {/* Búsqueda */}
           <div className="relative">
@@ -208,18 +212,19 @@ export const WorkersListPage = () => {
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {paginatedItems.map((worker) => (
+            {paginatedItems.map((worker, index) => (
               <div
                 key={worker.id}
                 className="group bg-[hsl(var(--card))] rounded-2xl shadow-md hover:shadow-xl
                            transition-all duration-300 p-4 sm:p-6 flex flex-col border-2 border-[hsl(var(--border))]
-                           hover:border-[hsl(var(--primary))]/30 transform hover:scale-[1.02] hover:-translate-y-1"
+                           hover:border-[hsl(var(--primary))]/30 transform hover:scale-[1.02] hover:-translate-y-1 animate-scale-in shine-effect"
+                style={{ animationDelay: `${(index % 9) * 50}ms` }}
               >
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/70 flex items-center justify-center
-                                    text-[hsl(var(--primary-foreground))] font-bold shadow-md group-hover:scale-110 transition-transform">
+                                    text-[hsl(var(--primary-foreground))] font-bold shadow-md group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                       {getInitials(worker.name, worker.lastName)}
                     </div>
                     <div>
@@ -299,26 +304,26 @@ export const WorkersListPage = () => {
                 <div className="mt-auto flex gap-2">
                   <Link
                     to={`/workers/${worker.id}`}
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 
-                               bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] 
-                               rounded-lg hover:opacity-90 transition-colors text-sm"
+                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2
+                               bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]
+                               rounded-lg hover:shadow-md transition-all duration-200 text-sm hover:scale-105 active:scale-95"
                   >
                     <Eye className="w-4 h-4" />
                     <span>Ver</span>
                   </Link>
                   <button
                     onClick={() => handleEdit(worker)}
-                    className="flex items-center justify-center gap-2 px-3 py-2 
-                               bg-[hsl(var(--chart-1))] text-[hsl(var(--chart-1-foreground))] 
-                               rounded-lg hover:opacity-90 transition-colors text-sm"
+                    className="flex items-center justify-center gap-2 px-3 py-2
+                               bg-[hsl(var(--chart-1))] text-[hsl(var(--chart-1-foreground))]
+                               rounded-lg hover:shadow-md transition-all duration-200 text-sm hover:scale-110 active:scale-95"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(worker)}
-                    className="flex items-center justify-center gap-2 px-3 py-2 
-                               bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))] 
-                               rounded-lg hover:opacity-90 transition-colors text-sm"
+                    className="flex items-center justify-center gap-2 px-3 py-2
+                               bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))]
+                               rounded-lg hover:shadow-md transition-all duration-200 text-sm hover:scale-110 active:scale-95"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
