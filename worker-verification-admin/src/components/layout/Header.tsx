@@ -9,15 +9,15 @@ export const Header = () => {
 
   return (
     <header className="h-16 bg-[hsl(var(--card))] border-b-2 border-[hsl(var(--border))] flex items-center justify-between px-4 md:px-6
-                       text-[hsl(var(--card-foreground))] shadow-sm transition-colors duration-300">
+                       text-[hsl(var(--card-foreground))] shadow-sm backdrop-blur-sm animate-slide-down">
       {/* Left section - Mobile menu button and title */}
       <div className="flex items-center gap-3">
         {/* Mobile hamburger menu button */}
         <button
           onClick={toggleMobileMenu}
-          className="p-2 rounded-xl hover:bg-[hsl(var(--primary))]/10 transition-all duration-300 md:hidden"
+          className="p-2 rounded-xl hover:bg-[hsl(var(--primary))]/10 transition-all duration-200 md:hidden hover:scale-110 active:scale-95"
         >
-          <Menu className="w-5 h-5 text-[hsl(var(--foreground))]" />
+          <Menu className="w-5 h-5 text-[hsl(var(--foreground))] transition-transform duration-200" />
         </button>
 
         {/* Título */}
@@ -30,15 +30,15 @@ export const Header = () => {
       {/* Controles de usuario */}
       <div className="flex items-center gap-2 md:gap-4">
         {/* Botón modo oscuro/claro */}
-        <div className="hover:scale-110 transition-transform duration-300">
+        <div className="hover:scale-110 transition-transform duration-200 active:scale-95">
           <ThemeToggle />
         </div>
 
         {/* Info usuario mejorada - hide text on mobile */}
         <div className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 rounded-xl bg-[hsl(var(--primary))]/10
-                        hover:bg-[hsl(var(--primary))]/20 transition-all duration-300 cursor-default">
+                        hover:bg-[hsl(var(--primary))]/20 transition-all duration-200 cursor-default hover:scale-105">
           <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary))]/70
-                          flex items-center justify-center shadow-md">
+                          flex items-center justify-center shadow-md transition-transform duration-200 hover:rotate-6">
             <User className="w-4 h-4 md:w-5 md:h-5 text-[hsl(var(--primary-foreground))]" />
           </div>
           <span className="hidden md:inline text-sm font-semibold text-[hsl(var(--foreground))]">Admin</span>
@@ -49,10 +49,10 @@ export const Header = () => {
           onClick={logout}
           className="group flex items-center gap-2 px-3 md:px-4 py-2 text-sm font-semibold
                      hover:bg-[hsl(var(--destructive))]/10 hover:text-[hsl(var(--destructive))]
-                     rounded-xl transition-all duration-300 border-2 border-transparent
-                     hover:border-[hsl(var(--destructive))]/20"
+                     rounded-xl transition-all duration-200 border-2 border-transparent
+                     hover:border-[hsl(var(--destructive))]/20 hover:scale-105 active:scale-95"
         >
-          <LogOut className="w-4 h-4 group-hover:rotate-12 transition-transform duration-300" />
+          <LogOut className="w-4 h-4 group-hover:rotate-12 transition-transform duration-200" />
           <span className="hidden sm:inline">Cerrar Sesión</span>
         </button>
       </div>

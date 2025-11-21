@@ -51,14 +51,14 @@ export const ErrorAlert = ({
   return (
     <div
       className={cn(
-        'rounded-lg border p-4 transition-colors',
+        'rounded-lg border p-4 transition-all duration-300 animate-slide-down shadow-md hover:shadow-lg',
         styles.container,
         className
       )}
       role="alert"
     >
       <div className="flex items-start gap-3">
-        <IconComponent className={cn('w-5 h-5 flex-shrink-0 mt-0.5', styles.icon)} />
+        <IconComponent className={cn('w-5 h-5 flex-shrink-0 mt-0.5 animate-scale-in', styles.icon)} />
         
         <div className="flex-1 min-w-0">
           {title && (
@@ -84,7 +84,7 @@ export const ErrorAlert = ({
           <button
             onClick={onClose}
             className={cn(
-              'flex-shrink-0 p-1 rounded-md transition-colors',
+              'flex-shrink-0 p-1 rounded-md transition-all duration-200 hover:scale-110 hover:rotate-90 active:scale-95',
               styles.close
             )}
             aria-label="Cerrar alerta"

@@ -30,8 +30,10 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
         <Header />
 
         {/* Contenido de página */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-background text-foreground transition-colors">
-          {children}
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-background text-foreground">
+          <div className="animate-fade-in">
+            {children}
+          </div>
         </main>
       </div>
     </div>

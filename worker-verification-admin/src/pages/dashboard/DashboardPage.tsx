@@ -83,13 +83,17 @@ export const DashboardPage = () => {
   const activityRate = stats?.workers.total ? Math.round((stats.workers.online / stats.workers.total) * 100) : 0;
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      {/* Header mejorado */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[hsl(var(--primary))]/10 via-[hsl(var(--card))] to-[hsl(var(--primary))]/5 rounded-2xl shadow-lg border border-[hsl(var(--border))] p-4 sm:p-6 md:p-8">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(var(--primary))]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+    <div className="space-y-8">
+      {/* Header mejorado con animaciones */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-[hsl(var(--primary))]/10 via-[hsl(var(--card))] to-[hsl(var(--primary))]/5 rounded-2xl shadow-lg border border-[hsl(var(--border))] p-4 sm:p-6 md:p-8 animate-slide-down">
+        {/* Fondo animado */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(var(--primary))]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-[hsl(var(--accent))]/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 animate-pulse" style={{ animationDelay: '1s' }}></div>
+        </div>
         <div className="relative z-10">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl bg-[hsl(var(--primary))]/20 flex items-center justify-center">
+          <div className="flex items-center gap-3 animate-slide-in-left">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl bg-[hsl(var(--primary))]/20 flex items-center justify-center transform hover:scale-110 hover:rotate-6 transition-all duration-300 shine-effect">
               <Activity className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-[hsl(var(--primary))]" />
             </div>
             <div>
@@ -103,8 +107,8 @@ export const DashboardPage = () => {
       {/* KPI Principal Cards - 3 columnas */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
         {/* Total Workers */}
-        <Link to="/workers" className="block group sm:col-span-2 md:col-span-1">
-          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-4 sm:p-6 hover:shadow-xl transition-all duration-300 cursor-pointer border border-[hsl(var(--border))] hover:border-[hsl(var(--primary))]/40 transform hover:scale-[1.02] hover:-translate-y-1">
+        <Link to="/workers" className="block group sm:col-span-2 md:col-span-1 animate-scale-in">
+          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-4 sm:p-6 hover:shadow-xl transition-all duration-300 cursor-pointer border border-[hsl(var(--border))] hover:border-[hsl(var(--primary))]/40 transform hover:scale-[1.02] hover:-translate-y-1 shine-effect">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs sm:text-sm font-medium text-[hsl(var(--muted-foreground))] uppercase tracking-wide">
@@ -134,8 +138,8 @@ export const DashboardPage = () => {
         </Link>
 
         {/* Total Clients */}
-        <Link to="/clients" className="block group">
-          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-4 sm:p-6 hover:shadow-xl transition-all duration-300 cursor-pointer border border-[hsl(var(--border))] hover:border-[hsl(var(--accent))]/40 transform hover:scale-[1.02] hover:-translate-y-1">
+        <Link to="/clients" className="block group animate-scale-in animation-delay-100">
+          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-4 sm:p-6 hover:shadow-xl transition-all duration-300 cursor-pointer border border-[hsl(var(--border))] hover:border-[hsl(var(--accent))]/40 transform hover:scale-[1.02] hover:-translate-y-1 shine-effect">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs sm:text-sm font-medium text-[hsl(var(--muted-foreground))] uppercase tracking-wide">
@@ -157,8 +161,8 @@ export const DashboardPage = () => {
         </Link>
 
         {/* Pending Documents */}
-        <Link to="/documents/pending" className="block group">
-          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-4 sm:p-6 hover:shadow-xl transition-all duration-300 cursor-pointer border border-[hsl(var(--border))] hover:border-[hsl(var(--chart-5))]/40 transform hover:scale-[1.02] hover:-translate-y-1">
+        <Link to="/documents/pending" className="block group animate-scale-in animation-delay-200">
+          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-4 sm:p-6 hover:shadow-xl transition-all duration-300 cursor-pointer border border-[hsl(var(--border))] hover:border-[hsl(var(--chart-5))]/40 transform hover:scale-[1.02] hover:-translate-y-1 shine-effect">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs sm:text-sm font-medium text-[hsl(var(--muted-foreground))] uppercase tracking-wide">
@@ -182,7 +186,7 @@ export const DashboardPage = () => {
 
       {/* Métricas Secundarias - 4 columnas compactas */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
-        <div className="group bg-[hsl(var(--card))] rounded-xl shadow-sm p-3 sm:p-4 border border-[hsl(var(--border))] hover:shadow-md hover:border-[hsl(var(--chart-2))]/30 transition-all duration-300 hover:scale-105">
+        <div className="group bg-[hsl(var(--card))] rounded-xl shadow-sm p-3 sm:p-4 border border-[hsl(var(--border))] hover:shadow-md hover:border-[hsl(var(--chart-2))]/30 transition-all duration-300 hover:scale-105 animate-fade-in">
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[hsl(var(--chart-2))]/10 rounded-lg flex items-center justify-center transition-all group-hover:bg-[hsl(var(--chart-2))]/20 group-hover:scale-110">
               <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[hsl(var(--chart-2))]" />
@@ -194,7 +198,7 @@ export const DashboardPage = () => {
           </div>
         </div>
 
-        <div className="group bg-[hsl(var(--card))] rounded-xl shadow-sm p-3 sm:p-4 border border-[hsl(var(--border))] hover:shadow-md hover:border-[hsl(var(--chart-4))]/30 transition-all duration-300 hover:scale-105">
+        <div className="group bg-[hsl(var(--card))] rounded-xl shadow-sm p-3 sm:p-4 border border-[hsl(var(--border))] hover:shadow-md hover:border-[hsl(var(--chart-4))]/30 transition-all duration-300 hover:scale-105 animate-fade-in animation-delay-100">
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[hsl(var(--chart-4))]/10 rounded-lg flex items-center justify-center transition-all group-hover:bg-[hsl(var(--chart-4))]/20 group-hover:scale-110">
               <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-[hsl(var(--chart-4))]" />
@@ -206,7 +210,7 @@ export const DashboardPage = () => {
           </div>
         </div>
 
-        <div className="group bg-[hsl(var(--card))] rounded-xl shadow-sm p-3 sm:p-4 border border-[hsl(var(--border))] hover:shadow-md hover:border-[hsl(var(--chart-2))]/30 transition-all duration-300 hover:scale-105">
+        <div className="group bg-[hsl(var(--card))] rounded-xl shadow-sm p-3 sm:p-4 border border-[hsl(var(--border))] hover:shadow-md hover:border-[hsl(var(--chart-2))]/30 transition-all duration-300 hover:scale-105 animate-fade-in animation-delay-200">
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[hsl(var(--chart-2))]/10 rounded-lg flex items-center justify-center transition-all group-hover:bg-[hsl(var(--chart-2))]/20 group-hover:scale-110">
               <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-[hsl(var(--chart-2))]" />
@@ -218,7 +222,7 @@ export const DashboardPage = () => {
           </div>
         </div>
 
-        <div className="group bg-[hsl(var(--card))] rounded-xl shadow-sm p-3 sm:p-4 border border-[hsl(var(--border))] hover:shadow-md hover:border-[hsl(var(--chart-2))]/30 transition-all duration-300 hover:scale-105">
+        <div className="group bg-[hsl(var(--card))] rounded-xl shadow-sm p-3 sm:p-4 border border-[hsl(var(--border))] hover:shadow-md hover:border-[hsl(var(--chart-2))]/30 transition-all duration-300 hover:scale-105 animate-fade-in animation-delay-300">
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[hsl(var(--chart-2))]/10 rounded-lg flex items-center justify-center transition-all group-hover:bg-[hsl(var(--chart-2))]/20 group-hover:scale-110">
               <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-[hsl(var(--chart-2))]" />
@@ -238,7 +242,7 @@ export const DashboardPage = () => {
       {/* Gráficas Principales - Layout 2x2 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Tendencias */}
-        <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-4 sm:p-6 border-2 border-[hsl(var(--border))] lg:col-span-2 hover:shadow-lg transition-shadow duration-300">
+        <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-4 sm:p-6 border-2 border-[hsl(var(--border))] lg:col-span-2 hover:shadow-lg transition-all duration-300 animate-slide-up shine-effect">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-[hsl(var(--primary))]/10 flex items-center justify-center">
@@ -347,7 +351,7 @@ export const DashboardPage = () => {
 
         {/* Trabajadores por Categoría */}
         {categoryData.length > 0 && (
-          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-4 sm:p-6 border border-[hsl(var(--border))]">
+          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-4 sm:p-6 border border-[hsl(var(--border))] animate-slide-in-left shine-effect">
             <h2 className="text-base sm:text-lg font-semibold text-[hsl(var(--foreground))] mb-4 sm:mb-6">
               Trabajadores por Categoría
             </h2>
@@ -386,7 +390,7 @@ export const DashboardPage = () => {
 
         {/* Estado de Trabajadores */}
         {workerStatusData.length > 0 && (
-          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-4 sm:p-6 border border-[hsl(var(--border))]">
+          <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-4 sm:p-6 border border-[hsl(var(--border))] animate-slide-in-right shine-effect">
             <h2 className="text-base sm:text-lg font-semibold text-[hsl(var(--foreground))] mb-4 sm:mb-6">
               Estado de Trabajadores
             </h2>
@@ -422,7 +426,7 @@ export const DashboardPage = () => {
 
       {/* Documentos Pendientes por Tipo - Ancho Completo */}
       {documentTypeData.length > 0 && (
-        <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-4 sm:p-6 border border-[hsl(var(--border))]">
+        <div className="bg-[hsl(var(--card))] rounded-2xl shadow-md p-4 sm:p-6 border border-[hsl(var(--border))] animate-slide-up shine-effect">
           <h2 className="text-base sm:text-lg font-semibold text-[hsl(var(--foreground))] mb-4 sm:mb-6">
             Documentos Pendientes por Tipo
           </h2>
