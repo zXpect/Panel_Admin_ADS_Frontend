@@ -52,7 +52,8 @@ export const Sidebar = () => {
 
       <aside
         className={cn(
-          'fixed left-0 top-0 h-screen z-50 flex flex-col transition-all duration-500 shadow-xl',
+          'fixed left-0 top-0 h-screen z-50 flex flex-col shadow-xl',
+          'will-change-transform transition-transform duration-300 ease-out',
           'bg-gradient-to-b from-[hsl(var(--card))] to-[hsl(var(--background))]',
           'border-r-2 border-[hsl(var(--border))]',
           // Mobile: hidden by default, show as overlay when mobileMenuOpen
@@ -62,6 +63,7 @@ export const Sidebar = () => {
           'md:translate-x-0',
           sidebarOpen ? 'md:w-64' : 'md:w-16'
         )}
+        style={{ transitionProperty: 'transform, width' }}
       >
       {/* Logo mejorado con gradiente y decoración */}
       <div className="h-16 flex items-center justify-between px-4 border-b-2 border-[hsl(var(--border))] relative overflow-hidden">
