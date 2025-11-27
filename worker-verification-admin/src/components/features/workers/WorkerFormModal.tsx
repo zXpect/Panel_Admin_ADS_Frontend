@@ -19,7 +19,6 @@ export const WorkerFormModal = ({
   isSubmitting,
 }: WorkerFormModalProps) => {
   const [formData, setFormData] = useState({
-    id: '',
     name: '',
     lastName: '',
     email: '',
@@ -30,12 +29,12 @@ export const WorkerFormModal = ({
     experience: '',
     latitude: 0,
     longitude: 0,
+    password: '',
   });
 
   useEffect(() => {
     if (worker) {
       setFormData({
-        id: worker.id,
         name: worker.name,
         lastName: worker.lastName,
         email: worker.email,
@@ -46,10 +45,10 @@ export const WorkerFormModal = ({
         experience: worker.experience || '',
         latitude: worker.latitude,
         longitude: worker.longitude,
+        password: '',
       });
     } else {
       setFormData({
-        id: `worker_${Date.now()}`,
         name: '',
         lastName: '',
         email: '',
@@ -60,6 +59,7 @@ export const WorkerFormModal = ({
         experience: '',
         latitude: 0,
         longitude: 0,
+        password: '',
       });
     }
   }, [worker, isOpen]);
@@ -113,27 +113,40 @@ export const WorkerFormModal = ({
               {[
                 { name: 'name', label: 'Nombre *', type: 'text', required: true },
                 { name: 'lastName', label: 'Apellido *', type: 'text', required: true },
-                { name: 'email', label: 'Email *', type: 'email', required: true },
-                { name: 'phone', label: 'Teléfono', type: 'tel' },
+                { name: 'email', label: 'Email *', type: 'email', required: true, disabled: !!worker },
+                { name: 'phone', label: 'Teléfono *', type: 'tel', required: true },
+                { name: 'password', label: 'Contraseña', type: 'password', required: false, hideOnEdit: true },
                 { name: 'pricePerHour', label: 'Precio/hora (COP)', type: 'number' },
                 { name: 'experience', label: 'Experiencia', type: 'text' },
-                { name: 'latitude', label: 'Latitud', type: 'number' },
-                { name: 'longitude', label: 'Longitud', type: 'number' },
-              ].map(({ name, label, type, required }) => (
-                <div key={name}>
-                  <label className="block text-sm font-medium text-[hsl(var(--muted-foreground))] mb-1">
-                    {label}
-                  </label>
-                  <input
-                    type={type}
-                    name={name}
-                    required={required}
-                    value={(formData as any)[name]}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg bg-[hsl(var(--muted))] text-[hsl(var(--foreground))] focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent transition-colors"
-                  />
-                </div>
-              ))}
+                { name: 'latitude', label: 'Latitud', type: 'number', step: 'any' },
+                { name: 'longitude', label: 'Longitud', type: 'number', step: 'any' },
+              ].map(({ name, label, type, required, disabled, hideOnEdit, step }) => {
+                // Ocultar contraseña al editar
+                if (hideOnEdit && worker) return null;
+
+                return (
+                  <div key={name} className={name === 'password' ? 'sm:col-span-2' : ''}>
+                    <label className="block text-sm font-medium text-[hsl(var(--muted-foreground))] mb-1">
+                      {label}
+                    </label>
+                    <input
+                      type={type}
+                      name={name}
+                      required={required}
+                      disabled={disabled}
+                      step={step}
+                      value={(formData as any)[name]}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg bg-[hsl(var(--muted))] text-[hsl(var(--foreground))] focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    />
+                    {name === 'password' && !worker && (
+                      <p className="text-xs text-[hsl(var(--muted-foreground))] mt-1">
+                        Opcional. Si se deja vacío, se generará una contraseña segura automáticamente
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
 
               {/* Categoría */}
               <div>
