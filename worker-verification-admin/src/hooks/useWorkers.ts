@@ -31,21 +31,17 @@ export const useWorkers = (filters?: WorkerFilters) => {
           console.error('No se pudo copiar la contraseña al portapapeles');
         });
 
+        // Mostrar contraseña en toast con formato especial
         toast.success(
-          (t) => (
-            <div className="flex flex-col gap-2">
-              <span className="font-semibold">¡Trabajador creado exitosamente!</span>
-              <div className="flex flex-col gap-1 p-2 bg-gray-100 rounded">
-                <span className="text-xs text-gray-600">Contraseña generada (copiada al portapapeles):</span>
-                <code className="text-sm font-mono font-semibold text-blue-600">{response.password}</code>
-              </div>
-              <span className="text-xs text-gray-500">Guarda esta contraseña, no se volverá a mostrar</span>
-            </div>
-          ),
+          `¡Trabajador creado exitosamente!\n\n` +
+          `Contraseña generada (copiada al portapapeles):\n${response.password}\n\n` +
+          `⚠️ Guarda esta contraseña, no se volverá a mostrar`,
           {
             duration: 15000,
             style: {
+              whiteSpace: 'pre-line',
               minWidth: '350px',
+              fontFamily: 'monospace',
             },
           }
         );
