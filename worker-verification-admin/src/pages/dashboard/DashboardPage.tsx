@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { dashboardService } from '@/api/services/dashboardService';
 import { Users, UserCheck, Clock, TrendingUp, Activity, CheckCircle2, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { WORKER_CATEGORIES } from '@/lib/utils/constants';
+import { WORKER_CATEGORIES, workToCategorySlug } from '@/lib/utils/constants';
 import { useState } from 'react';
 import {
   LineChart,
@@ -57,17 +57,24 @@ export const DashboardPage = () => {
     );
   }
 
+  // byCategory viene agrupado por el texto crudo de `work` ('Electricista', 'Plomería'...):
+  // se suma cada valor en su oficio oficial y se descarta lo que no es un oficio (Ferretería).
+  const countsBySlug: Record<string, number> = {};
+  Object.entries(stats?.workers.byCategory ?? {}).forEach(([work, count]) => {
+    const slug = workToCategorySlug(work);
+    if (slug) countsBySlug[slug] = (countsBySlug[slug] || 0) + (count || 0);
+  });
+
   const totalWorkersFiltered = WORKER_CATEGORIES.reduce((acc, category) => {
-    const count = stats?.workers.byCategory?.[category] || 0;
-    return acc + count;
+    return acc + (countsBySlug[category.slug] || 0);
   }, 0);
 
   const verifiedWorkers = stats?.workers.verified || 0;
   const processedDocuments = stats?.documents.processed || 0;
 
   const categoryData = WORKER_CATEGORIES.map(category => ({
-    name: category,
-    value: stats?.workers.byCategory?.[category] || 0
+    name: category.name,
+    value: countsBySlug[category.slug] || 0
   })).filter(item => item.value > 0);
 
   const documentTypeData = [
