@@ -1,5 +1,5 @@
 // src/pages/workers/WorkersListPage.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useWorkers } from '@/hooks/useWorkers';
 import { usePagination } from '@/hooks/usePagination';
@@ -9,6 +9,7 @@ import { Pagination } from '@/components/common/Pagination';
 import { WorkerFormModal } from '@/components/features/workers/WorkerFormModal';
 import { DeleteConfirmModal } from '@/components/common/DeleteConfirmModal';
 import { Worker } from '@/types/worker.types';
+import { WORKER_CATEGORIES, workToCategorySlug } from '@/lib/utils/constants';
 
 export const WorkersListPage = () => {
   const [search, setSearch] = useState('');
@@ -16,7 +17,7 @@ export const WorkersListPage = () => {
   const [availableFilter, setAvailableFilter] = useState<boolean | undefined>();
 
   const { 
-    workers, 
+    workers: allWorkers, 
     isLoading,
     createWorker,
     updateWorker,
@@ -26,9 +27,17 @@ export const WorkersListPage = () => {
     isDeleting
   } = useWorkers({
     search,
-    category: categoryFilter || undefined,
     available: availableFilter,
   });
+
+  // El oficio se filtra aquí y no con ?category=: el backend compara el texto exacto de
+  // `work`, y así un trabajador con un valor viejo ('Electricista') entra en 'electricidad'.
+  const workers = useMemo(
+    () => categoryFilter
+      ? allWorkers.filter((worker) => workToCategorySlug(worker.work) === categoryFilter)
+      : allWorkers,
+    [allWorkers, categoryFilter]
+  );
 
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -174,13 +183,11 @@ export const WorkersListPage = () => {
                        focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent transition-colors"
           >
             <option value="">Todas las categorías</option>
-            <option value="Plomería">Plomería</option>
-            <option value="Electricista">Electricista</option>
-            <option value="Jardinería">Jardinería</option>
-            <option value="Carpintería">Carpintería</option>
-            <option value="Pintor">Pintor</option>
-            <option value="Albañilería">Albañilería</option>
-            <option value="Ferretería">Ferretería</option>
+            {WORKER_CATEGORIES.map((category) => (
+              <option key={category.slug} value={category.slug}>
+                {category.name}
+              </option>
+            ))}
           </select>
 
           {/* Disponibilidad */}

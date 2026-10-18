@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { Worker } from '@/types/worker.types';
-import { WORKER_CATEGORIES } from '@/lib/utils/constants';
+import { WORKER_CATEGORIES, workToCategoryName } from '@/lib/utils/constants';
 
 interface WorkerFormModalProps {
   isOpen: boolean;
@@ -38,7 +38,8 @@ export const WorkerFormModal = ({
         name: worker.name,
         lastName: worker.lastName,
         email: worker.email,
-        work: worker.work,
+        // Un `work` viejo ('Electricista') se muestra con su oficio oficial ('Electricidad')
+        work: workToCategoryName(worker.work),
         phone: worker.phone || '',
         description: worker.description || '',
         pricePerHour: worker.pricePerHour,
@@ -162,8 +163,8 @@ export const WorkerFormModal = ({
                 >
                   <option value="">Seleccionar categoría</option>
                   {WORKER_CATEGORIES.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
+                    <option key={category.slug} value={category.name}>
+                      {category.name}
                     </option>
                   ))}
                 </select>
