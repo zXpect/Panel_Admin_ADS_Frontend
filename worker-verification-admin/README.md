@@ -1,3 +1,28 @@
+# Panel admin de ADS (verificación de trabajadores)
+
+Panel web en React + TypeScript + Vite que consume la API de `Panel_admln_ADS_backend`
+con JWT.
+
+## Puesta en marcha
+
+Requisitos: Node.js 20 o superior y el backend corriendo en `http://127.0.0.1:8000`.
+
+```bash
+cd worker-verification-admin
+npm install
+cp .env.example .env
+npm run dev
+```
+
+El panel abre en `http://localhost:3000` (el backend debe tener ese origen en
+`CORS_ALLOWED_ORIGINS`). Se entra con un usuario del panel creado en el backend con
+`python manage.py createsuperuser`.
+
+- `npm run build`: compila TypeScript y genera `dist/`.
+- `deploy-frontend.ps1`: script de despliegue.
+
+---
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

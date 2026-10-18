@@ -51,7 +51,7 @@ export const useWorkers = (filters?: WorkerFilters) => {
 
       // Mostrar advertencia si el usuario ya existía
       if (response.warning) {
-        toast.warning(response.warning, { duration: 5000 });
+        toast(response.warning, { icon: '⚠️', duration: 5000 });
       }
     },
     onError: (error: any) => {
