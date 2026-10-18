@@ -25,3 +25,11 @@ dist-ssr
 
 # Variables de entorno
 .env
+
+# Build
+build
+
+#Tools
+.claude
+
+.env.production

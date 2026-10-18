@@ -29,7 +29,7 @@ export const DeleteConfirmModal = ({
         />
 
         {/* Modal */}
-        <div className="inline-block align-bottom bg-[hsl(var(--card))] rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 border border-[hsl(var(--border))]">
+        <div className="inline-block align-bottom bg-[hsl(var(--card))] rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all my-4 mx-4 sm:my-8 sm:mx-0 sm:align-middle sm:max-w-lg w-full sm:p-6 border border-[hsl(var(--border))]">
           <div className="sm:flex sm:items-start">
             <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-[hsl(var(--destructive))]/10 sm:mx-0 sm:h-10 sm:w-10">
               <AlertTriangle className="h-6 w-6 text-[hsl(var(--destructive))]" />

@@ -27,7 +27,7 @@ const FinalReviewModal = ({
 
   // Clasificación
   const approvedDocs = flatDocs.filter((d) => d.status === 'approved');
-  const rejectedDocs = flatDocs.filter((d) => d.status === 'rejected');
+
 
   // Requisitos mínimos
   const hasHojaDeVida = !!documents.hojaDeVida;

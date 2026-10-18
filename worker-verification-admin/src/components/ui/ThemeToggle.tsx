@@ -8,21 +8,33 @@ export function ThemeToggle() {
   );
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-    localStorage.setItem("theme", theme);
+    // Optimizacion: usar requestAnimationFrame para evitar lag
+    requestAnimationFrame(() => {
+      document.documentElement.classList.toggle("dark", theme === "dark");
+      localStorage.setItem("theme", theme);
+    });
   }, [theme]);
+
+  const toggleTheme = () => {
+    // Transicion suave sin lag
+    document.documentElement.style.transition = 'none';
+    setTheme(theme === "light" ? "dark" : "light");
+    setTimeout(() => {
+      document.documentElement.style.transition = '';
+    }, 0);
+  };
 
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-      className="text-gray-600 dark:text-gray-300 hover:text-primary"
+      onClick={toggleTheme}
+      className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors duration-200"
     >
       {theme === "light" ? (
-        <Moon className="w-5 h-5" />
+        <Moon className="w-5 h-5 transition-transform duration-200 hover:rotate-12" />
       ) : (
-        <Sun className="w-5 h-5" />
+        <Sun className="w-5 h-5 transition-transform duration-200 hover:rotate-12" />
       )}
     </Button>
   );

@@ -52,8 +52,6 @@ export const useDocuments = () => {
 
 // Hook para documentos de un trabajador específico
 export const useWorkerDocuments = (workerId: string) => {
-  const queryClient = useQueryClient();
-
   const documentsQuery = useQuery({
     queryKey: ['documents', 'worker', workerId],
     queryFn: () => documentService.getWorkerDocuments(workerId),

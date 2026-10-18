@@ -244,7 +244,7 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const { status, data } = error.response;
+    const { status } = error.response;
 
     // ============================================
     // 401 - Token expirado o inválido (Refresh Token Logic)

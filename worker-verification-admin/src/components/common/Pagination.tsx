@@ -48,21 +48,26 @@ export const Pagination = ({
   };
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 bg-[hsl(var(--card))] border-t border-[hsl(var(--border))] sm:px-6">
-      <div className="flex justify-between sm:hidden">
+    <div className="flex items-center justify-between px-3 sm:px-4 py-3 bg-[hsl(var(--card))] border-t border-[hsl(var(--border))] sm:px-6">
+      <div className="flex flex-1 items-center justify-between sm:hidden">
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-[hsl(var(--foreground))] bg-[hsl(var(--card))] border border-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="relative inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-[hsl(var(--foreground))] bg-[hsl(var(--card))] border border-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 active:scale-95"
         >
-          Anterior
+          <ChevronLeft className="w-4 h-4 mr-1 transition-transform duration-200 group-hover:-translate-x-1" />
+          Ant.
         </button>
+        <span className="text-sm text-[hsl(var(--muted-foreground))]">
+          {currentPage} / {totalPages}
+        </span>
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="relative ml-3 inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-[hsl(var(--foreground))] bg-[hsl(var(--card))] border border-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="relative inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-[hsl(var(--foreground))] bg-[hsl(var(--card))] border border-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 active:scale-95"
         >
-          Siguiente
+          Sig.
+          <ChevronRight className="w-4 h-4 ml-1 transition-transform duration-200 group-hover:translate-x-1" />
         </button>
       </div>
 
@@ -79,10 +84,10 @@ export const Pagination = ({
             <button
               onClick={() => onPageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="relative inline-flex items-center rounded-l-md px-2 py-2 text-[hsl(var(--muted-foreground))] ring-1 ring-inset ring-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="group relative inline-flex items-center rounded-l-md px-2 py-2 text-[hsl(var(--muted-foreground))] ring-1 ring-inset ring-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-110 active:scale-95"
             >
               <span className="sr-only">Anterior</span>
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-1" />
             </button>
 
             {getPageNumbers().map((page, index) => (
@@ -90,11 +95,11 @@ export const Pagination = ({
                 key={index}
                 onClick={() => typeof page === 'number' && onPageChange(page)}
                 disabled={page === '...'}
-                className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold transition-colors ${
+                className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold transition-all duration-200 hover:scale-110 active:scale-95 ${
                   page === currentPage
-                    ? 'z-10 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--ring))]'
+                    ? 'z-10 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--ring))] shadow-md'
                     : 'text-[hsl(var(--foreground))] ring-1 ring-inset ring-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] focus:z-20 focus:outline-offset-0'
-                } ${page === '...' ? 'cursor-default' : ''}`}
+                } ${page === '...' ? 'cursor-default hover:scale-100' : ''}`}
               >
                 {page}
               </button>
@@ -103,10 +108,10 @@ export const Pagination = ({
             <button
               onClick={() => onPageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="relative inline-flex items-center rounded-r-md px-2 py-2 text-[hsl(var(--muted-foreground))] ring-1 ring-inset ring-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="group relative inline-flex items-center rounded-r-md px-2 py-2 text-[hsl(var(--muted-foreground))] ring-1 ring-inset ring-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-110 active:scale-95"
             >
               <span className="sr-only">Siguiente</span>
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRight className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
             </button>
           </nav>
         </div>

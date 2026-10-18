@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
 import { AppRoutes } from './routes/AppRoutes';
 import { useAuthStore } from './store/authStore';
@@ -53,16 +53,22 @@ function App() {
             position="top-right"
             toastOptions={{
               duration: 4000,
+              className: 'animate-slide-in-right',
               style: {
                 background: 'hsl(var(--card))',
                 color: 'hsl(var(--foreground))',
                 border: '1px solid hsl(var(--border))',
+                boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
               },
               success: {
                 duration: 3000,
                 iconTheme: {
                   primary: '#10b981',
                   secondary: '#fff',
+                },
+                style: {
+                  background: 'hsl(var(--card))',
+                  border: '1px solid #10b981',
                 },
               },
               error: {
@@ -71,13 +77,17 @@ function App() {
                   primary: '#ef4444',
                   secondary: '#fff',
                 },
+                style: {
+                  background: 'hsl(var(--card))',
+                  border: '1px solid #ef4444',
+                },
               },
             }}
           />
         </BrowserRouter>
 
         {/* React Query Devtools (solo en desarrollo) */}
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     </ErrorBoundary>
   );

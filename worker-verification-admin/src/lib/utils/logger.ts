@@ -381,7 +381,7 @@ export function useDevLogger(): void {
  */
 export function logFunction(category: string) {
   return function (
-    target: any,
+    _target: any,
     propertyKey: string,
     descriptor: PropertyDescriptor
   ) {

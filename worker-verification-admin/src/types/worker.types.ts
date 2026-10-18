@@ -20,17 +20,25 @@ export interface Worker {
 }
 
 export interface WorkerCreateInput {
-  id: string;
   name: string;
   lastName: string;
   email: string;
   work: string;
-  phone?: string;
+  phone: string;
   description?: string;
   latitude?: number;
   longitude?: number;
   pricePerHour?: number;
   experience?: string;
+  password?: string;
+}
+
+export interface WorkerCreateResponse {
+  success: boolean;
+  message: string;
+  data: Worker;
+  password?: string;
+  warning?: string;
 }
 
 export interface WorkerUpdateInput {
