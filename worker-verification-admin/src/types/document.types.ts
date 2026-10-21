@@ -58,6 +58,7 @@ export interface DocumentRejectionInput {
 export interface DocumentRequirements {
   hasHojaVida: boolean;
   hasAntecedentes: boolean;
+  hasTitulo: boolean;
   cartasCount: number;
   hasMinimumCartas: boolean;
   isComplete: boolean;

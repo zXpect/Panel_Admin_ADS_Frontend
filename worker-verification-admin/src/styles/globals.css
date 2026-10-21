@@ -2,76 +2,107 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Sistema de diseño de ADS (docs/mockups/ds/ads/tokens.json), en HSL para
+ * Tailwind/shadcn. Los mockups del panel son A1-A8 y Admin*.dc.html.
+ */
 @layer base {
   :root {
-    /* === 🌞 Tema Claro (Naranja + Grises Neutros) === */
-    --background: 0 0% 98%; /* Fondo gris muy claro */
-    --foreground: 0 0% 15%; /* Texto gris muy oscuro */
-    --card: 0 0% 100%; /* Blanco puro para tarjetas */
-    --card-foreground: 0 0% 15%;
+    /* === Tema claro === */
+    --background: 38 31% 95%;        /* surface #F6F3EE */
+    --foreground: 217 10% 25%;       /* charcoal #3A3F47 */
+    --card: 0 0% 100%;
+    --card-foreground: 217 10% 25%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 15%;
-    --primary: 24 90% 55%; /* Naranja vibrante */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 94%; /* Gris claro */
-    --secondary-foreground: 0 0% 15%;
-    --muted: 0 0% 96%; /* Gris muy claro */
-    --muted-foreground: 0 0% 45%;
-    --accent: 24 95% 50%; /* Naranja intenso */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 75% 55%; /* Rojo para acciones destructivas */
+    --popover-foreground: 217 10% 25%;
+    --primary: 27 82% 51%;           /* brand #E8751A */
+    --primary-foreground: 248 33% 14%; /* navy: el texto sobre naranja es navy, no blanco */
+    --secondary: 40 20% 88%;         /* surface_alt #E7E3DB */
+    --secondary-foreground: 248 33% 14%;
+    --muted: 40 22% 91%;
+    --muted-foreground: 221 8% 39%;  /* muted #5B606B */
+    --accent: 27 82% 51%;
+    --accent-foreground: 248 33% 14%;
+    --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 90%;
-    --input: 0 0% 96%;
-    --ring: 24 90% 55%;
-    --radius: 0.5rem;
+    --border: 40 14% 78%;            /* line #CFCAC0 */
+    --input: 0 0% 100%;
+    --ring: 27 82% 51%;
+    --radius: 0.75rem;
 
-    /* Paleta para gráficos con naranja y grises */
-    --chart-1: 24 90% 55%;
-    --chart-2: 0 0% 35%;
-    --chart-3: 24 80% 45%;
-    --chart-4: 0 0% 55%;
-    --chart-5: 24 70% 60%;
+    /* Propios de ADS */
+    --navy: 248 33% 14%;             /* #1B1830 */
+    --brand-text: 26 90% 37%;        /* #B45309: texto naranja sobre fondo claro (AA) */
+    --control: 219 6% 55%;           /* #858A93: borde de campos y botones secundarios */
+    --chip: 30 83% 91%;              /* #FBE7D3 */
+    --chip-foreground: 25 92% 29%;   /* #8F3F06 */
+    --success: 142 55% 32%;
+    --success-soft: 138 45% 90%;
+    --warning-soft: 45 90% 88%;
+    --warning-foreground: 32 85% 28%;
+    --danger-soft: 0 75% 93%;
+    --danger-foreground: 0 65% 38%;
+    --sidebar: 248 33% 14%;
+    --sidebar-foreground: 256 17% 83%; /* #CFCBDA */
+    --sidebar-border: 247 24% 28%;
+
+    /* Gráficos */
+    --chart-1: 27 82% 51%;
+    --chart-2: 248 33% 14%;
+    --chart-3: 26 90% 37%;
+    --chart-4: 221 8% 55%;
+    --chart-5: 28 88% 72%;
   }
 
-  /* === 🌚 Tema Oscuro Admin (Grises Oscuros + Naranja) === */
+  /* === Tema oscuro === */
   .dark {
-    --background: 0 0% 8%; /* Gris carbón muy oscuro */
-    --foreground: 0 0% 95%; /* Texto gris muy claro */
-    --card: 0 0% 12%; /* Tarjetas gris oscuro */
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 12%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 24 90% 55%; /* Naranja vibrante que resalta */
-    --primary-foreground: 0 0% 10%;
-    --secondary: 0 0% 18%; /* Gris medio oscuro */
-    --secondary-foreground: 0 0% 95%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 70%;
-    --accent: 24 95% 50%; /* Naranja intenso */
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 20%; /* Bordes gris medio */
-    --input: 0 0% 15%;
-    --ring: 24 90% 55%;
+    --background: 248 33% 14%;       /* navy #1B1830 */
+    --foreground: 38 31% 95%;
+    --card: 248 30% 19%;             /* #26223F */
+    --card-foreground: 38 31% 95%;
+    --popover: 248 30% 19%;
+    --popover-foreground: 38 31% 95%;
+    --primary: 28 88% 56%;           /* #F28A2E */
+    --primary-foreground: 248 33% 14%;
+    --secondary: 248 25% 24%;
+    --secondary-foreground: 38 31% 95%;
+    --muted: 248 25% 24%;
+    --muted-foreground: 253 11% 74%; /* #B9B6C4 */
+    --accent: 28 88% 56%;
+    --accent-foreground: 248 33% 14%;
+    --destructive: 0 70% 58%;
+    --destructive-foreground: 248 33% 14%;
+    --border: 247 24% 28%;           /* #3A3658 */
+    --input: 248 30% 17%;
+    --ring: 28 88% 56%;
 
-    /* Gráficos con naranja destacado y grises */
-    --chart-1: 24 90% 55%;
-    --chart-2: 0 0% 45%;
-    --chart-3: 24 80% 48%;
-    --chart-4: 0 0% 60%;
-    --chart-5: 24 70% 62%;
+    --brand-text: 28 88% 62%;
+    --control: 250 12% 55%;
+    --chip: 25 55% 22%;
+    --chip-foreground: 28 90% 72%;
+    --success: 142 50% 60%;
+    --success-soft: 142 35% 20%;
+    --warning-soft: 40 45% 22%;
+    --warning-foreground: 42 90% 70%;
+    --danger-soft: 0 40% 24%;
+    --danger-foreground: 0 85% 78%;
+    --sidebar: 248 38% 10%;
+    --sidebar-foreground: 256 17% 80%;
+    --sidebar-border: 247 24% 24%;
+
+    --chart-1: 28 88% 56%;
+    --chart-2: 253 30% 70%;
+    --chart-3: 28 88% 70%;
+    --chart-4: 253 11% 60%;
+    --chart-5: 28 60% 40%;
+  }
+
+  html {
+    font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
   }
 
   body {
     @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))] transition-colors duration-300;
-  }
-
-  /* === Efectos para Panel Admin === */
-  button:hover,
-  [role="button"]:hover {
-    @apply brightness-110 transition-all;
   }
 
   input,
@@ -81,12 +112,67 @@
   }
 
   ::selection {
-    background-color: hsl(var(--accent));
-    color: hsl(var(--accent-foreground));
+    background-color: hsl(var(--chip));
+    color: hsl(var(--chip-foreground));
   }
 
-  /* Efecto de enfoque con naranja */
+  /* Foco visible con anillo naranja (accesibilidad) */
   *:focus-visible {
     @apply outline-none ring-2 ring-[hsl(var(--ring))] ring-offset-2 ring-offset-[hsl(var(--background))];
   }
+}
+
+@layer components {
+  /* Botón principal: naranja con texto navy, radio 12 */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 min-h-[44px] px-5 rounded-xl text-sm font-semibold
+      bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:brightness-105
+      disabled:opacity-50 disabled:cursor-not-allowed transition;
+  }
+  /* Secundario: borde control, fondo transparente */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 min-h-[44px] px-5 rounded-xl text-sm font-semibold
+      border-[1.5px] border-[hsl(var(--control))] text-[hsl(var(--foreground))] bg-transparent
+      hover:bg-[hsl(var(--muted))] disabled:opacity-50 disabled:cursor-not-allowed transition;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 min-h-[44px] px-5 rounded-xl text-sm font-semibold
+      border-[1.5px] border-[hsl(var(--destructive))]/50 text-[hsl(var(--destructive))] bg-transparent
+      hover:bg-[hsl(var(--danger-soft))] disabled:opacity-50 transition;
+  }
+  .icon-btn {
+    @apply inline-flex items-center justify-center w-10 h-10 rounded-xl border-[1.5px] border-[hsl(var(--border))]
+      text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted))] transition;
+  }
+  /* Tarjeta / panel blanco con borde fino */
+  .panel {
+    @apply bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] border border-[hsl(var(--border))] rounded-2xl;
+  }
+  /* Campos: borde control, radio 12 */
+  .field {
+    @apply w-full min-h-[44px] px-3 rounded-xl border-[1.5px] border-[hsl(var(--control))] bg-[hsl(var(--input))]
+      text-[hsl(var(--foreground))] placeholder:text-[hsl(var(--muted-foreground))]
+      focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent;
+  }
+  .field-label {
+    @apply block text-xs font-semibold text-[hsl(var(--foreground))] mb-1;
+  }
+  /* Chips de estado: siempre con texto, nunca solo color */
+  .chip {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap;
+  }
+  .chip-brand { @apply bg-[hsl(var(--chip))] text-[hsl(var(--chip-foreground))]; }
+  .chip-success { @apply bg-[hsl(var(--success-soft))] text-[hsl(var(--success))]; }
+  .chip-warning { @apply bg-[hsl(var(--warning-soft))] text-[hsl(var(--warning-foreground))]; }
+  .chip-danger { @apply bg-[hsl(var(--danger-soft))] text-[hsl(var(--danger-foreground))]; }
+  .chip-neutral { @apply bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))]; }
+  /* Tablas del panel */
+  .data-table { @apply w-full text-sm; }
+  .data-table thead th {
+    @apply text-left text-xs font-semibold uppercase tracking-wide text-[hsl(var(--muted-foreground))]
+      px-4 py-3 border-b border-[hsl(var(--border))] whitespace-nowrap;
+  }
+  .data-table tbody td { @apply px-4 py-3 border-b border-[hsl(var(--border))] align-middle; }
+  .data-table tbody tr:last-child td { @apply border-b-0; }
+  .data-table tbody tr:hover { @apply bg-[hsl(var(--muted))]/50; }
 }

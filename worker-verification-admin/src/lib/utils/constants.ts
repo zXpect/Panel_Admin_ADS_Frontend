@@ -97,3 +97,16 @@ export const PAGINATION = {
   DEFAULT_PAGE: 1,
   DEFAULT_PAGE_SIZE: 20,
 } as const;
+/** Oficios del trabajador: `categories` si existe; si no, el que se deduce de `work`. */
+export const workerCategorySlugs = (worker: { categories?: string[]; work?: string | null }): string[] => {
+  const slugs = (worker.categories || []).filter((slug) => WORKER_CATEGORIES.some((c) => c.slug === slug));
+  if (slugs.length) return slugs;
+  const legacy = workToCategorySlug(worker.work);
+  return legacy ? [legacy] : [];
+};
+
+/** «Plomería, Pintura» para mostrar. */
+export const workerCategoryNames = (worker: { categories?: string[]; work?: string | null }): string =>
+  workerCategorySlugs(worker)
+    .map((slug) => WORKER_CATEGORIES.find((category) => category.slug === slug)?.name || slug)
+    .join(', ');

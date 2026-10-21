@@ -19,6 +19,14 @@ export interface Worker {
   timestamp: number;
   // Cuenta habilitada (HU-32); false si el administrador la suspendió
   isActive?: boolean;
+  // Oficios del catálogo (slugs) y verificación documental; solo lectura
+  categories?: string[];
+  verificationStatus?: {
+    status: 'pending' | 'documents_submitted' | 'approved' | 'rejected' | string;
+    timestamp?: number;
+    reviewedBy?: string;
+    rejectionReason?: string;
+  } | null;
 }
 
 export interface WorkerCreateInput {

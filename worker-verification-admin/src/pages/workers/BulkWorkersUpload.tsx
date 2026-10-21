@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Upload, Download, X, CheckCircle, XCircle, FileSpreadsheet, AlertCircle, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Upload, Download, X, CheckCircle, XCircle, FileSpreadsheet, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
+import { PageHeader } from '@/components/layout/PageHeader';
 import axiosInstance from '@/api/axiosConfig';
 
 interface BulkUploadResult {
@@ -164,41 +166,24 @@ const BulkWorkersUpload: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
-      {/* Header mejorado */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[hsl(var(--primary))]/10 via-[hsl(var(--card))] to-[hsl(var(--primary))]/5
-                      rounded-2xl shadow-lg border border-[hsl(var(--border))] p-6">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(var(--primary))]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-        <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-[hsl(var(--primary))]/20 flex items-center justify-center">
-              <Upload className="w-6 h-6 text-[hsl(var(--primary))]" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
-                Carga Masiva de Trabajadores
-              </h1>
-              <p className="text-[hsl(var(--muted-foreground))] mt-1 font-medium">
-                Sube un archivo Excel con los datos de múltiples trabajadores
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={handleDownloadTemplate}
-            disabled={isDownloadingTemplate}
-            className="group flex items-center gap-2 px-5 py-3 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]
-                       rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold
-                       disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isDownloadingTemplate ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <Download className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            )}
-            <span>Descargar Plantilla</span>
+    <div className="space-y-6">
+      <Link to="/workers" className="inline-flex items-center gap-2 min-h-[44px] text-sm font-semibold
+                                     text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]">
+        <ArrowLeft className="w-4 h-4" />
+        Volver a trabajadores
+      </Link>
+
+      <PageHeader
+        icon={Upload}
+        title="Carga masiva de trabajadores"
+        subtitle="Sube un archivo Excel con los datos de varios trabajadores"
+        actions={(
+          <button onClick={handleDownloadTemplate} disabled={isDownloadingTemplate} className="btn-secondary">
+            {isDownloadingTemplate ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+            Descargar plantilla
           </button>
-        </div>
-      </div>
+        )}
+      />
 
       {/* Instrucciones */}
       <div className="bg-[hsl(var(--primary))]/10 border border-[hsl(var(--primary))]/20 rounded-2xl p-6 transition-colors">
