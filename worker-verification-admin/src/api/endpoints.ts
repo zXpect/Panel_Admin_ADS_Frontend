@@ -54,4 +54,15 @@ export const API_ENDPOINTS = {
     DETAIL: (id: string) => `/api/clients/${id}/`,
     COUNT: '/api/clients/count/',
   },
+
+  // Transacciones (pagos digitales y en efectivo)
+  PAYMENTS: {
+    LIST: '/api/payments/',
+  },
+
+  // PQR
+  PQR: {
+    LIST: '/api/pqr/',
+    DETAIL: (id: number) => `/api/pqr/${id}/`,
+  },
 } as const;

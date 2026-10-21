@@ -5,6 +5,8 @@ import {
   Users,
   FileText,
   UserCheck,
+  Receipt,
+  MessageSquareWarning,
   ChevronLeft,
   ChevronRight,
   Sparkles,
@@ -20,6 +22,8 @@ const menuItems = [
   { title: 'Trabajadores', icon: Users, path: '/workers', color: 'chart-1' },
   { title: 'Documentos', icon: FileText, path: '/documents/pending', color: 'chart-5' },
   { title: 'Clientes', icon: UserCheck, path: '/clients', color: 'accent' },
+  { title: 'Transacciones', icon: Receipt, path: '/transactions', color: 'primary' },
+  { title: 'PQR', icon: MessageSquareWarning, path: '/pqr', color: 'chart-5' },
 ];
 
 export const Sidebar = () => {
