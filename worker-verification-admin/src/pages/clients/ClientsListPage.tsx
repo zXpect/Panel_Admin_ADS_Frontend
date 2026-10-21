@@ -5,6 +5,7 @@ import { Search, Mail, Phone, User, Eye, UserCheck } from 'lucide-react';
 import { getInitials } from '@/lib/utils/helpers';
 import { Pagination } from '@/components/common/Pagination';
 import { ClientDetailModal } from '@/components/features/clients/ClientDetailModal';
+import { SuspendedBadge } from '@/components/features/accounts/AccountStatusControl';
 import { Client } from '@/types/client.types';
 
 export const ClientsListPage = () => {
@@ -108,6 +109,7 @@ export const ClientsListPage = () => {
                       {client.name} {client.lastName}
                     </h3>
                     <p className="text-sm text-[hsl(var(--muted-foreground))] font-medium">Cliente</p>
+                    {client.isActive === false && <SuspendedBadge />}
                   </div>
                 </div>
 
@@ -170,7 +172,8 @@ export const ClientsListPage = () => {
           setIsDetailModalOpen(false);
           setSelectedClient(null);
         }}
-        client={selectedClient}
+        // La versión más reciente de la lista (p. ej. después de suspender)
+        client={clients.find((client) => client.id === selectedClient?.id) || selectedClient}
       />
     </div>
   );

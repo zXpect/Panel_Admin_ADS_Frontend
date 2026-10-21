@@ -7,6 +7,7 @@ import {
   UserCheck,
   Receipt,
   MessageSquareWarning,
+  Tags,
   ChevronLeft,
   ChevronRight,
   Sparkles,
@@ -24,6 +25,7 @@ const menuItems = [
   { title: 'Clientes', icon: UserCheck, path: '/clients', color: 'accent' },
   { title: 'Transacciones', icon: Receipt, path: '/transactions', color: 'primary' },
   { title: 'PQR', icon: MessageSquareWarning, path: '/pqr', color: 'chart-5' },
+  { title: 'Catálogo y tarifas', icon: Tags, path: '/catalog', color: 'chart-1' },
 ];
 
 export const Sidebar = () => {

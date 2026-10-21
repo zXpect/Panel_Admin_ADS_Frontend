@@ -22,6 +22,7 @@ import { ClientsListPage } from '@/pages/clients/ClientsListPage';
 // Transacciones y PQR
 import { TransactionsPage } from '@/pages/payments/TransactionsPage';
 import { PqrListPage } from '@/pages/pqr/PqrListPage';
+import { CatalogPage } from '@/pages/catalog/CatalogPage';
 
 // Not Found
 import { NotFoundPage } from '@/pages/NotFoundPage';
@@ -60,6 +61,7 @@ export const AppRoutes = () => {
         {/* Transacciones y PQR */}
         <Route path="/transactions" element={<TransactionsPage />} />
         <Route path="/pqr" element={<PqrListPage />} />
+        <Route path="/catalog" element={<CatalogPage />} />
       </Route>
 
       {/* Not Found - debe ir al final */}

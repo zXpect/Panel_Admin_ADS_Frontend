@@ -1,6 +1,7 @@
 import { X, Mail, Phone, User, Calendar } from 'lucide-react';
 import { Client } from '@/types/client.types';
 import { getInitials, formatDate } from '@/lib/utils/helpers';
+import { AccountStatusControl, SuspendedBadge } from '@/components/features/accounts/AccountStatusControl';
 
 interface ClientDetailModalProps {
   isOpen: boolean;
@@ -98,6 +99,13 @@ export const ClientDetailModal = ({
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Estado de la cuenta (HU-32) */}
+          <div className="px-6 pb-4 flex items-center justify-between gap-2 flex-wrap">
+            {client.isActive === false ? <SuspendedBadge /> : <span />}
+            <AccountStatusControl uid={client.id} name={`${client.name} ${client.lastName}`}
+              role="client" isActive={client.isActive} />
           </div>
 
           {/* Footer */}

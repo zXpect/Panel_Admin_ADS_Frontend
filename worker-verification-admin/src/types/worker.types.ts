@@ -17,6 +17,8 @@ export interface Worker {
   pricePerHour: number;
   experience?: string;
   timestamp: number;
+  // Cuenta habilitada (HU-32); false si el administrador la suspendió
+  isActive?: boolean;
 }
 
 export interface WorkerCreateInput {

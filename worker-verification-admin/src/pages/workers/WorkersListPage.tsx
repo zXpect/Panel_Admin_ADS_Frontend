@@ -5,6 +5,7 @@ import { useWorkers } from '@/hooks/useWorkers';
 import { usePagination } from '@/hooks/usePagination';
 import { Search, Eye, Phone, Mail, MapPin, Star, Plus, Edit, Trash2, Upload } from 'lucide-react';
 import { formatPrice, getInitials } from '@/lib/utils/helpers';
+import { SuspendedBadge } from '@/components/features/accounts/AccountStatusControl';
 import { Pagination } from '@/components/common/Pagination';
 import { WorkerFormModal } from '@/components/features/workers/WorkerFormModal';
 import { DeleteConfirmModal } from '@/components/common/DeleteConfirmModal';
@@ -264,6 +265,7 @@ export const WorkersListPage = () => {
                     >
                       {worker.isAvailable ? 'Disponible' : 'No disponible'}
                     </span>
+                    {worker.isActive === false && <SuspendedBadge />}
                   </div>
                 </div>
 

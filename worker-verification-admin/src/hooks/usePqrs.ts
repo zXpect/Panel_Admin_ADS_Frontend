@@ -13,6 +13,7 @@ export const usePqrs = (filters?: PqrFilters) => {
     placeholderData: keepPreviousData,
   });
 
+  // Los errores (cierre sin respuesta, PQR ya cerrada) los muestra el interceptor de axios
   const answerMutation = useMutation({
     mutationFn: ({ id, input }: { id: number; input: PqrAnswerInput }) => pqrService.answerPqr(id, input),
     onSuccess: (pqr) => {
@@ -20,11 +21,6 @@ export const usePqrs = (filters?: PqrFilters) => {
       toast.success(pqr.status === 'cerrada'
         ? 'PQR cerrada; se notificó al usuario'
         : 'PQR en trámite; se notificó al usuario');
-    },
-    onError: (error: any) => {
-      const data = error.response?.data;
-      const fieldError = data?.errors && Object.values(data.errors as Record<string, string[]>)[0]?.[0];
-      toast.error(data?.error || fieldError || 'Error al responder la PQR');
     },
   });
 

@@ -15,6 +15,7 @@ import {
   Clock,
 } from 'lucide-react';
 import { formatPrice, formatDate, getInitials } from '@/lib/utils/helpers';
+import { AccountStatusControl, SuspendedBadge } from '@/components/features/accounts/AccountStatusControl';
 
 export const WorkerDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -96,7 +97,13 @@ export const WorkerDetailPage = () => {
                     No disponible
                   </span>
                 )}
+                {worker.isActive === false && <SuspendedBadge />}
               </div>
+            </div>
+
+            <div className="mt-4">
+              <AccountStatusControl uid={worker.id} name={`${worker.name} ${worker.lastName}`}
+                role="worker" isActive={worker.isActive} />
             </div>
 
             {/* Contacto mejorado */}
