@@ -1,14 +1,12 @@
 import { useState } from 'react';
-import { MessageSquareWarning, AlertTriangle, Eye } from 'lucide-react';
+import { MessageSquareText, MessageSquareWarning, AlertTriangle, Eye } from 'lucide-react';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { usePqrs } from '@/hooks/usePqrs';
 import { Pagination } from '@/components/common/Pagination';
 import { PqrDetailModal } from '@/components/features/pqr/PqrDetailModal';
 import {
   PQR_ROLE_LABELS, PQR_STATUS_LABELS, PQR_STATUS_STYLES, PQR_TYPE_LABELS,
 } from '@/components/features/pqr/pqrLabels';
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from '@/components/ui/table';
 import { cn, formatDate, truncateText } from '@/lib/utils/helpers';
 import { Pqr, PqrFilters, PqrStatus } from '@/types/pqr.types';
 
@@ -33,22 +31,9 @@ export const PqrListPage = () => {
   const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
-      {/* Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[hsl(var(--chart-5))]/10 via-[hsl(var(--card))] to-[hsl(var(--chart-5))]/5 rounded-2xl shadow-lg border border-[hsl(var(--border))] p-4 sm:p-6">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(var(--chart-5))]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-        <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[hsl(var(--chart-5))]/20 flex items-center justify-center">
-            <MessageSquareWarning className="w-5 h-5 sm:w-6 sm:h-6 text-[hsl(var(--chart-5))]" />
-          </div>
-          <div>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[hsl(var(--foreground))]">PQR</h1>
-            <p className="text-sm sm:text-base text-[hsl(var(--muted-foreground))] mt-1 font-medium">
-              Peticiones, quejas y reclamos · plazo de respuesta de 15 días hábiles
-            </p>
-          </div>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <PageHeader icon={MessageSquareText} title="PQR"
+        subtitle="Peticiones, quejas y reclamos · plazo de respuesta de 15 días hábiles" />
 
       {/* Filtro por estado */}
       <div className="flex flex-wrap gap-2">
@@ -57,10 +42,10 @@ export const PqrListPage = () => {
             key={tab.value || 'todas'}
             onClick={() => setFilters({ status: tab.value, page: 1 })}
             className={cn(
-              'px-4 py-2 rounded-lg text-sm font-semibold border transition-colors',
+              'min-h-[40px] px-4 rounded-full text-sm font-semibold border-[1.5px] transition-colors',
               filters.status === tab.value
-                ? 'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] border-transparent'
-                : 'bg-[hsl(var(--card))] text-[hsl(var(--muted-foreground))] border-[hsl(var(--border))] hover:bg-[hsl(var(--muted))]'
+                ? 'bg-[#1B1830] text-[#F6F3EE] border-transparent dark:bg-[hsl(var(--primary))] dark:text-[#1B1830]'
+                : 'bg-[hsl(var(--card))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] hover:bg-[hsl(var(--muted))]'
             )}
           >
             {tab.label}
@@ -69,7 +54,7 @@ export const PqrListPage = () => {
       </div>
 
       {/* Tabla */}
-      <div className="bg-[hsl(var(--card))] rounded-2xl shadow border border-[hsl(var(--border))] overflow-hidden">
+      <div className="panel overflow-hidden">
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[hsl(var(--primary))]"></div>
@@ -81,54 +66,55 @@ export const PqrListPage = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>#</TableHead>
-                  <TableHead>Tipo</TableHead>
-                  <TableHead>Autor</TableHead>
-                  <TableHead>Descripción</TableHead>
-                  <TableHead>Registrada</TableHead>
-                  <TableHead>Plazo</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Tipo</th>
+                  <th>Autor</th>
+                  <th>Descripción</th>
+                  <th>Registrada</th>
+                  <th>Plazo</th>
+                  <th>Estado</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
                 {pqrs.map((pqr) => (
-                  <TableRow key={pqr.id}>
-                    <TableCell className="font-mono">{pqr.id}</TableCell>
-                    <TableCell className="font-medium">{PQR_TYPE_LABELS[pqr.type]}</TableCell>
-                    <TableCell>{PQR_ROLE_LABELS[pqr.author_role]}</TableCell>
-                    <TableCell className="min-w-[14rem] max-w-xs">{truncateText(pqr.description, 70)}</TableCell>
-                    <TableCell className="whitespace-nowrap">
+                  <tr key={pqr.id}>
+                    <td className="font-mono">{pqr.id}</td>
+                    <td className="font-semibold">{PQR_TYPE_LABELS[pqr.type]}</td>
+                    <td>{PQR_ROLE_LABELS[pqr.author_role]}</td>
+                    <td className="min-w-[11rem] max-w-[16rem]">{truncateText(pqr.description, 60)}</td>
+                    <td className="whitespace-nowrap">
                       {formatDate(new Date(pqr.created_at).getTime(), 'dd/MM/yyyy')}
-                    </TableCell>
-                    <TableCell className="whitespace-nowrap">
-                      <span className={cn('inline-flex items-center gap-1', pqr.is_overdue && 'text-red-600 dark:text-red-400 font-semibold')}>
-                        {pqr.is_overdue && <AlertTriangle className="w-4 h-4" aria-label="Vencida" />}
+                    </td>
+                    <td className="whitespace-nowrap">
+                      <span className={cn('block', pqr.is_overdue && 'text-[hsl(var(--danger-foreground))] font-semibold')}>
                         {formatDate(new Date(pqr.due_at).getTime(), 'dd/MM/yyyy')}
                       </span>
-                    </TableCell>
-                    <TableCell>
-                      <span className={cn('px-2.5 py-0.5 rounded-full text-xs font-semibold', PQR_STATUS_STYLES[pqr.status])}>
+                      {pqr.is_overdue && (
+                        <span className="chip chip-danger mt-1"><AlertTriangle className="w-3 h-3" aria-hidden="true" />Vencida</span>
+                      )}
+                    </td>
+                    <td>
+                      <span className={cn('chip', PQR_STATUS_STYLES[pqr.status])}>
                         {PQR_STATUS_LABELS[pqr.status]}
                       </span>
-                    </TableCell>
-                    <TableCell>
+                    </td>
+                    <td>
                       <button
                         onClick={() => setSelectedId(pqr.id)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-semibold
-                                   bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/20"
+                        className="btn-secondary min-h-[36px] px-3 whitespace-nowrap"
                       >
                         <Eye className="w-4 h-4" />
                         {pqr.status === 'cerrada' ? 'Ver' : 'Responder'}
                       </button>
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                  </tr>
                 ))}
-              </TableBody>
-            </Table>
+              </tbody>
+            </table>
           </div>
         )}
       </div>

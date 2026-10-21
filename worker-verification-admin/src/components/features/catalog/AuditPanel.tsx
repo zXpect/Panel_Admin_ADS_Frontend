@@ -34,7 +34,7 @@ export const AuditPanel = () => {
   const { entries, isLoading } = useAuditLog(entity);
 
   return (
-    <div className="bg-[hsl(var(--card))] rounded-2xl shadow border border-[hsl(var(--border))] p-4 sm:p-6 space-y-4">
+    <div className="panel p-4 sm:p-6 space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <History className="w-5 h-5 text-[hsl(var(--primary))]" />

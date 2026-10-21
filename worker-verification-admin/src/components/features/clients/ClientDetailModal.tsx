@@ -26,11 +26,11 @@ export const ClientDetailModal = ({
         />
 
         {/* Modal */}
-        <div className="inline-block align-bottom bg-card dark:bg-card rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-border">
+        <div className="inline-block align-bottom bg-card dark:bg-card rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-border">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-border">
             <h3 className="text-lg font-semibold text-foreground">
-              Detalles del Cliente
+              Detalles del cliente
             </h3>
             <button
               onClick={onClose}
@@ -44,7 +44,7 @@ export const ClientDetailModal = ({
           <div className="px-6 py-4">
             {/* Avatar y nombre */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold">
+              <div className="w-16 h-16 rounded-full bg-[#1B1830] text-[#F28A2E] flex items-center justify-center text-2xl font-extrabold">
                 {getInitials(client.name, client.lastName)}
               </div>
               <div>
@@ -109,10 +109,10 @@ export const ClientDetailModal = ({
           </div>
 
           {/* Footer */}
-          <div className="px-6 py-4 bg-muted border-t border-border">
+          <div className="px-6 py-4 border-t border-border">
             <button
               onClick={onClose}
-              className="w-full px-4 py-2 text-sm font-medium text-primary-foreground bg-primary rounded-lg hover:brightness-110 transition-all"
+              className="btn-primary w-full"
             >
               Cerrar
             </button>

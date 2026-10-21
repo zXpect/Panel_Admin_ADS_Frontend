@@ -30,9 +30,7 @@ export const AccountStatusControl = ({ uid, name, role, isActive = true }: Accou
     <>
       <button
         onClick={() => setConfirming(true)}
-        className={isActive
-          ? 'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border border-[hsl(var(--destructive))]/40 text-[hsl(var(--destructive))] hover:bg-[hsl(var(--destructive))]/10 transition-colors'
-          : 'inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:opacity-90 transition-opacity'}
+        className={isActive ? 'btn-danger' : 'btn-primary'}
       >
         {isActive ? <Ban className="w-4 h-4" /> : <RotateCcw className="w-4 h-4" />}
         {isActive ? 'Suspender cuenta' : 'Reactivar cuenta'}
@@ -41,7 +39,7 @@ export const AccountStatusControl = ({ uid, name, role, isActive = true }: Accou
       {confirming && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center px-4">
           <div className="fixed inset-0 bg-black/50 dark:bg-black/70" onClick={() => !isPending && setConfirming(false)} />
-          <div className="relative bg-card rounded-lg shadow-xl w-full max-w-md border border-border text-left">
+          <div className="relative bg-card rounded-2xl shadow-xl w-full max-w-md border border-border text-left">
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <h3 className="text-lg font-semibold text-foreground">
                 {isActive ? 'Suspender' : 'Reactivar'} la cuenta de {name}
@@ -71,20 +69,19 @@ export const AccountStatusControl = ({ uid, name, role, isActive = true }: Accou
                   maxLength={300}
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
-                  className="mt-1 w-full px-3 py-2 border border-border rounded-lg bg-[hsl(var(--input))] text-foreground
-                             focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent"
+                  className="field mt-1 py-2"
                 />
               </label>
             </div>
             <div className="flex justify-end gap-2 px-6 py-4 border-t border-border">
               <button onClick={() => setConfirming(false)} disabled={isPending}
-                className="px-4 py-2 rounded-lg border border-border font-semibold text-foreground hover:bg-muted">
+                className="btn-secondary">
                 Cancelar
               </button>
               <button onClick={submit} disabled={isPending}
                 className={isActive
-                  ? 'px-4 py-2 rounded-lg font-semibold bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))] disabled:opacity-50'
-                  : 'px-4 py-2 rounded-lg font-semibold bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] disabled:opacity-50'}
+                  ? 'inline-flex items-center justify-center min-h-[44px] px-5 rounded-xl text-sm font-semibold bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))] disabled:opacity-50'
+                  : 'btn-primary'}
               >
                 {isPending ? 'Guardando…' : isActive ? 'Suspender' : 'Reactivar'}
               </button>
@@ -98,7 +95,7 @@ export const AccountStatusControl = ({ uid, name, role, isActive = true }: Accou
 
 /** Etiqueta «Suspendida» para listas y detalles. */
 export const SuspendedBadge = () => (
-  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
+  <span className="chip chip-danger">
     Cuenta suspendida
   </span>
 );

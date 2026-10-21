@@ -180,7 +180,7 @@ export const DashboardPage = () => {
           </h2>
           {categoryData.length > 0 ? (
             <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={categoryData} margin={{ top: 20 }}>
+              <BarChart data={categoryData} margin={{ top: 20, left: 24, right: 8 }}>
                 <XAxis dataKey="name" tickLine={false} axisLine={false} interval={0} angle={-30} textAnchor="end" height={60}
                   tick={{ fontSize: 11, fill: 'hsl(var(--muted-foreground))' }} />
                 <YAxis hide allowDecimals={false} />

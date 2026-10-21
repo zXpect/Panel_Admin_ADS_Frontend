@@ -39,14 +39,14 @@ export const PqrDetailModal = ({ pqr, onClose, onAnswer, isAnswering }: PqrDetai
       <div className="flex min-h-screen items-center justify-center px-4 py-8">
         <div className="fixed inset-0 bg-black/50 dark:bg-black/70 transition-opacity" onClick={onClose} />
 
-        <div className="relative bg-card rounded-lg text-left shadow-xl w-full sm:max-w-2xl border border-border">
+        <div className="relative bg-card rounded-2xl text-left shadow-xl w-full sm:max-w-2xl border border-border">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-border">
             <div className="flex items-center gap-3">
               <h3 className="text-lg font-semibold text-foreground">
                 PQR #{pqr.id} · {PQR_TYPE_LABELS[pqr.type]}
               </h3>
-              <span className={cn('px-2.5 py-0.5 rounded-full text-xs font-semibold', PQR_STATUS_STYLES[pqr.status])}>
+              <span className={cn('chip', PQR_STATUS_STYLES[pqr.status])}>
                 {PQR_STATUS_LABELS[pqr.status]}
               </span>
             </div>
@@ -58,7 +58,7 @@ export const PqrDetailModal = ({ pqr, onClose, onAnswer, isAnswering }: PqrDetai
 
           <div className="px-6 py-4 space-y-5">
             {pqr.is_overdue && (
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 text-sm font-medium">
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-[hsl(var(--danger-soft))] text-[hsl(var(--danger-foreground))] text-sm font-medium">
                 <AlertTriangle className="w-4 h-4 flex-shrink-0" />
                 Venció el plazo de 15 días hábiles sin cerrarse
               </div>
@@ -90,8 +90,7 @@ export const PqrDetailModal = ({ pqr, onClose, onAnswer, isAnswering }: PqrDetai
                 disabled={closed}
                 onChange={(e) => setResponse(e.target.value)}
                 placeholder="Escribe la respuesta que verá el usuario en la app"
-                className="mt-1 w-full px-3 py-2 border border-border rounded-lg bg-[hsl(var(--input))] text-foreground
-                           focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent disabled:opacity-70"
+                className="field mt-1 py-2 disabled:opacity-70"
               />
             </div>
           </div>
@@ -103,8 +102,7 @@ export const PqrDetailModal = ({ pqr, onClose, onAnswer, isAnswering }: PqrDetai
                 <button
                   disabled={isAnswering}
                   onClick={() => submit({ status: 'en_tramite' })}
-                  className="px-4 py-2 rounded-lg border border-border font-semibold text-foreground hover:bg-muted
-                             disabled:opacity-50 transition-colors"
+                  className="btn-secondary"
                 >
                   Marcar en trámite
                 </button>
@@ -112,8 +110,7 @@ export const PqrDetailModal = ({ pqr, onClose, onAnswer, isAnswering }: PqrDetai
               <button
                 disabled={isAnswering || !response.trim()}
                 onClick={() => submit({ status: 'cerrada', response: response.trim() })}
-                className="px-4 py-2 rounded-lg bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] font-semibold
-                           hover:opacity-90 disabled:opacity-50 transition-opacity"
+                className="btn-primary"
               >
                 {isAnswering ? 'Enviando…' : 'Responder y cerrar'}
               </button>

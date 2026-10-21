@@ -196,7 +196,7 @@ const RequirementRow = ({ label, ok }: { label: string; ok: boolean }) => (
   <div className="flex items-center justify-between min-h-[52px] px-4 rounded-xl bg-[hsl(var(--muted))]">
     <span className="font-semibold">{label}</span>
     {ok ? (
-      <span className="chip chip-success"><CheckCircle className="w-3.5 h-3.5" />Aprobado</span>
+      <span className="chip chip-success"><CheckCircle className="w-3.5 h-3.5" />Subido</span>
     ) : (
       <span className="chip chip-danger"><XCircle className="w-3.5 h-3.5" />Falta</span>
     )}

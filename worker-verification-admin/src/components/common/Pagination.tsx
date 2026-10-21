@@ -48,7 +48,7 @@ export const Pagination = ({
   };
 
   return (
-    <div className="flex items-center justify-between px-3 sm:px-4 py-3 bg-[hsl(var(--card))] border-t border-[hsl(var(--border))] sm:px-6">
+    <div className="flex items-center justify-between py-2">
       <div className="flex flex-1 items-center justify-between sm:hidden">
         <button
           onClick={() => onPageChange(currentPage - 1)}
@@ -80,14 +80,14 @@ export const Pagination = ({
           </p>
         </div>
         <div>
-          <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+          <nav className="inline-flex gap-2" aria-label="Paginación">
             <button
               onClick={() => onPageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="group relative inline-flex items-center rounded-l-md px-2 py-2 text-[hsl(var(--muted-foreground))] ring-1 ring-inset ring-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-110 active:scale-95"
+              className="w-10 h-10 inline-flex items-center justify-center rounded-xl border-[1.5px] border-[hsl(var(--border))] bg-[hsl(var(--card))] hover:bg-[hsl(var(--muted))] disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <span className="sr-only">Anterior</span>
-              <ChevronLeft className="h-5 w-5 transition-transform duration-200 group-hover:-translate-x-1" />
+              <ChevronLeft className="h-5 w-5" />
             </button>
 
             {getPageNumbers().map((page, index) => (
@@ -95,11 +95,12 @@ export const Pagination = ({
                 key={index}
                 onClick={() => typeof page === 'number' && onPageChange(page)}
                 disabled={page === '...'}
-                className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold transition-all duration-200 hover:scale-110 active:scale-95 ${
+                aria-current={page === currentPage ? 'page' : undefined}
+                className={`min-w-10 h-10 px-3 inline-flex items-center justify-center rounded-xl text-sm font-semibold ${
                   page === currentPage
-                    ? 'z-10 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[hsl(var(--ring))] shadow-md'
-                    : 'text-[hsl(var(--foreground))] ring-1 ring-inset ring-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] focus:z-20 focus:outline-offset-0'
-                } ${page === '...' ? 'cursor-default hover:scale-100' : ''}`}
+                    ? 'bg-[#1B1830] text-[#F6F3EE] dark:bg-[hsl(var(--primary))] dark:text-[#1B1830]'
+                    : 'border-[1.5px] border-[hsl(var(--border))] bg-[hsl(var(--card))] hover:bg-[hsl(var(--muted))]'
+                } ${page === '...' ? 'cursor-default' : ''}`}
               >
                 {page}
               </button>
@@ -108,10 +109,10 @@ export const Pagination = ({
             <button
               onClick={() => onPageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="group relative inline-flex items-center rounded-r-md px-2 py-2 text-[hsl(var(--muted-foreground))] ring-1 ring-inset ring-[hsl(var(--border))] hover:bg-[hsl(var(--muted))] focus:z-20 focus:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-110 active:scale-95"
+              className="w-10 h-10 inline-flex items-center justify-center rounded-xl border-[1.5px] border-[hsl(var(--border))] bg-[hsl(var(--card))] hover:bg-[hsl(var(--muted))] disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <span className="sr-only">Siguiente</span>
-              <ChevronRight className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
+              <ChevronRight className="h-5 w-5" />
             </button>
           </nav>
         </div>

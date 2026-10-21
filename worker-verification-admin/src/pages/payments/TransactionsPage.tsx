@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Receipt, Search, Wallet, Banknote, CreditCard } from 'lucide-react';
+import { Receipt, Search, Wallet, Banknote, CreditCard, Clock, CheckCircle, XCircle, Ban } from 'lucide-react';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { usePayments } from '@/hooks/usePayments';
 import { Pagination } from '@/components/common/Pagination';
 import {
@@ -19,12 +20,13 @@ const STATUS_LABELS: Record<PaymentStatus, string> = {
   VOIDED: 'Anulado',
 };
 
-const STATUS_STYLES: Record<PaymentStatus, string> = {
-  PENDING: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
-  APPROVED: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-  DECLINED: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
-  ERROR: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
-  VOIDED: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300',
+// Estado siempre con texto e ícono, no solo color
+const STATUS_STYLES: Record<PaymentStatus, { className: string; icon: typeof Clock }> = {
+  PENDING: { className: 'chip-warning', icon: Clock },
+  APPROVED: { className: 'chip-success', icon: CheckCircle },
+  DECLINED: { className: 'chip-danger', icon: XCircle },
+  ERROR: { className: 'chip-danger', icon: XCircle },
+  VOIDED: { className: 'chip-neutral', icon: Ban },
 };
 
 const GATEWAY_LABELS: Record<PaymentGateway, string> = {
@@ -33,9 +35,7 @@ const GATEWAY_LABELS: Record<PaymentGateway, string> = {
   mock: 'Simulado',
 };
 
-const inputClass = `w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg
-  bg-[hsl(var(--input))] text-[hsl(var(--foreground))]
-  focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent transition-colors`;
+const inputClass = 'field';
 
 const shortId = (value: string) => (value.length > 10 ? `${value.slice(0, 10)}…` : value);
 
@@ -51,22 +51,9 @@ export const TransactionsPage = () => {
   const byGateway = summary?.approved_by_gateway || {};
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
-      {/* Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[hsl(var(--primary))]/10 via-[hsl(var(--card))] to-[hsl(var(--primary))]/5 rounded-2xl shadow-lg border border-[hsl(var(--border))] p-4 sm:p-6">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(var(--primary))]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-        <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[hsl(var(--primary))]/20 flex items-center justify-center">
-            <Receipt className="w-5 h-5 sm:w-6 sm:h-6 text-[hsl(var(--primary))]" />
-          </div>
-          <div>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[hsl(var(--foreground))]">Transacciones</h1>
-            <p className="text-sm sm:text-base text-[hsl(var(--muted-foreground))] mt-1 font-medium">
-              Pagos digitales (Wompi Sandbox) y en efectivo registrados en ADS
-            </p>
-          </div>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <PageHeader icon={CreditCard} title="Transacciones"
+        subtitle="Pagos digitales (Wompi Sandbox) y en efectivo registrados en ADS" />
 
       {/* Resumen de aprobados con los filtros actuales */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -82,8 +69,8 @@ export const TransactionsPage = () => {
       </div>
 
       {/* Filtros */}
-      <div className="bg-[hsl(var(--card))] rounded-2xl shadow p-4 sm:p-6 border border-[hsl(var(--border))] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-        <label className="space-y-1 text-sm font-medium text-[hsl(var(--muted-foreground))]">
+      <div className="panel p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <label className="block text-xs font-semibold text-[hsl(var(--foreground))] space-y-1">
           Estado
           <select className={inputClass} value={filters.status}
             onChange={(e) => setFilter({ status: e.target.value as PaymentStatus | '' })}>
@@ -93,7 +80,7 @@ export const TransactionsPage = () => {
             ))}
           </select>
         </label>
-        <label className="space-y-1 text-sm font-medium text-[hsl(var(--muted-foreground))]">
+        <label className="block text-xs font-semibold text-[hsl(var(--foreground))] space-y-1">
           Medio de pago
           <select className={inputClass} value={filters.gateway}
             onChange={(e) => setFilter({ gateway: e.target.value as PaymentGateway | '' })}>
@@ -102,17 +89,17 @@ export const TransactionsPage = () => {
             <option value="cash">{GATEWAY_LABELS.cash}</option>
           </select>
         </label>
-        <label className="space-y-1 text-sm font-medium text-[hsl(var(--muted-foreground))]">
+        <label className="block text-xs font-semibold text-[hsl(var(--foreground))] space-y-1">
           Desde
           <input type="date" className={inputClass} value={filters.date_from || ''}
             onChange={(e) => setFilter({ date_from: e.target.value })} />
         </label>
-        <label className="space-y-1 text-sm font-medium text-[hsl(var(--muted-foreground))]">
+        <label className="block text-xs font-semibold text-[hsl(var(--foreground))] space-y-1">
           Hasta
           <input type="date" className={inputClass} value={filters.date_to || ''}
             onChange={(e) => setFilter({ date_to: e.target.value })} />
         </label>
-        <label className="space-y-1 text-sm font-medium text-[hsl(var(--muted-foreground))]">
+        <label className="block text-xs font-semibold text-[hsl(var(--foreground))] space-y-1">
           Solicitud
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--muted-foreground))]" />
@@ -125,7 +112,7 @@ export const TransactionsPage = () => {
 
       {/* Tabla */}
       <div className={cn(
-        'bg-[hsl(var(--card))] rounded-2xl shadow border border-[hsl(var(--border))] overflow-hidden transition-opacity',
+        'panel overflow-hidden transition-opacity',
         isFetching && !isLoading && 'opacity-70'
       )}>
         {isLoading ? (
@@ -165,9 +152,7 @@ export const TransactionsPage = () => {
                       {formatPrice(payment.amount_cop)}
                     </TableCell>
                     <TableCell>
-                      <span className={cn('px-2.5 py-0.5 rounded-full text-xs font-semibold', STATUS_STYLES[payment.status])}>
-                        {STATUS_LABELS[payment.status] || payment.status}
-                      </span>
+                      <StatusChip status={payment.status} />
                     </TableCell>
                   </TableRow>
                 ))}
@@ -198,14 +183,25 @@ interface SummaryCardProps {
 }
 
 const SummaryCard = ({ icon: Icon, label, value, detail }: SummaryCardProps) => (
-  <div className="bg-[hsl(var(--card))] rounded-2xl shadow p-4 sm:p-5 border border-[hsl(var(--border))] flex items-center gap-4">
-    <div className="w-11 h-11 rounded-xl bg-[hsl(var(--primary))]/15 flex items-center justify-center">
-      <Icon className="w-5 h-5 text-[hsl(var(--primary))]" />
+  <div className="panel p-5 flex items-center gap-4">
+    <div className="w-12 h-12 rounded-xl bg-[hsl(var(--chip))] text-[hsl(var(--chip-foreground))] flex items-center justify-center">
+      <Icon className="w-5 h-5" strokeWidth={1.9} />
     </div>
     <div className="min-w-0">
       <p className="text-sm text-[hsl(var(--muted-foreground))] font-medium">{label}</p>
-      <p className="text-xl font-bold text-[hsl(var(--foreground))] truncate">{value}</p>
+      <p className="text-2xl font-extrabold text-[hsl(var(--secondary-foreground))] dark:text-[hsl(var(--foreground))] truncate">{value}</p>
       <p className="text-xs text-[hsl(var(--muted-foreground))]">{detail}</p>
     </div>
   </div>
 );
+
+const StatusChip = ({ status }: { status: PaymentStatus }) => {
+  const style = STATUS_STYLES[status] || STATUS_STYLES.PENDING;
+  const Icon = style.icon;
+  return (
+    <span className={`chip ${style.className}`}>
+      <Icon className="w-3.5 h-3.5" />
+      {STATUS_LABELS[status] || status}
+    </span>
+  );
+};

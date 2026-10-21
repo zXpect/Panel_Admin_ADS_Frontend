@@ -31,7 +31,7 @@ export const CategoryCard = ({ category, onUpdateCategory, onUpdateTask, onCreat
 
   return (
     <div className={cn(
-      'bg-[hsl(var(--card))] rounded-2xl shadow border border-[hsl(var(--border))] overflow-hidden',
+      'panel overflow-hidden',
       !category.is_active && 'opacity-70'
     )}>
       <div className="flex items-center justify-between gap-3 p-4">

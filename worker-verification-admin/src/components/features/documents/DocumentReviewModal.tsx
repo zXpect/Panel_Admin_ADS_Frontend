@@ -43,7 +43,7 @@ export const DocumentReviewModal = ({
       <div
         className="w-full max-w-lg p-8 relative rounded-2xl shadow-2xl border-2 transition-all duration-300 animate-in zoom-in-95"
         style={{
-          backgroundColor: "hsl(var(--background))",
+          backgroundColor: "hsl(var(--card))",
           color: "hsl(var(--foreground))",
           borderColor: "hsl(var(--border))",
         }}
@@ -93,7 +93,8 @@ export const DocumentReviewModal = ({
               {formatDate(doc.uploadedAt)}
             </span>
           </p>
-          {doc.reviewedAt && (
+          {/* La app guarda reviewedAt = 0 al subir: 0 no es una fecha */}
+          {doc.reviewedAt > 0 && (
             <p style={{ color: "hsl(var(--muted-foreground))" }}>
               Revisado:{" "}
               <span style={{ color: "hsl(var(--foreground))" }}>
@@ -151,7 +152,7 @@ export const DocumentReviewModal = ({
                 placeholder="Escribe aquí la razón del rechazo si corresponde..."
                 value={rejectionReason}
                 onChange={(e) => setRejectionReason(e.target.value)}
-                className="w-full rounded-xl px-4 py-3 text-sm resize-none transition-all duration-200 focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent border-2 bg-[hsl(var(--muted))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] focus:bg-[hsl(var(--background))]"
+                className="w-full rounded-xl px-4 py-3 text-sm resize-none transition-all duration-200 focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent border-2 bg-[hsl(var(--input))] text-[hsl(var(--foreground))] border-[hsl(var(--control))] "
                 rows={3}
               />
             </div>
@@ -160,7 +161,7 @@ export const DocumentReviewModal = ({
               <button
                 onClick={() => onApprove(doc)}
                 disabled={isApproving}
-                className="group flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold shadow-md transition-all duration-300 hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 bg-[hsl(var(--chart-2))] text-white hover:bg-[hsl(var(--chart-2))]/90"
+                className="btn-primary flex-1"
               >
                 <CheckCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 Aprobar
@@ -169,7 +170,7 @@ export const DocumentReviewModal = ({
               <button
                 onClick={handleRejectClick}
                 disabled={isRejecting}
-                className="group flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-bold shadow-md transition-all duration-300 hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 bg-[hsl(var(--destructive))] text-white hover:bg-[hsl(var(--destructive))]/90"
+                className="btn-danger flex-1"
               >
                 <XCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 Rechazar

@@ -36,7 +36,7 @@ export const ConfigPanel = ({ configs, onSave, isSaving }: ConfigPanelProps) => 
   });
 
   return (
-    <div className="bg-[hsl(var(--card))] rounded-2xl shadow border border-[hsl(var(--border))] p-4 sm:p-6 space-y-4">
+    <div className="panel p-4 sm:p-6 space-y-4">
       <div className="flex items-center gap-2">
         <SlidersHorizontal className="w-5 h-5 text-[hsl(var(--primary))]" />
         <h2 className="text-lg font-bold text-[hsl(var(--foreground))]">Parámetros de cotización y búsqueda</h2>
@@ -62,15 +62,12 @@ export const ConfigPanel = ({ configs, onSave, isSaving }: ConfigPanelProps) => 
                 aria-label={meta?.label || item.key}
                 value={draft}
                 onChange={(e) => setDrafts((current) => ({ ...current, [item.key]: e.target.value }))}
-                className="px-3 py-2 border border-[hsl(var(--border))] rounded-lg bg-[hsl(var(--input))]
-                           text-[hsl(var(--foreground))] focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent"
+                className="field"
               />
               <button
                 disabled={!changed || isSaving}
                 onClick={() => onSave(item.key, draft.trim()).catch(() => undefined)}
-                className="inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold
-                           bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:opacity-90
-                           disabled:opacity-40 transition-opacity"
+                className="btn-primary min-h-[44px] px-4"
               >
                 <Save className="w-4 h-4" />
                 Guardar

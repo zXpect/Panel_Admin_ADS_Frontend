@@ -94,9 +94,9 @@ export const WorkerFormModal = ({
         />
 
         {/* Modal - full screen on mobile */}
-        <div className="relative w-full h-full sm:h-auto sm:inline-block align-bottom bg-[hsl(var(--background))] sm:rounded-2xl text-left overflow-hidden shadow-xl border-0 sm:border border-[hsl(var(--border))] transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl">
+        <div className="relative w-full h-full sm:h-auto sm:inline-block align-bottom bg-[hsl(var(--card))] sm:rounded-2xl text-left overflow-hidden shadow-xl border-0 sm:border border-[hsl(var(--border))] transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl">
           {/* Header */}
-          <div className="sticky top-0 z-10 flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[hsl(var(--border))] bg-[hsl(var(--background))]">
+          <div className="sticky top-0 z-10 flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[hsl(var(--border))] bg-[hsl(var(--card))]">
             <h3 className="text-base sm:text-lg font-semibold text-[hsl(var(--foreground))]">
               {worker ? 'Editar Trabajador' : 'Crear Trabajador'}
             </h3>
@@ -138,7 +138,7 @@ export const WorkerFormModal = ({
                       step={step}
                       value={(formData as any)[name]}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg bg-[hsl(var(--muted))] text-[hsl(var(--foreground))] focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="field"
                     />
                     {name === 'password' && !worker && (
                       <p className="text-xs text-[hsl(var(--muted-foreground))] mt-1">
@@ -159,7 +159,7 @@ export const WorkerFormModal = ({
                   required
                   value={formData.work}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg bg-[hsl(var(--muted))] text-[hsl(var(--foreground))] focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent transition-colors"
+                  className="field"
                 >
                   <option value="">Seleccionar categoría</option>
                   {WORKER_CATEGORIES.map((category) => (
@@ -181,7 +181,7 @@ export const WorkerFormModal = ({
                 rows={3}
                 value={formData.description}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg bg-[hsl(var(--muted))] text-[hsl(var(--foreground))] focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent resize-none transition-colors"
+                className="field"
                 placeholder="Descripción del trabajador..."
               />
             </div>
@@ -192,14 +192,14 @@ export const WorkerFormModal = ({
                 type="button"
                 onClick={onClose}
                 disabled={isSubmitting}
-                className="flex-1 px-4 py-2.5 sm:py-2 text-sm font-medium text-[hsl(var(--foreground))] bg-[hsl(var(--muted))] border border-[hsl(var(--border))] rounded-lg hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))] transition-colors disabled:opacity-50"
+                className="btn-secondary flex-1"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 px-4 py-2.5 sm:py-2 text-sm font-medium text-[hsl(var(--primary-foreground))] bg-[hsl(var(--primary))] rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary flex-1"
               >
                 {isSubmitting ? 'Guardando...' : worker ? 'Actualizar' : 'Crear'}
               </button>
