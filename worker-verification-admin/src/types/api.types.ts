@@ -132,7 +132,6 @@ export interface Worker {
   profileImage?: string;
   image?: string;
   description?: string;
-  pricePerHour?: number;
   experience?: string;
   fcmToken?: string;
   verificationStatus?: {
@@ -192,7 +191,6 @@ export interface UpdateWorkerParams {
   longitude?: number;
   image?: string;
   description?: string;
-  pricePerHour?: number;
   experience?: string;
 }
 

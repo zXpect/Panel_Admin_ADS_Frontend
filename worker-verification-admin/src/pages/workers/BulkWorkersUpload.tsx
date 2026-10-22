@@ -195,6 +195,7 @@ const BulkWorkersUpload: React.FC = () => {
               <li>Descarga la plantilla de Excel haciendo clic en "Descargar Plantilla"</li>
               <li>Completa los datos de los trabajadores en el archivo</li>
               <li>Los campos obligatorios son: nombre, apellido, email, teléfono y categoría</li>
+              <li>En categoría van hasta 3 oficios del catálogo separados por coma (p. ej. «Plomería, Pintura»); una fila con un oficio que no existe no se crea</li>
               <li>La contraseña es opcional - si no la proporcionas, se generará automáticamente</li>
               <li>El ID se generará automáticamente en Firebase Realtime Database</li>
               <li>Sube el archivo completado usando el área de carga o arrastrando el archivo</li>

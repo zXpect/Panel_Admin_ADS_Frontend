@@ -14,7 +14,6 @@ export interface Worker {
   longitude: number;
   rating: number;
   totalRatings: number;
-  pricePerHour: number;
   experience?: string;
   timestamp: number;
   // Cuenta habilitada (HU-32); false si el administrador la suspendió
@@ -29,16 +28,16 @@ export interface Worker {
   } | null;
 }
 
+// Como el registro de la app: oficios del catálogo (slugs, hasta worker_max_categories);
+// el backend escribe `work` con el primero. Sin precio (sale del catálogo y la cotización)
+// ni ubicación (la escribe la app)
 export interface WorkerCreateInput {
   name: string;
   lastName: string;
   email: string;
-  work: string;
+  categories: string[];
   phone: string;
   description?: string;
-  latitude?: number;
-  longitude?: number;
-  pricePerHour?: number;
   experience?: string;
   password?: string;
 }
@@ -55,12 +54,9 @@ export interface WorkerUpdateInput {
   name?: string;
   lastName?: string;
   email?: string;
-  work?: string;
+  categories?: string[];
   phone?: string;
   description?: string;
-  latitude?: number;
-  longitude?: number;
-  pricePerHour?: number;
   experience?: string;
   isAvailable?: boolean;
   isOnline?: boolean;
