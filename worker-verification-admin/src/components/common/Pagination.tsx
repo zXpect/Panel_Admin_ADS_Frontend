@@ -98,7 +98,7 @@ export const Pagination = ({
                 aria-current={page === currentPage ? 'page' : undefined}
                 className={`min-w-10 h-10 px-3 inline-flex items-center justify-center rounded-xl text-sm font-semibold ${
                   page === currentPage
-                    ? 'bg-[#1B1830] text-[#F6F3EE] dark:bg-[hsl(var(--primary))] dark:text-[#1B1830]'
+                    ? 'bg-[hsl(var(--navy))] text-[hsl(var(--on-navy))] dark:bg-[hsl(var(--primary))] dark:text-[hsl(var(--primary-foreground))]'
                     : 'border-[1.5px] border-[hsl(var(--border))] bg-[hsl(var(--card))] hover:bg-[hsl(var(--muted))]'
                 } ${page === '...' ? 'cursor-default' : ''}`}
               >

@@ -65,7 +65,7 @@ export const WorkerDetailPage = () => {
       {/* Perfil */}
       <section className="panel p-6">
         <div className="flex flex-col sm:flex-row gap-5">
-          <div className="w-24 h-24 rounded-2xl bg-[#1B1830] text-[#F28A2E] flex items-center justify-center text-3xl font-extrabold flex-shrink-0">
+          <div className="w-24 h-24 rounded-2xl bg-[hsl(var(--navy))] text-[hsl(var(--brand-on-navy))] flex items-center justify-center text-3xl font-extrabold flex-shrink-0">
             {getInitials(worker.name, worker.lastName)}
           </div>
           <div className="flex-1 min-w-0">

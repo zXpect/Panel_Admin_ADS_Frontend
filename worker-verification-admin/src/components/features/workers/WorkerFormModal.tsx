@@ -181,7 +181,7 @@ export const WorkerFormModal = ({
                       className={cn(
                         'inline-flex items-center gap-1.5 min-h-[40px] px-4 rounded-full text-sm font-semibold border-[1.5px] transition-colors',
                         selected
-                          ? 'bg-[#1B1830] text-[#F6F3EE] border-transparent dark:bg-[hsl(var(--primary))] dark:text-[#1B1830]'
+                          ? 'bg-[hsl(var(--navy))] text-[hsl(var(--on-navy))] border-transparent dark:bg-[hsl(var(--primary))] dark:text-[hsl(var(--primary-foreground))]'
                           : 'bg-[hsl(var(--card))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] hover:bg-[hsl(var(--muted))]'
                       )}
                     >

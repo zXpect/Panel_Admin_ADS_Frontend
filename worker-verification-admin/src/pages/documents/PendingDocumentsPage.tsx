@@ -55,7 +55,7 @@ export const PendingDocumentsPage = () => {
               <section key={workerId} className="panel p-5">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="w-12 h-12 rounded-xl bg-[#1B1830] text-[#F28A2E] flex items-center justify-center text-sm font-extrabold flex-shrink-0">
+                    <span className="w-12 h-12 rounded-xl bg-[hsl(var(--navy))] text-[hsl(var(--brand-on-navy))] flex items-center justify-center text-sm font-extrabold flex-shrink-0">
                       {worker ? getInitials(worker.name, worker.lastName) : '?'}
                     </span>
                     <div className="min-w-0">

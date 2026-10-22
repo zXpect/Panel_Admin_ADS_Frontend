@@ -68,10 +68,10 @@ export const Sidebar = () => {
       >
         {/* Logo */}
         <div className={cn('flex items-center gap-2.5 pb-5', expanded ? 'px-1.5' : 'justify-center')}>
-          <AdsLogo size={40} />
+          <AdsLogo size={40} variant="onNavy" />
           {expanded && (
             <div className="flex flex-col min-w-0">
-              <span className="text-xl leading-[22px] font-extrabold text-[#F6F3EE]">ADS</span>
+              <span className="text-xl leading-[22px] font-extrabold text-[hsl(var(--on-navy))]">ADS</span>
               <span className="text-xs leading-4">Administración</span>
             </div>
           )}
@@ -99,8 +99,8 @@ export const Sidebar = () => {
                         'min-h-[44px] rounded-xl flex items-center gap-3 text-sm font-semibold transition-colors',
                         expanded ? 'px-3.5' : 'justify-center',
                         isActive
-                          ? 'bg-[#F28A2E] text-[#1B1830]'
-                          : 'hover:bg-white/10 hover:text-[#F6F3EE]'
+                          ? 'bg-[hsl(var(--brand-on-navy))] text-[hsl(var(--navy))]'
+                          : 'hover:bg-white/10 hover:text-[hsl(var(--on-navy))]'
                       )}
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" strokeWidth={1.9} />
@@ -112,7 +112,7 @@ export const Sidebar = () => {
                       <Tooltip.Content
                         side="right"
                         sideOffset={10}
-                        className="z-[60] rounded-lg px-3 py-1.5 text-sm font-semibold bg-[hsl(var(--sidebar))] text-[#F6F3EE] shadow-lg"
+                        className="z-[60] rounded-lg px-3 py-1.5 text-sm font-semibold bg-[hsl(var(--sidebar))] text-[hsl(var(--on-navy))] shadow-lg"
                       >
                         {item.title}
                         <Tooltip.Arrow className="fill-[hsl(var(--sidebar))]" />
@@ -131,13 +131,13 @@ export const Sidebar = () => {
           {expanded ? (
             <>
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#F28A2E]" />
+                <span className="w-2 h-2 rounded-full bg-[hsl(var(--brand-on-navy))]" />
                 Sistema activo
               </div>
               <div>Versión 1.0.0</div>
             </>
           ) : (
-            <span className="w-2 h-2 rounded-full bg-[#F28A2E]" aria-label="Sistema activo" />
+            <span className="w-2 h-2 rounded-full bg-[hsl(var(--brand-on-navy))]" aria-label="Sistema activo" />
           )}
           <button
             onClick={toggleSidebar}

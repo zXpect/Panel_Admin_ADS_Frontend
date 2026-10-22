@@ -128,7 +128,7 @@ export const DashboardPage = () => {
                 aria-selected={trendView === view}
                 onClick={() => setTrendView(view)}
                 className={`px-4 min-h-[36px] text-sm font-semibold rounded-lg transition-colors ${trendView === view
-                  ? 'bg-[#1B1830] text-[#F6F3EE] dark:bg-[hsl(var(--primary))] dark:text-[#1B1830]'
+                  ? 'bg-[hsl(var(--navy))] text-[hsl(var(--on-navy))] dark:bg-[hsl(var(--primary))] dark:text-[hsl(var(--primary-foreground))]'
                   : 'text-[hsl(var(--secondary-foreground))]'}`}
               >
                 {view === 'weekly' ? 'Semanal' : 'Mensual'}

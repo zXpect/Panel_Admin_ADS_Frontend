@@ -63,23 +63,23 @@ function App() {
               success: {
                 duration: 3000,
                 iconTheme: {
-                  primary: '#10b981',
+                  primary: '#34C759',
                   secondary: '#fff',
                 },
                 style: {
                   background: 'hsl(var(--card))',
-                  border: '1px solid #10b981',
+                  border: '1px solid #34C759',
                 },
               },
               error: {
                 duration: 5000,
                 iconTheme: {
-                  primary: '#ef4444',
+                  primary: '#E65245',
                   secondary: '#fff',
                 },
                 style: {
                   background: 'hsl(var(--card))',
-                  border: '1px solid #ef4444',
+                  border: '1px solid #E65245',
                 },
               },
             }}

@@ -93,7 +93,7 @@ export const LoginPage = () => {
         {/* Logo y título (mockup A1) */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-3">
-            <AdsLogo size={72} wrenchColor={darkMode ? '#F6F3EE' : '#3A3F47'} />
+            <AdsLogo size={72} />
           </div>
           <h1 className="text-[28px] leading-9 font-extrabold text-[hsl(var(--secondary-foreground))] dark:text-[hsl(var(--foreground))]">
             ADS Admin

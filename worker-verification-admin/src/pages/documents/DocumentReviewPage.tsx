@@ -210,7 +210,7 @@ export const DocumentReviewPage = () => {
       {worker && (
         <section className="panel p-5 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
-            <span className="w-12 h-12 rounded-xl bg-[#1B1830] text-[#F28A2E] flex items-center justify-center text-sm font-extrabold">
+            <span className="w-12 h-12 rounded-xl bg-[hsl(var(--navy))] text-[hsl(var(--brand-on-navy))] flex items-center justify-center text-sm font-extrabold">
               {getInitials(worker.name, worker.lastName)}
             </span>
             <div>

@@ -2,6 +2,7 @@ import { LogOut, Menu } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { useUIStore } from '@/store/uiStore';
+import { AdsLogo } from './AdsLogo';
 
 /** Barra superior (mockups A1-A8): título, modo oscuro, administrador y cerrar sesión. */
 export const Header = () => {
@@ -19,13 +20,18 @@ export const Header = () => {
         >
           <Menu className="w-5 h-5" />
         </button>
-        <span className="text-sm font-semibold text-[hsl(var(--muted-foreground))]">Panel de administración</span>
+        {/* En móvil el menú lateral está oculto: el logo va aquí */}
+        <span className="md:hidden flex items-center gap-1.5">
+          <AdsLogo size={32} />
+          <span className="text-base font-extrabold text-[hsl(var(--foreground))]">ADS</span>
+        </span>
+        <span className="hidden md:inline text-sm font-semibold text-[hsl(var(--muted-foreground))]">Panel de administración</span>
       </div>
 
       <div className="flex items-center gap-3">
         <ThemeToggle />
         <div className="flex items-center gap-2.5 text-sm font-semibold text-[hsl(var(--foreground))]">
-          <div className="w-9 h-9 rounded-full bg-[#1B1830] text-[#F28A2E] flex items-center justify-center text-xs font-extrabold">
+          <div className="w-9 h-9 rounded-full bg-[hsl(var(--navy))] text-[hsl(var(--brand-on-navy))] flex items-center justify-center text-xs font-extrabold">
             AD
           </div>
           <span className="hidden md:inline">Admin</span>

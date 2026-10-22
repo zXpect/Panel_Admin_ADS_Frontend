@@ -214,7 +214,7 @@ export const WorkersListPage = () => {
                   <tr key={worker.id}>
                     <td>
                       <Link to={`/workers/${worker.id}`} className="flex items-center gap-3 group">
-                        <span className="w-10 h-10 rounded-xl bg-[#1B1830] text-[#F28A2E] flex items-center justify-center text-xs font-extrabold flex-shrink-0">
+                        <span className="w-10 h-10 rounded-xl bg-[hsl(var(--navy))] text-[hsl(var(--brand-on-navy))] flex items-center justify-center text-xs font-extrabold flex-shrink-0">
                           {getInitials(worker.name, worker.lastName)}
                         </span>
                         <span className="min-w-0">

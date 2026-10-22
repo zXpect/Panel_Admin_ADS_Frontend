@@ -1,18 +1,31 @@
 interface AdsLogoProps {
   size?: number;
-  // Color de la llave: claro sobre fondos oscuros (menú), charcoal sobre fondos claros
-  wrenchColor?: string;
+  // 'theme': sigue el tema (claro u oscuro), como ic_ads_logo de la app.
+  // 'onNavy': siempre la versión oscura, para fondos navy como el menú (ic_ads_logo_on_navy)
+  variant?: 'theme' | 'onNavy';
 }
 
-/** Logo de ADS (opción A, docs/branding): techo naranja y llave con boca de tuerca. */
-export const AdsLogo = ({ size = 40, wrenchColor = '#F6F3EE' }: AdsLogoProps) => (
-  <svg width={size} height={size} viewBox="0 0 120 120" aria-hidden="true" className="flex-shrink-0">
-    <path d="M12 57 L60 16 L108 57" fill="none" stroke="#F28A2E" strokeWidth="10.5" strokeLinecap="round" strokeLinejoin="round" />
-    <rect x="85" y="22" width="11" height="23" rx="2.5" fill="#F28A2E" />
-    <path
-      fill={wrenchColor}
-      d="M53.20 41.88 A17.5 17.5 0 0 0 52.80 73.95 L53.80 101 A6.2 6.2 0 0 0 66.20 101 L67.20 73.95 A17.5 17.5 0 0 0 66.80 41.88 L66.80 57 A6.8 6.8 0 0 1 53.20 57 Z"
-    />
-    <path fill="#F28A2E" d="M63.38 96.95 L60.00 98.90 L56.62 96.95 L56.62 93.05 L60.00 91.10 L63.38 93.05 Z" />
-  </svg>
-);
+/**
+ * Logo de ADS, copiado de docs/branding/ads-logo-claro.svg y ads-logo-oscuro.svg
+ * (opción A). No redibujar ni recolorear: los colores salen de --logo-roof y
+ * --logo-wrench en globals.css.
+ */
+export const AdsLogo = ({ size = 40, variant = 'theme' }: AdsLogoProps) => {
+  const roof = variant === 'onNavy' ? '#F28A2E' : 'var(--logo-roof)';
+  const wrench = variant === 'onNavy' ? '#F6F3EE' : 'var(--logo-wrench)';
+
+  return (
+    <svg width={size} height={size} viewBox="0 0 120 120" aria-hidden="true" className="flex-shrink-0">
+      <polyline points="12,58 60,18 108,58" fill="none" stroke={roof} strokeWidth="11" strokeLinecap="round" strokeLinejoin="round" />
+      <rect x="82" y="20" width="12" height="24" rx="2" fill={roof} />
+      <path
+        d="M51.5 42 L51.5 55 L68.5 55 L68.5 42 L78 50 L78 58 L60 73.1 L42 58 L42 50 Z"
+        strokeWidth="4" strokeLinejoin="round" fill={wrench} stroke={wrench}
+      />
+      <path
+        fillRule="evenodd" fill={wrench}
+        d="M52.5 66 H67.5 V104.5 A7.5 7.5 0 0 1 52.5 104.5 Z M60 95.4 L63.98 97.7 L63.98 102.3 L60 104.6 L56.02 102.3 L56.02 97.7 Z"
+      />
+    </svg>
+  );
+};

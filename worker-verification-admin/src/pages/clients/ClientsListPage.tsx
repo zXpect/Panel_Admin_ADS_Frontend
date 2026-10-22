@@ -96,7 +96,7 @@ export const ClientsListPage = () => {
                   <tr key={client.id}>
                     <td>
                       <button onClick={() => handleViewClient(client)} className="flex items-center gap-3 text-left group">
-                        <span className="w-10 h-10 rounded-xl bg-[#1B1830] text-[#F28A2E] flex items-center justify-center text-xs font-extrabold flex-shrink-0">
+                        <span className="w-10 h-10 rounded-xl bg-[hsl(var(--navy))] text-[hsl(var(--brand-on-navy))] flex items-center justify-center text-xs font-extrabold flex-shrink-0">
                           {getInitials(client.name, client.lastName)}
                         </span>
                         <span className="font-semibold text-[hsl(var(--secondary-foreground))] dark:text-[hsl(var(--foreground))] group-hover:underline">

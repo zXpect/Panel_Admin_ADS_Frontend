@@ -4,7 +4,8 @@
 
 /*
  * Sistema de diseño de ADS (docs/mockups/ds/ads/tokens.json), en HSL para
- * Tailwind/shadcn. Los mockups del panel son A1-A8 y Admin*.dc.html.
+ * Tailwind/shadcn. Los colores son los de la app (ADSv res/values/colors.xml y
+ * values-night/colors.xml): si cambian allá, cambiarlos aquí. Los mockups del panel son A1-A8 y Admin*.dc.html.
  */
 @layer base {
   :root {
@@ -15,23 +16,26 @@
     --card-foreground: 217 10% 25%;
     --popover: 0 0% 100%;
     --popover-foreground: 217 10% 25%;
-    --primary: 27 82% 51%;           /* brand #E8751A */
+    --primary: 26.5 81.7% 50.6%;           /* brand #E8751A */
     --primary-foreground: 248 33% 14%; /* navy: el texto sobre naranja es navy, no blanco */
     --secondary: 40 20% 88%;         /* surface_alt #E7E3DB */
     --secondary-foreground: 248 33% 14%;
-    --muted: 40 22% 91%;
+    --muted: 40 20% 88%;             /* ads_surface_alt #E7E3DB */
     --muted-foreground: 221 8% 39%;  /* muted #5B606B */
-    --accent: 27 82% 51%;
+    --accent: 26.5 81.7% 50.6%;
     --accent-foreground: 248 33% 14%;
     --destructive: 0 70% 45%;
     --destructive-foreground: 0 0% 100%;
     --border: 40 14% 78%;            /* line #CFCAC0 */
     --input: 0 0% 100%;
-    --ring: 27 82% 51%;
+    --ring: 26.5 81.7% 50.6%;
     --radius: 0.75rem;
 
     /* Propios de ADS */
-    --navy: 248 33% 14%;             /* #1B1830 */
+    --navy: 248 33% 14%;             /* ads_navy #1B1830 */
+    --on-navy: 37 31% 95%;           /* ads_on_navy #F6F3EE */
+    /* Naranja sobre navy: el logo y los acentos del menú usan la versión oscura (#F28A2E) */
+    --brand-on-navy: 28.2 88.3% 56.5%;
     --brand-text: 26 90% 37%;        /* #B45309: texto naranja sobre fondo claro (AA) */
     --control: 219 6% 55%;           /* #858A93: borde de campos y botones secundarios */
     --chip: 30 83% 91%;              /* #FBE7D3 */
@@ -46,54 +50,64 @@
     --sidebar-foreground: 256 17% 83%; /* #CFCBDA */
     --sidebar-border: 247 24% 28%;
 
+    /* Logo sobre fondos del tema (docs/branding/ads-logo-claro.svg) */
+    --logo-roof: #E8751A;
+    --logo-wrench: #3A3F47;
+
     /* Gráficos */
-    --chart-1: 27 82% 51%;
+    --chart-1: 26.5 81.7% 50.6%;
     --chart-2: 248 33% 14%;
     --chart-3: 26 90% 37%;
     --chart-4: 221 8% 55%;
     --chart-5: 28 88% 72%;
   }
 
-  /* === Tema oscuro === */
+  /* === Tema oscuro: los mismos valores que la app (ADSv res/values-night/colors.xml) === */
   .dark {
-    --background: 248 33% 14%;       /* navy #1B1830 */
-    --foreground: 38 31% 95%;
-    --card: 248 30% 19%;             /* #26223F */
-    --card-foreground: 38 31% 95%;
-    --popover: 248 30% 19%;
-    --popover-foreground: 38 31% 95%;
-    --primary: 28 88% 56%;           /* #F28A2E */
-    --primary-foreground: 248 33% 14%;
-    --secondary: 248 25% 24%;
-    --secondary-foreground: 38 31% 95%;
-    --muted: 248 25% 24%;
-    --muted-foreground: 253 11% 74%; /* #B9B6C4 */
-    --accent: 28 88% 56%;
-    --accent-foreground: 248 33% 14%;
+    --background: 229.4 36.2% 9.2%;        /* ads_surface #0F1220 */
+    --foreground: 37 31% 95%;        /* ads_text #F6F3EE */
+    --card: 228.0 30.3% 12.9%;             /* ads_card #171B2B */
+    --card-foreground: 37 31% 95%;
+    --popover: 228.0 30.3% 12.9%;
+    --popover-foreground: 37 31% 95%;
+    --primary: 28.2 88.3% 56.5%;           /* ads_brand #F28A2E */
+    --primary-foreground: 229.4 36.2% 9.2%; /* ads_on_brand #0F1220 */
+    --secondary: 228.0 30.3% 12.9%;        /* ads_surface_alt #171B2B */
+    --secondary-foreground: 37 31% 95%;
+    --muted: 229 24% 22%;            /* ads_segment_selected #2A2F45 */
+    --muted-foreground: 225 16% 71%; /* ads_muted #A8AEC0 */
+    --accent: 28.2 88.3% 56.5%;
+    --accent-foreground: 229.4 36.2% 9.2%;
     --destructive: 0 70% 58%;
-    --destructive-foreground: 248 33% 14%;
-    --border: 247 24% 28%;           /* #3A3658 */
-    --input: 248 30% 17%;
-    --ring: 28 88% 56%;
+    --destructive-foreground: 229.4 36.2% 9.2%;
+    --border: 229 24% 22%;           /* ads_line #2A2F45 */
+    --input: 228.0 30.3% 12.9%;            /* campos = tarjetas */
+    --ring: 28.2 88.3% 56.5%;
 
-    --brand-text: 28 88% 62%;
-    --control: 250 12% 55%;
-    --chip: 25 55% 22%;
-    --chip-foreground: 28 90% 72%;
+    --navy: 229 35% 19%;             /* ads_navy #1F2540: bloques navy */
+    --on-navy: 37 31% 95%;
+    --brand-text: 28.2 88.3% 56.5%;        /* ads_brand_text #F28A2E */
+    --control: 226 12% 48%;          /* ads_control #6B7288 */
+    --chip: 27 45% 16%;              /* ads_chip_bg #3A2616 */
+    --chip-foreground: 28.2 88.3% 56.5%;   /* ads_chip_text #F28A2E */
     --success: 142 50% 60%;
     --success-soft: 142 35% 20%;
     --warning-soft: 40 45% 22%;
     --warning-foreground: 42 90% 70%;
     --danger-soft: 0 40% 24%;
     --danger-foreground: 0 85% 78%;
-    --sidebar: 248 38% 10%;
-    --sidebar-foreground: 256 17% 80%;
-    --sidebar-border: 247 24% 24%;
+    --sidebar: 229 35% 19%;          /* ads_navy #1F2540 */
+    --sidebar-foreground: 226 14% 81%; /* ads_on_navy_muted #C9CCD6 */
+    --sidebar-border: 229 24% 28%;
 
-    --chart-1: 28 88% 56%;
-    --chart-2: 253 30% 70%;
+    /* Logo sobre fondos del tema (docs/branding/ads-logo-oscuro.svg) */
+    --logo-roof: #F28A2E;
+    --logo-wrench: #F6F3EE;
+
+    --chart-1: 28.2 88.3% 56.5%;
+    --chart-2: 225 16% 71%;
     --chart-3: 28 88% 70%;
-    --chart-4: 253 11% 60%;
+    --chart-4: 226 12% 48%;
     --chart-5: 28 60% 40%;
   }
 

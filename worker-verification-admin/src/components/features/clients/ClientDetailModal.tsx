@@ -44,7 +44,7 @@ export const ClientDetailModal = ({
           <div className="px-6 py-4">
             {/* Avatar y nombre */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 rounded-full bg-[#1B1830] text-[#F28A2E] flex items-center justify-center text-2xl font-extrabold">
+              <div className="w-16 h-16 rounded-full bg-[hsl(var(--navy))] text-[hsl(var(--brand-on-navy))] flex items-center justify-center text-2xl font-extrabold">
                 {getInitials(client.name, client.lastName)}
               </div>
               <div>
