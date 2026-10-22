@@ -6,7 +6,8 @@ import {
   DocumentCreateInput, 
   DocumentApprovalInput, 
   DocumentRejectionInput,
-  DocumentRequirements
+  DocumentRequirements,
+  WorkerDocumentCollection
 } from '@/types/document.types';
 import { ApiResponse, PaginatedResponse } from '@/types/api.types';
 
@@ -24,8 +25,8 @@ export const documentService = {
   /**
    * Obtener todos los documentos de un trabajador
    */
-  getWorkerDocuments: async (workerId: string): Promise<any> => {
-    const { data } = await axiosInstance.get<ApiResponse<any>>(
+  getWorkerDocuments: async (workerId: string): Promise<WorkerDocumentCollection | undefined> => {
+    const { data } = await axiosInstance.get<ApiResponse<WorkerDocumentCollection>>(
       API_ENDPOINTS.DOCUMENTS.WORKER_DOCUMENTS(workerId)
     );
     return data.data;

@@ -23,6 +23,16 @@ export interface WorkerDocument {
   verificationUrl?: string;
 }
 
+/** Documentos de un trabajador como los devuelve GET /api/documents/worker/{id}/ (claves = id). */
+export interface WorkerDocumentCollection {
+  hojaDeVida?: WorkerDocument;
+  antecedentesJudiciales?: WorkerDocument;
+  certificaciones?: {
+    titulos?: Record<string, WorkerDocument>;
+    cartasRecomendacion?: Record<string, WorkerDocument>;
+  };
+}
+
 export interface DocumentCreateInput {
   id: string;
   workerId: string;

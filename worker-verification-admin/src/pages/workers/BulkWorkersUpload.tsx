@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Upload, Download, X, CheckCircle, XCircle, FileSpreadsheet, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import axiosInstance from '@/api/axiosConfig';
+import { getServerErrorMessage } from '@/lib/utils/errorHandler';
 
 interface BulkUploadResult {
   total_processed: number;
@@ -98,10 +99,9 @@ const BulkWorkersUpload: React.FC = () => {
       } else {
         setError(response.data.error || 'Error al procesar el archivo');
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error uploading file:', err);
-      const errorMessage = err.response?.data?.error || err.response?.data?.details || err.message || 'Error al subir el archivo';
-      setError(errorMessage);
+      setError(getServerErrorMessage(err, err instanceof Error ? err.message : 'Error al subir el archivo'));
     } finally {
       setIsUploading(false);
     }
@@ -124,7 +124,7 @@ const BulkWorkersUpload: React.FC = () => {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error downloading template:', err);
       setError('Error al descargar la plantilla');
     } finally {

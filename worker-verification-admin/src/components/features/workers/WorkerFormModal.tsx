@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Check, X } from 'lucide-react';
-import { Worker, WorkerCreateInput } from '@/types/worker.types';
+import { Worker, WorkerCreateInput, WorkerUpdateInput } from '@/types/worker.types';
 import { useCatalogAdmin } from '@/hooks/useCatalogAdmin';
 import { WORKER_CATEGORIES, workerCategorySlugs } from '@/lib/utils/constants';
 import { cn } from '@/lib/utils/helpers';
@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils/helpers';
 interface WorkerFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: WorkerCreateInput | Omit<WorkerCreateInput, 'email' | 'password'>) => void;
+  onSubmit: (data: WorkerCreateInput | WorkerUpdateInput) => void;
   worker?: Worker | null;
   isSubmitting: boolean;
 }

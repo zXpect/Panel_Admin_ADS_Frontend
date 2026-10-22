@@ -56,7 +56,7 @@ export const LoginPage = () => {
     }
 
     login(formData, {
-      onError: (err: any) => {
+      onError: (err) => {
         handleError(err, { showToast: false }); // No mostrar toast, usaremos el ErrorAlert
       },
     });

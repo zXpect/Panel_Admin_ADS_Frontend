@@ -2,6 +2,7 @@
     import { useMutation } from '@tanstack/react-query';
     import { workerBulkService, BulkUploadResult } from '@/api/services/workerBulkService';
     import toast from 'react-hot-toast';
+    import { getServerErrorMessage } from '@/lib/utils/errorHandler';
 
     export const useBulkUpload = () => {
     const [uploadResult, setUploadResult] = useState<BulkUploadResult | null>(null);
@@ -25,13 +26,9 @@
             toast.error(response.error ?? 'Error al procesar el archivo');
         }
         },
-        onError: (error: any) => {
+        onError: (error) => {
         console.error('Error uploading workers:', error);
-        toast.error(
-            error?.response?.data?.error ??
-            error?.message ??
-            'Error al subir el archivo'
-        );
+        toast.error(getServerErrorMessage(error, error.message || 'Error al subir el archivo'));
         },
     });
 
@@ -50,7 +47,7 @@
 
         toast.success('✅ Plantilla descargada exitosamente');
         },
-        onError: (error: any) => {
+        onError: (error) => {
         console.error('Error downloading template:', error);
         toast.error('Error al descargar la plantilla');
         },

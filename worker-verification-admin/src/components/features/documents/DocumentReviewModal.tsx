@@ -3,14 +3,15 @@ import { X, CheckCircle, XCircle, ExternalLink, FileText } from "lucide-react";
 import { formatDate, getStatusColor, getStatusText } from "@/lib/utils/helpers";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils/helpers";
+import { WorkerDocument } from "@/types/document.types";
 
 interface DocumentReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  doc: any;
+  doc: WorkerDocument | null;
   title: string;
-  onApprove: (doc: any) => void;
-  onReject: (doc: any, reason: string) => void;
+  onApprove: (doc: WorkerDocument) => void;
+  onReject: (doc: WorkerDocument, reason: string) => void;
   isApproving?: boolean;
   isRejecting?: boolean;
 }
@@ -94,14 +95,14 @@ export const DocumentReviewModal = ({
             </span>
           </p>
           {/* La app guarda reviewedAt = 0 al subir: 0 no es una fecha */}
-          {doc.reviewedAt > 0 && (
+          {doc.reviewedAt ? (
             <p style={{ color: "hsl(var(--muted-foreground))" }}>
               Revisado:{" "}
               <span style={{ color: "hsl(var(--foreground))" }}>
                 {formatDate(doc.reviewedAt)}
               </span>
             </p>
-          )}
+          ) : null}
 
           {doc.rejectionReason && (
             <div

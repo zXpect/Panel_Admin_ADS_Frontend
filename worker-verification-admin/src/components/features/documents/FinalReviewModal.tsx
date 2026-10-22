@@ -1,11 +1,12 @@
 // src/components/FinalReviewModal.tsx
 import { CheckCircle, XCircle, FileText, X } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { WorkerDocument, WorkerDocumentCollection } from '@/types/document.types';
 
 interface FinalReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  documents: any;
+  documents: WorkerDocumentCollection | undefined;
   onConfirm: (finalStatus: 'approved' | 'rejected') => void;
 }
 
@@ -21,9 +22,9 @@ const FinalReviewModal = ({
   const flatDocs = [
     documents.hojaDeVida,
     documents.antecedentesJudiciales,
-    ...(Object.values(documents.certificaciones?.titulos || {}) as any[]),
-    ...(Object.values(documents.certificaciones?.cartasRecomendacion || {}) as any[]),
-  ].filter(Boolean);
+    ...Object.values(documents.certificaciones?.titulos || {}),
+    ...Object.values(documents.certificaciones?.cartasRecomendacion || {}),
+  ].filter((doc): doc is WorkerDocument => !!doc);
 
   // Clasificación
   const approvedDocs = flatDocs.filter((d) => d.status === 'approved');

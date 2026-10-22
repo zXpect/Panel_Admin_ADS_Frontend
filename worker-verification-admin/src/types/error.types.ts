@@ -68,6 +68,9 @@ export interface FieldError {
 /**
  * Error de validación genérico de Django
  */
+/** Elemento de `detail` cuando es una lista: texto (DRF) o error de validación con ubicación. */
+export type ErrorDetailItem = string | { loc?: (string | number)[]; msg?: string; type?: string };
+
 export interface DjangoValidationError {
   [field: string]: string[];
 }
@@ -76,7 +79,7 @@ export interface DjangoValidationError {
  * Error de detalle de Django REST Framework
  */
 export interface DjangoErrorDetail {
-  detail?: string | DjangoValidationError | any[];
+  detail?: string | DjangoValidationError | ErrorDetailItem[];
   message?: string;
   code?: string;
   errors?: DjangoValidationError;
@@ -97,7 +100,7 @@ export interface ApiError {
   category: ErrorCategory;
 
   // Detalles específicos
-  details?: any;
+  details?: unknown;
   fieldErrors?: FieldError[];
   validationErrors?: DjangoValidationError;
 
@@ -126,7 +129,7 @@ export interface ErrorContext {
   route?: string;
   component?: string;
   action?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -172,7 +175,7 @@ export interface ServerErrorResponse {
   success: false;
   error?: string;
   message?: string;
-  detail?: string | DjangoValidationError | any[];
+  detail?: string | DjangoValidationError | ErrorDetailItem[];
   errors?: DjangoValidationError;
   non_field_errors?: string[];
   code?: string;

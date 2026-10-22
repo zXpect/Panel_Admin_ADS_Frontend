@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { workerService } from '@/api/services/workerService';
 import { WorkerFilters, WorkerCreateInput, WorkerUpdateInput, WorkerCreateResponse } from '@/types/worker.types';
 import toast from 'react-hot-toast';
+import { getServerErrorMessage } from '@/lib/utils/errorHandler';
 
 export const useWorkers = (filters?: WorkerFilters) => {
   const queryClient = useQueryClient();
@@ -54,8 +55,8 @@ export const useWorkers = (filters?: WorkerFilters) => {
         toast(response.warning, { icon: '⚠️', duration: 5000 });
       }
     },
-    onError: (error: any) => {
-      const errorMsg = error.response?.data?.error || 'Error al crear trabajador';
+    onError: (error) => {
+      const errorMsg = getServerErrorMessage(error, 'Error al crear trabajador');
       toast.error(errorMsg);
     },
   });
@@ -68,8 +69,8 @@ export const useWorkers = (filters?: WorkerFilters) => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
       toast.success('Trabajador actualizado exitosamente');
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.error || 'Error al actualizar trabajador');
+    onError: (error) => {
+      toast.error(getServerErrorMessage(error, 'Error al actualizar trabajador'));
     },
   });
 
@@ -80,8 +81,8 @@ export const useWorkers = (filters?: WorkerFilters) => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
       toast.success('Trabajador eliminado exitosamente');
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.error || 'Error al eliminar trabajador');
+    onError: (error) => {
+      toast.error(getServerErrorMessage(error, 'Error al eliminar trabajador'));
     },
   });
 
@@ -93,8 +94,8 @@ export const useWorkers = (filters?: WorkerFilters) => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
       toast.success('Disponibilidad actualizada');
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.error || 'Error al actualizar disponibilidad');
+    onError: (error) => {
+      toast.error(getServerErrorMessage(error, 'Error al actualizar disponibilidad'));
     },
   });
 
@@ -106,8 +107,8 @@ export const useWorkers = (filters?: WorkerFilters) => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
       toast.success('Estado actualizado');
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.error || 'Error al actualizar estado');
+    onError: (error) => {
+      toast.error(getServerErrorMessage(error, 'Error al actualizar estado'));
     },
   });
 
@@ -118,8 +119,8 @@ export const useWorkers = (filters?: WorkerFilters) => {
     queryClient.invalidateQueries({ queryKey: ['workers'] });
     toast.success('Estado de verificación actualizado');
   },
-  onError: (error: any) => {
-    toast.error(error.response?.data?.error || 'Error al actualizar estado de verificación');
+  onError: (error) => {
+    toast.error(getServerErrorMessage(error, 'Error al actualizar estado de verificación'));
   },
 });
 

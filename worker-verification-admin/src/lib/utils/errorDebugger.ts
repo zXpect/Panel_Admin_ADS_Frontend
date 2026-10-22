@@ -8,6 +8,13 @@ import { ApiError } from '@/types/error.types';
 /**
  * Panel de debugging de errores (solo desarrollo)
  */
+declare global {
+  interface Window {
+    // Solo en desarrollo (exposeDebugTools)
+    __ERROR_DEBUGGER__?: Record<string, unknown>;
+  }
+}
+
 export class ErrorDebugger {
   private static instance: ErrorDebugger;
   private errorHistory: ApiError[] = [];
@@ -55,7 +62,7 @@ export class ErrorDebugger {
    * Expone herramientas de debugging en window
    */
   private exposeDebugTools(): void {
-    (window as any).__ERROR_DEBUGGER__ = {
+    window.__ERROR_DEBUGGER__ = {
       getHistory: () => this.errorHistory,
       clearHistory: () => this.clearHistory(),
       getSummary: () => this.getErrorSummary(),

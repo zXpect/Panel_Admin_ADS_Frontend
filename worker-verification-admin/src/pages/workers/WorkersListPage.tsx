@@ -10,7 +10,7 @@ import { VerificationChip } from '@/components/features/workers/VerificationChip
 import { Pagination } from '@/components/common/Pagination';
 import { WorkerFormModal } from '@/components/features/workers/WorkerFormModal';
 import { DeleteConfirmModal } from '@/components/common/DeleteConfirmModal';
-import { Worker } from '@/types/worker.types';
+import { Worker, WorkerCreateInput, WorkerUpdateInput } from '@/types/worker.types';
 import { WORKER_CATEGORIES, workerCategoryNames, workerCategorySlugs } from '@/lib/utils/constants';
 
 type VerificationFilter = '' | 'approved' | 'documents_submitted' | 'rejected' | 'none';
@@ -84,7 +84,7 @@ export const WorkersListPage = () => {
     setIsDeleteModalOpen(true);
   };
 
-  const handleFormSubmit = (data: any) => {
+  const handleFormSubmit = (data: WorkerCreateInput | WorkerUpdateInput) => {
     if (selectedWorker) {
       updateWorker(
         { id: selectedWorker.id, data },
@@ -96,7 +96,8 @@ export const WorkersListPage = () => {
         }
       );
     } else {
-      createWorker(data, {
+      // Al crear, el formulario siempre manda correo y contraseña
+      createWorker(data as WorkerCreateInput, {
         onSuccess: () => {
           setIsFormModalOpen(false);
         },

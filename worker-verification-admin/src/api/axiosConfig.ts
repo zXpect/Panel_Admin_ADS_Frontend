@@ -42,11 +42,11 @@ export const axiosInstance = axios.create({
 
 let isRefreshing = false;
 let failedQueue: Array<{
-  resolve: (value?: any) => void;
-  reject: (reason?: any) => void;
+  resolve: (token: string | null) => void;
+  reject: (reason: unknown) => void;
 }> = [];
 
-const processQueue = (error: any = null, token: string | null = null) => {
+const processQueue = (error: unknown = null, token: string | null = null) => {
   failedQueue.forEach((prom) => {
     if (error) {
       prom.reject(error);
@@ -220,7 +220,7 @@ axiosInstance.interceptors.response.use(
     if (shouldRetry(error, retryCount) && !originalRequest._retry) {
       try {
         return await retryRequest(originalRequest);
-      } catch (retryError) {
+      } catch {
         // Si el retry también falla, continuar con el flujo normal de errores
         logger.error('Retry failed after max attempts', {
           requestId,

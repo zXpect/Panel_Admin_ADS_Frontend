@@ -11,6 +11,7 @@ import { useDocumentReviewStatus } from '@/hooks/useDocumentReviewStatus';
 import toast from 'react-hot-toast';
 import { cn, getInitials } from '@/lib/utils/helpers';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { WorkerDocument } from '@/types/document.types';
 
 export const DocumentReviewPage = () => {
   const { workerId } = useParams<{ workerId: string }>();
@@ -22,12 +23,12 @@ export const DocumentReviewPage = () => {
   // Usar el hook personalizado para obtener el estado de revisión
   const reviewStatus = useDocumentReviewStatus(documents);
 
-  const [selectedDoc, setSelectedDoc] = useState<any | null>(null);
+  const [selectedDoc, setSelectedDoc] = useState<WorkerDocument | null>(null);
   const [selectedTitle, setSelectedTitle] = useState('');
   const [isDocModalOpen, setIsDocModalOpen] = useState(false);
   const [isFinalModalOpen, setIsFinalModalOpen] = useState(false);
 
-  const handleOpenModal = (doc: any, title: string) => {
+  const handleOpenModal = (doc: WorkerDocument, title: string) => {
     setSelectedDoc(doc);
     setSelectedTitle(title);
     setIsDocModalOpen(true);
@@ -39,7 +40,7 @@ export const DocumentReviewPage = () => {
     setSelectedTitle('');
   };
 
-  const handleApprove = (doc: any) => {
+  const handleApprove = (doc: WorkerDocument) => {
     approveDocument({
       workerId: workerId!,
       category: doc.category,
@@ -50,7 +51,7 @@ export const DocumentReviewPage = () => {
     handleCloseDocModal();
   };
 
-  const handleReject = (doc: any, reason: string) => {
+  const handleReject = (doc: WorkerDocument, reason: string) => {
     rejectDocument(
       {
         workerId: workerId!,
@@ -111,7 +112,7 @@ export const DocumentReviewPage = () => {
   };
 
   // Función para verificar si un documento es nuevo (subido después de la última revisión)
-  const isNewDocument = (doc: any) => {
+  const isNewDocument = (doc: WorkerDocument) => {
     if (!reviewStatus.lastReviewDate || !doc) return false;
     return (
       doc.uploadedAt > reviewStatus.lastReviewDate &&
@@ -135,7 +136,7 @@ export const DocumentReviewPage = () => {
   };
 
   // Fila de un documento: se abre el detalle (archivo, aprobar, rechazar con motivo)
-  const renderRow = (doc: any, title: string) => {
+  const renderRow = (doc: WorkerDocument | undefined, title: string) => {
     if (!doc) return null;
 
     const isNew = isNewDocument(doc);
@@ -275,8 +276,8 @@ export const DocumentReviewPage = () => {
         <div className="space-y-3">
           {documents?.hojaDeVida && renderRow(documents.hojaDeVida, 'Hoja de vida')}
           {documents?.antecedentesJudiciales && renderRow(documents.antecedentesJudiciales, 'Antecedentes judiciales')}
-          {titulos.map((t: any, index) => renderRow(t, titulos.length > 1 ? `Título ${index + 1}` : 'Título'))}
-          {cartas.map((c: any, index) => renderRow(c, `Carta de recomendación ${c.orden || index + 1}`))}
+          {titulos.map((t, index) => renderRow(t, titulos.length > 1 ? `Título ${index + 1}` : 'Título'))}
+          {cartas.map((c, index) => renderRow(c, `Carta de recomendación ${c.orden || index + 1}`))}
         </div>
       )}
 
