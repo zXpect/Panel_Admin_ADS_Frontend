@@ -99,7 +99,7 @@ export const DashboardPage = () => {
       {/* Indicadores principales */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <KpiCard to="/workers" icon={Users} label="Total trabajadores" value={totalWorkersFiltered}
-          detail={<><span>{stats?.workers.available || 0} disponibles</span><span>{stats?.workers.online || 0} en línea</span></>} />
+          detail={<><span>{stats?.workers.available || 0} {(stats?.workers.available || 0) === 1 ? 'disponible' : 'disponibles'}</span><span>{stats?.workers.online || 0} en línea</span></>} />
         <KpiCard to="/clients" icon={UserCheck} label="Total clientes" value={stats?.clients.total || 0}
           detail="Clientes registrados" />
         <KpiCard to="/documents/pending" icon={Clock} label="Docs pendientes" value={stats?.documents.pending || 0}

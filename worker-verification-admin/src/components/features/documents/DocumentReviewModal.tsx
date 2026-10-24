@@ -27,12 +27,14 @@ export const DocumentReviewModal = ({
   isRejecting,
 }: DocumentReviewModalProps) => {
   const [rejectionReason, setRejectionReason] = useState("");
+  // El backend exige un motivo de al menos 10 caracteres (DEF-20)
+  const MIN_REASON_LENGTH = 10;
 
   if (!isOpen || !doc) return null;
 
   const handleRejectClick = () => {
-    if (!rejectionReason.trim()) {
-      toast.error("Debes ingresar una razón para el rechazo");
+    if (rejectionReason.trim().length < MIN_REASON_LENGTH) {
+      toast.error(`Escribe el motivo del rechazo (mínimo ${MIN_REASON_LENGTH} caracteres)`);
       return;
     }
     onReject(doc, rejectionReason);
@@ -147,10 +149,10 @@ export const DocumentReviewModal = ({
           >
             <div>
               <label className="block text-sm font-semibold mb-2 text-[hsl(var(--foreground))]">
-                Razón de rechazo (opcional)
+                Motivo del rechazo (obligatorio si rechazas)
               </label>
               <textarea
-                placeholder="Escribe aquí la razón del rechazo si corresponde..."
+                placeholder="Explica al trabajador por qué se rechaza (mínimo 10 caracteres)"
                 value={rejectionReason}
                 onChange={(e) => setRejectionReason(e.target.value)}
                 className="w-full rounded-xl px-4 py-3 text-sm resize-none transition-all duration-200 focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent border-2 bg-[hsl(var(--input))] text-[hsl(var(--foreground))] border-[hsl(var(--control))] "
