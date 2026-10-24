@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 import { cn, getInitials } from '@/lib/utils/helpers';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { WorkerDocument } from '@/types/document.types';
-import { computeVerification } from '@/lib/utils/verification';
+import { computeVerification, sortByOrder } from '@/lib/utils/verification';
 
 export const DocumentReviewPage = () => {
   const { workerId } = useParams<{ workerId: string }>();
@@ -184,9 +184,8 @@ export const DocumentReviewPage = () => {
     { label: 'Cartas', icon: MessageSquare, ok: requirements.hasMinimumCartas, detail: `${requirements.cartasCount} / 3` },
   ] : [];
 
-  const titulos = documents?.certificaciones?.titulos ? Object.values(documents.certificaciones.titulos) : [];
-  const cartas = documents?.certificaciones?.cartasRecomendacion
-    ? Object.values(documents.certificaciones.cartasRecomendacion) : [];
+  const titulos = sortByOrder(Object.values(documents?.certificaciones?.titulos || {}));
+  const cartas = sortByOrder(Object.values(documents?.certificaciones?.cartasRecomendacion || {}));
 
   return (
     <div className="space-y-6">
@@ -269,7 +268,7 @@ export const DocumentReviewPage = () => {
           {documents?.hojaDeVida && renderRow(documents.hojaDeVida, 'Hoja de vida')}
           {documents?.antecedentesJudiciales && renderRow(documents.antecedentesJudiciales, 'Antecedentes judiciales')}
           {titulos.map((t, index) => renderRow(t, titulos.length > 1 ? `Título ${index + 1}` : 'Título'))}
-          {cartas.map((c, index) => renderRow(c, `Carta de recomendación ${c.orden || index + 1}`))}
+          {cartas.map((c, index) => renderRow(c, `Carta de recomendación ${index + 1}`))}
         </div>
       )}
 

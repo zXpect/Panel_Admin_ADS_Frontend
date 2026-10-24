@@ -50,3 +50,11 @@ export const computeVerification = (documents: WorkerDocumentCollection | undefi
     outcome: docs.length === 0 || pendingCount > 0 ? null : meets ? 'approved' : 'rejected',
   };
 };
+
+/**
+ * Cartas o títulos en el orden en que se muestran: por el número guardado y luego por fecha de
+ * subida. La app guardaba siempre orden 1 (DEF-23), así que el número visible es la posición.
+ */
+export function sortByOrder<T extends { orden?: number; uploadedAt?: number }>(docs: T[]): T[] {
+  return [...docs].sort((a, b) => (a.orden || 0) - (b.orden || 0) || (a.uploadedAt || 0) - (b.uploadedAt || 0));
+}
