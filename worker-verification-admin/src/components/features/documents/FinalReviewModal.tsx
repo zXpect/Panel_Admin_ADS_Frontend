@@ -1,56 +1,31 @@
 // src/components/FinalReviewModal.tsx
 import { CheckCircle, XCircle, FileText, X } from 'lucide-react';
-import toast from 'react-hot-toast';
-import { WorkerDocument, WorkerDocumentCollection } from '@/types/document.types';
+import { VerificationResult } from '@/lib/utils/verification';
 
 interface FinalReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  documents: WorkerDocumentCollection | undefined;
-  onConfirm: (finalStatus: 'approved' | 'rejected') => void;
+  verification: VerificationResult;
+  onConfirm: () => void;
 }
 
 const FinalReviewModal = ({
   isOpen,
   onClose,
-  documents,
+  verification,
   onConfirm,
 }: FinalReviewModalProps) => {
-  if (!isOpen || !documents) return null;
+  // Solo se abre sin pendientes (el botón está desactivado mientras los haya)
+  if (!isOpen || !verification.outcome) return null;
 
-  // Aplanar documentos
-  const flatDocs = [
-    documents.hojaDeVida,
-    documents.antecedentesJudiciales,
-    ...Object.values(documents.certificaciones?.titulos || {}),
-    ...Object.values(documents.certificaciones?.cartasRecomendacion || {}),
-  ].filter((doc): doc is WorkerDocument => !!doc);
-
-  // Clasificación
-  const approvedDocs = flatDocs.filter((d) => d.status === 'approved');
-
-
-  // Requisitos mínimos
-  const hasHojaDeVida = !!documents.hojaDeVida;
-  const hasAntecedentes = !!documents.antecedentesJudiciales;
-  const titulos = Object.values(documents.certificaciones?.titulos || {});
-  const cartas = Object.values(documents.certificaciones?.cartasRecomendacion || {});
-  const hasTitulo = titulos.length >= 1;
-  const hasCartas = cartas.length >= 3;
-
-  const meetsRequirements = hasHojaDeVida && hasAntecedentes && (hasTitulo || hasCartas);
-  const allApproved = approvedDocs.length === flatDocs.length;
-
-  const suggestedStatus: 'approved' | 'rejected' =
-    allApproved && meetsRequirements ? 'approved' : 'rejected';
+  const flatDocs = verification.docs;
+  const { hojaDeVidaApproved, antecedentesApproved, approvedTitulos, approvedCartas } = verification.requirements;
+  const hasTitulo = approvedTitulos >= 1;
+  const hasCartas = approvedCartas >= 3;
+  const suggestedStatus = verification.outcome;
 
   const handleConfirm = () => {
-    onConfirm(suggestedStatus);
-    toast.success(
-      suggestedStatus === 'approved'
-        ? 'Todos los documentos cumplen los requisitos. Revisión final completada.'
-        : 'Revisión final registrada: faltan documentos o algunos fueron rechazados.'
-    );
+    onConfirm();
     onClose();
   };
 
@@ -100,29 +75,32 @@ const FinalReviewModal = ({
           <ul className="space-y-1 text-[hsl(var(--muted-foreground))]">
             <li>
               Hoja de vida:{' '}
-              <span className={hasHojaDeVida ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}>
-                {hasHojaDeVida ? 'Presente' : 'Faltante'}
+              <span className={hojaDeVidaApproved ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}>
+                {hojaDeVidaApproved ? 'Aprobada' : 'No aprobada'}
               </span>
             </li>
             <li>
               Antecedentes judiciales:{' '}
-              <span className={hasAntecedentes ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}>
-                {hasAntecedentes ? 'Presente' : 'Faltante'}
+              <span className={antecedentesApproved ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}>
+                {antecedentesApproved ? 'Aprobados' : 'No aprobados'}
               </span>
             </li>
             <li>
-              Títulos:{' '}
-              <span className={hasTitulo ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}>
-                {titulos.length} encontrados (mínimo 1)
+              Títulos aprobados:{' '}
+              <span className={hasTitulo ? 'text-green-600 dark:text-green-400' : 'text-[hsl(var(--muted-foreground))]'}>
+                {approvedTitulos} (mínimo 1)
               </span>
             </li>
             <li>
-              Cartas de recomendación:{' '}
-              <span className={hasCartas ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}>
-                {cartas.length} encontradas (mínimo 3)
+              Cartas de recomendación aprobadas:{' '}
+              <span className={hasCartas ? 'text-green-600 dark:text-green-400' : 'text-[hsl(var(--muted-foreground))]'}>
+                {approvedCartas} (mínimo 3)
               </span>
             </li>
           </ul>
+          <p className="mt-2 text-xs text-[hsl(var(--muted-foreground))]">
+            Se aprueba con la hoja de vida y los antecedentes aprobados, y un título o tres cartas aprobados.
+          </p>
 
           <p className="text-[hsl(var(--foreground))] text-sm mt-4">
             Estado final sugerido:{' '}
