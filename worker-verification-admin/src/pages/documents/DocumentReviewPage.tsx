@@ -12,6 +12,7 @@ import toast from 'react-hot-toast';
 import { cn, getInitials } from '@/lib/utils/helpers';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { WorkerDocument } from '@/types/document.types';
+import { computeVerification } from '@/lib/utils/verification';
 
 export const DocumentReviewPage = () => {
   const { workerId } = useParams<{ workerId: string }>();
@@ -70,28 +71,13 @@ export const DocumentReviewPage = () => {
     );
   };
 
-  const handleConfirmFinalReview = (finalStatusFromModal: 'approved' | 'rejected') => {
-    if (!workerId || !documents) return;
+  // Resultado según los documentos aprobados (DEF-18); null si queda alguno pendiente
+  const verification = computeVerification(documents);
+  const workerStatus = worker?.verificationStatus?.status;
 
-    const { hojaDeVida, antecedentesJudiciales, certificaciones } = documents;
-    const titulos = certificaciones?.titulos ? Object.values(certificaciones.titulos) : [];
-    const cartas = certificaciones?.cartasRecomendacion
-      ? Object.values(certificaciones.cartasRecomendacion)
-      : [];
-
-    const hasHojaDeVida = !!hojaDeVida;
-    const hasAntecedentes = !!antecedentesJudiciales;
-    const hasTitulo = titulos.length >= 1;
-    const hasCartas = cartas.length >= 3;
-
-    const meetsRequirements = hasHojaDeVida && hasAntecedentes && (hasTitulo || hasCartas);
-    const finalStatus = meetsRequirements ? finalStatusFromModal : 'rejected';
-
-    if (!meetsRequirements) {
-      toast.error(
-        'El trabajador no cumple con los requisitos mínimos (debe tener Hoja de Vida, Antecedentes y al menos 1 título o 3 cartas). Revisión marcada como RECHAZADA.'
-      );
-    }
+  const handleConfirmFinalReview = () => {
+    if (!workerId || !verification.outcome) return;
+    const finalStatus = verification.outcome;
 
     updateVerificationStatus(
       { id: workerId, status: finalStatus },
@@ -168,15 +154,21 @@ export const DocumentReviewPage = () => {
     );
   };
 
-  // Botón de finalización según el estado de la revisión
+  // Botón de finalización (DEF-18): se activa cuando ya no hay pendientes y el estado del
+  // trabajador todavía no es el que corresponde; antes se apagaba al revisar el último
+  // documento y el estado final nunca se guardaba
   const getFinalizationButtonConfig = () => {
     if (!reviewStatus.hasDocuments) {
       return { text: 'Sin documentos para revisar', disabled: true, icon: Ban };
     }
-    if (reviewStatus.hasBeenReviewed && !reviewStatus.hasPendingDocs) {
+    if (verification.pendingCount > 0) {
+      const n = verification.pendingCount;
+      return { text: `Revisa ${n} documento${n > 1 ? 's' : ''} pendiente${n > 1 ? 's' : ''}`, disabled: true, icon: Clock };
+    }
+    if (workerStatus === verification.outcome) {
       return { text: 'Revisión completada', disabled: true, icon: CheckCircle2 };
     }
-    if (reviewStatus.newDocsSinceReview.length > 0) {
+    if (workerStatus === 'approved' || workerStatus === 'rejected') {
       return { text: 'Finalizar nueva revisión', disabled: isUpdatingVerification, icon: ChevronRight };
     }
     return { text: 'Finalizar revisión', disabled: isUpdatingVerification, icon: ChevronRight };
@@ -307,7 +299,7 @@ export const DocumentReviewPage = () => {
       <FinalReviewModal
         isOpen={isFinalModalOpen}
         onClose={() => setIsFinalModalOpen(false)}
-        documents={documents}
+        verification={verification}
         onConfirm={handleConfirmFinalReview}
       />
     </div>
