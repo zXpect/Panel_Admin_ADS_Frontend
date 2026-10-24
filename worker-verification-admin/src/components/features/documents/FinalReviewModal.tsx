@@ -44,23 +44,24 @@ const FinalReviewModal = ({
         <h2 className="text-xl font-semibold mb-4">Resumen de Revisión</h2>
 
         {/* Lista de documentos */}
-        <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 custom-scroll">
+        <div className="space-y-3 max-h-[300px] overflow-y-auto overflow-x-hidden pr-1 custom-scroll">
           {flatDocs.map((doc) => (
             <div
               key={doc.id || doc.fileName}
               className="flex items-center justify-between p-3 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--muted))] hover:bg-[hsl(var(--muted))]/70 transition-all shadow-sm"
             >
-              <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-[hsl(var(--muted-foreground))]" />
-                <span className="text-sm font-medium truncate">{doc.fileName || 'Documento sin nombre'}</span>
+              {/* min-w-0 deja que truncate recorte los nombres largos (DEF-21) */}
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <FileText className="w-4 h-4 shrink-0 text-[hsl(var(--muted-foreground))]" />
+                <span className="text-sm font-medium truncate" title={doc.fileName}>{doc.fileName || 'Documento sin nombre'}</span>
               </div>
 
               {doc.status === 'approved' ? (
-                <CheckCircle className="w-5 h-5 text-green-500 dark:text-green-400" />
+                <CheckCircle className="w-5 h-5 ml-3 shrink-0 text-green-500 dark:text-green-400" />
               ) : doc.status === 'rejected' ? (
-                <XCircle className="w-5 h-5 text-red-500 dark:text-red-400" />
+                <XCircle className="w-5 h-5 ml-3 shrink-0 text-red-500 dark:text-red-400" />
               ) : (
-                <span className="text-yellow-600 dark:text-yellow-400 text-sm font-medium">
+                <span className="ml-3 shrink-0 text-yellow-600 dark:text-yellow-400 text-sm font-medium">
                   Pendiente
                 </span>
               )}
