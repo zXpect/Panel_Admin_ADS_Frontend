@@ -4,7 +4,7 @@ import { authService } from '@/api/services/authService';
 import { useAuthStore } from '@/store/authStore';
 import { LoginCredentials } from '@/types/auth.types';
 import toast from 'react-hot-toast';
-import { getServerErrorMessage } from '@/lib/utils/errorHandler';
+import { parseApiError } from '@/lib/utils/errorHandler';
 
 export const useAuth = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export const useAuth = () => {
       navigate('/dashboard');
     },
     onError: (error) => {
-      toast.error(getServerErrorMessage(error, 'Error al iniciar sesión'));
+      toast.error(parseApiError(error).message || 'Error al iniciar sesión');
     },
   });
 

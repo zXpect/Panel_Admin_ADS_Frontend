@@ -1,5 +1,6 @@
 import { AxiosError, isAxiosError } from 'axios';
 import toast from 'react-hot-toast';
+import { API_ENDPOINTS } from '@/api/endpoints';
 import {
   ApiError,
   ErrorCode,
@@ -252,6 +253,23 @@ export function parseApiError(error: unknown, requestId?: string): ApiError {
       }
 
       case 401: {
+        // En el login, el 401 es de credenciales (simplejwt responde en inglés) (DEF-19)
+        if (config?.url === API_ENDPOINTS.AUTH.LOGIN) {
+          return {
+            message: 'Usuario o contraseña incorrectos.',
+            code: ErrorCode.UNAUTHORIZED,
+            status,
+            severity,
+            category,
+            timestamp,
+            endpoint: config?.url,
+            method: config?.method?.toUpperCase(),
+            requestId,
+            retryable: false,
+            userMessage: 'Usuario o contraseña incorrectos.',
+            technicalMessage: 'Unauthorized - Invalid credentials',
+          };
+        }
         return {
           message: detailToString(data?.detail, 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.'),
           code: ErrorCode.UNAUTHORIZED,

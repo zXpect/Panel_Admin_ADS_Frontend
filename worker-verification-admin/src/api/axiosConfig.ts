@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { parseApiError, handleApiError } from '@/lib/utils/errorHandler';
 import { logger } from '@/lib/utils/logger';
 import { ErrorCode } from '@/types/error.types';
+import { API_ENDPOINTS } from '@/api/endpoints';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
@@ -245,6 +246,15 @@ axiosInstance.interceptors.response.use(
     }
 
     const { status } = error.response;
+
+    // El 401 del login (o del refresh) es de credenciales, no de sesión vencida:
+    // no se intenta refrescar y la pantalla de ingreso muestra el mensaje (DEF-19)
+    const isAuthRequest =
+      originalRequest.url === API_ENDPOINTS.AUTH.LOGIN ||
+      originalRequest.url === API_ENDPOINTS.AUTH.REFRESH;
+    if (isAuthRequest) {
+      return Promise.reject(error);
+    }
 
     // ============================================
     // 401 - Token expirado o inválido (Refresh Token Logic)
