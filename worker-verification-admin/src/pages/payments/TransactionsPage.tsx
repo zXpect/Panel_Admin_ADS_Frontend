@@ -3,9 +3,6 @@ import { Receipt, Search, Wallet, Banknote, CreditCard, Clock, CheckCircle, XCir
 import { PageHeader } from '@/components/layout/PageHeader';
 import { usePayments } from '@/hooks/usePayments';
 import { Pagination } from '@/components/common/Pagination';
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
-} from '@/components/ui/table';
 import { cn, formatDate, formatPrice } from '@/lib/utils/helpers';
 import { PaymentFilters, PaymentGateway, PaymentStatus } from '@/types/payment.types';
 
@@ -125,39 +122,44 @@ export const TransactionsPage = () => {
             <p className="text-[hsl(var(--muted-foreground))]">No hay transacciones con estos filtros</p>
           </div>
         ) : (
+          // Misma tabla que PQR, trabajadores y clientes (data-table, A6): sin la
+          // escala al pasar el mouse de la tabla de shadcn, que al final del scroll
+          // hacía subir y bajar la página
           <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Fecha</TableHead>
-                  <TableHead>Referencia</TableHead>
-                  <TableHead>Solicitud</TableHead>
-                  <TableHead>Medio</TableHead>
-                  <TableHead className="text-right">Valor</TableHead>
-                  <TableHead>Estado</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <table className="data-table min-w-[720px]">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Referencia</th>
+                  <th>Solicitud</th>
+                  <th>Medio</th>
+                  <th className="text-right">Valor</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
                 {payments.map((payment) => (
-                  <TableRow key={payment.id}>
-                    <TableCell className="whitespace-nowrap">
+                  <tr key={payment.id}>
+                    <td className="whitespace-nowrap">
                       {formatDate(new Date(payment.created_at).getTime())}
-                    </TableCell>
-                    <TableCell className="font-mono text-xs">{payment.reference}</TableCell>
-                    <TableCell className="font-mono text-xs" title={payment.service_request_id}>
+                    </td>
+                    <td className="font-mono text-xs">{payment.reference}</td>
+                    <td className="font-mono text-xs" title={payment.service_request_id}>
                       {shortId(payment.service_request_id)}
-                    </TableCell>
-                    <TableCell>{GATEWAY_LABELS[payment.gateway] || payment.gateway}</TableCell>
-                    <TableCell className="text-right font-semibold whitespace-nowrap">
+                    </td>
+                    <td className="whitespace-nowrap">
+                      <GatewayLabel gateway={payment.gateway} />
+                    </td>
+                    <td className="text-right font-semibold whitespace-nowrap text-[hsl(var(--secondary-foreground))] dark:text-[hsl(var(--foreground))]">
                       {formatPrice(payment.amount_cop)}
-                    </TableCell>
-                    <TableCell>
+                    </td>
+                    <td>
                       <StatusChip status={payment.status} />
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                  </tr>
                 ))}
-              </TableBody>
-            </Table>
+              </tbody>
+            </table>
           </div>
         )}
       </div>
@@ -194,6 +196,22 @@ const SummaryCard = ({ icon: Icon, label, value, detail }: SummaryCardProps) => 
     </div>
   </div>
 );
+
+const GATEWAY_ICONS: Record<PaymentGateway, typeof Wallet> = {
+  wompi: CreditCard,
+  cash: Banknote,
+  mock: CreditCard,
+};
+
+const GatewayLabel = ({ gateway }: { gateway: PaymentGateway }) => {
+  const Icon = GATEWAY_ICONS[gateway] || Wallet;
+  return (
+    <span className="inline-flex items-center gap-2">
+      <Icon className="w-4 h-4 text-[hsl(var(--muted-foreground))]" aria-hidden="true" />
+      {GATEWAY_LABELS[gateway] || gateway}
+    </span>
+  );
+};
 
 const StatusChip = ({ status }: { status: PaymentStatus }) => {
   const style = STATUS_STYLES[status] || STATUS_STYLES.PENDING;
