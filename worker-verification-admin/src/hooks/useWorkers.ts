@@ -3,6 +3,7 @@ import { workerService } from '@/api/services/workerService';
 import { WorkerFilters, WorkerCreateInput, WorkerUpdateInput, WorkerCreateResponse } from '@/types/worker.types';
 import toast from 'react-hot-toast';
 import { getServerErrorMessage } from '@/lib/utils/errorHandler';
+import { toastWarning } from '@/lib/utils/notify';
 
 export const useWorkers = (filters?: WorkerFilters) => {
   const queryClient = useQueryClient();
@@ -36,7 +37,7 @@ export const useWorkers = (filters?: WorkerFilters) => {
         toast.success(
           `¡Trabajador creado exitosamente!\n\n` +
           `Contraseña generada (copiada al portapapeles):\n${response.password}\n\n` +
-          `⚠️ Guarda esta contraseña, no se volverá a mostrar`,
+          `Importante: guarda esta contraseña, no se volverá a mostrar`,
           {
             duration: 15000,
             style: {
@@ -52,7 +53,7 @@ export const useWorkers = (filters?: WorkerFilters) => {
 
       // Mostrar advertencia si el usuario ya existía
       if (response.warning) {
-        toast(response.warning, { icon: '⚠️', duration: 5000 });
+        toastWarning(response.warning, { duration: 5000 });
       }
     },
     onError: (error) => {

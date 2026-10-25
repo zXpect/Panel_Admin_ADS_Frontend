@@ -38,7 +38,7 @@ export const WorkerDetailPage = () => {
         <p className="text-[hsl(var(--muted-foreground))]">Trabajador no encontrado</p>
         <Link
           to="/workers"
-          className="text-[hsl(var(--primary))] hover:underline mt-4 inline-block"
+          className="text-[hsl(var(--brand-text))] hover:underline mt-4 inline-block"
         >
           Volver a la lista
         </Link>

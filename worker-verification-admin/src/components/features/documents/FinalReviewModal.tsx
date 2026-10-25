@@ -57,11 +57,11 @@ const FinalReviewModal = ({
               </div>
 
               {doc.status === 'approved' ? (
-                <CheckCircle className="w-5 h-5 ml-3 shrink-0 text-green-500 dark:text-green-400" />
+                <CheckCircle className="w-5 h-5 ml-3 shrink-0 text-[hsl(var(--success))]" />
               ) : doc.status === 'rejected' ? (
-                <XCircle className="w-5 h-5 ml-3 shrink-0 text-red-500 dark:text-red-400" />
+                <XCircle className="w-5 h-5 ml-3 shrink-0 text-[hsl(var(--danger-foreground))]" />
               ) : (
-                <span className="ml-3 shrink-0 text-yellow-600 dark:text-yellow-400 text-sm font-medium">
+                <span className="ml-3 shrink-0 text-[hsl(var(--warning-foreground))] text-sm font-medium">
                   Pendiente
                 </span>
               )}
@@ -76,25 +76,25 @@ const FinalReviewModal = ({
           <ul className="space-y-1 text-[hsl(var(--muted-foreground))]">
             <li>
               Hoja de vida:{' '}
-              <span className={hojaDeVidaApproved ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}>
+              <span className={hojaDeVidaApproved ? 'text-[hsl(var(--success))]' : 'text-[hsl(var(--danger-foreground))]'}>
                 {hojaDeVidaApproved ? 'Aprobada' : 'No aprobada'}
               </span>
             </li>
             <li>
               Antecedentes judiciales:{' '}
-              <span className={antecedentesApproved ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'}>
+              <span className={antecedentesApproved ? 'text-[hsl(var(--success))]' : 'text-[hsl(var(--danger-foreground))]'}>
                 {antecedentesApproved ? 'Aprobados' : 'No aprobados'}
               </span>
             </li>
             <li>
               Títulos aprobados:{' '}
-              <span className={hasTitulo ? 'text-green-600 dark:text-green-400' : 'text-[hsl(var(--muted-foreground))]'}>
+              <span className={hasTitulo ? 'text-[hsl(var(--success))]' : 'text-[hsl(var(--muted-foreground))]'}>
                 {approvedTitulos} (mínimo 1)
               </span>
             </li>
             <li>
               Cartas de recomendación aprobadas:{' '}
-              <span className={hasCartas ? 'text-green-600 dark:text-green-400' : 'text-[hsl(var(--muted-foreground))]'}>
+              <span className={hasCartas ? 'text-[hsl(var(--success))]' : 'text-[hsl(var(--muted-foreground))]'}>
                 {approvedCartas} (mínimo 3)
               </span>
             </li>
@@ -108,8 +108,8 @@ const FinalReviewModal = ({
             <span
               className={`font-semibold ${
                 suggestedStatus === 'approved'
-                  ? 'text-green-600 dark:text-green-400'
-                  : 'text-red-600 dark:text-red-400'
+                  ? 'text-[hsl(var(--success))]'
+                  : 'text-[hsl(var(--danger-foreground))]'
               }`}
             >
               {suggestedStatus === 'approved' ? 'Aprobado' : 'Rechazado'}
@@ -122,8 +122,8 @@ const FinalReviewModal = ({
               onClick={handleConfirm}
               className={`flex-1 py-2.5 rounded-lg text-white font-medium shadow-sm transition-all ${
                 suggestedStatus === 'approved'
-                  ? 'bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600'
-                  : 'bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600'
+                  ? 'bg-green-700 hover:bg-green-800 dark:bg-green-700 dark:hover:bg-green-600'
+                  : 'bg-red-700 hover:bg-red-800 dark:bg-red-700 dark:hover:bg-red-600'
               }`}
             >
               Confirmar {suggestedStatus === 'approved' ? 'Aprobación' : 'Rechazo'}

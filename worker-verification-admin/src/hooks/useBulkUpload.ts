@@ -3,6 +3,7 @@
     import { workerBulkService, BulkUploadResult } from '@/api/services/workerBulkService';
     import toast from 'react-hot-toast';
     import { getServerErrorMessage } from '@/lib/utils/errorHandler';
+    import { toastWarning } from '@/lib/utils/notify';
 
     export const useBulkUpload = () => {
     const [uploadResult, setUploadResult] = useState<BulkUploadResult | null>(null);
@@ -16,11 +17,11 @@
             const { successful, failed } = response.data;
 
             if (failed === 0) {
-            toast.success(`✅ ${successful} trabajadores creados exitosamente`);
+            toast.success(`${successful} trabajadores creados exitosamente`);
             } else if (successful === 0) {
-            toast.error(`❌ No se pudo crear ningún trabajador. ${failed} errores`);
+            toast.error(`No se pudo crear ningún trabajador. ${failed} errores`);
             } else {
-            toast(`⚠️ Proceso completado con ${successful} éxitos y ${failed} errores`);
+            toastWarning(`Proceso completado con ${successful} éxitos y ${failed} errores`);
             }
         } else {
             toast.error(response.error ?? 'Error al procesar el archivo');
@@ -45,7 +46,7 @@
         link.remove();
         window.URL.revokeObjectURL(url);
 
-        toast.success('✅ Plantilla descargada exitosamente');
+        toast.success('Plantilla descargada exitosamente');
         },
         onError: (error) => {
         console.error('Error downloading template:', error);
@@ -58,7 +59,7 @@
         const validation = workerBulkService.validateFile(file);
 
         if (!validation.valid) {
-        // ✅ Corregido: aseguramos pasar un string
+        // Corregido: aseguramos pasar un string
         toast.error(validation.error ?? 'Archivo no válido');
         return;
         }
@@ -88,7 +89,7 @@
         link.remove();
         window.URL.revokeObjectURL(url);
 
-        toast.success('✅ Credenciales descargadas exitosamente');
+        toast.success('Credenciales descargadas exitosamente');
         } catch (error) {
         console.error('Error downloading credentials:', error);
         toast.error('Error al descargar las credenciales');

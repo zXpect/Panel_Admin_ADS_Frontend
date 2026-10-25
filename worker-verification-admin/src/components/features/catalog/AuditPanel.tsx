@@ -37,7 +37,7 @@ export const AuditPanel = () => {
     <div className="panel p-4 sm:p-6 space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
-          <History className="w-5 h-5 text-[hsl(var(--primary))]" />
+          <History className="w-5 h-5 text-[hsl(var(--brand-text))]" />
           <h2 className="text-lg font-bold text-[hsl(var(--foreground))]">Historial de cambios</h2>
         </div>
         <div className="flex flex-wrap gap-1">

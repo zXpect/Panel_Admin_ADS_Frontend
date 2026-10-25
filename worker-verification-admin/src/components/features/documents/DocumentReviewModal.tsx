@@ -135,7 +135,7 @@ export const DocumentReviewModal = ({
           href={doc.fileUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="group inline-flex items-center gap-3 px-5 py-3 rounded-xl shadow-md mb-6 transition-all duration-300 hover:shadow-lg hover:scale-105 border-2 bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] border-[hsl(var(--primary))]/20 hover:bg-[hsl(var(--primary))]/20"
+          className="group inline-flex items-center gap-3 px-5 py-3 rounded-xl shadow-md mb-6 transition-all duration-300 hover:shadow-lg hover:scale-105 border-2 bg-[hsl(var(--primary))]/10 text-[hsl(var(--brand-text))] border-[hsl(var(--primary))]/20 hover:bg-[hsl(var(--primary))]/20"
         >
           <ExternalLink className="w-5 h-5 group-hover:rotate-12 transition-transform" />
           <span className="font-semibold">Ver Documento</span>

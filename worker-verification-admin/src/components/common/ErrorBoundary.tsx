@@ -170,7 +170,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </h1>
 
             {/* Description */}
-            <p className="text-gray-600 dark:text-gray-400 text-center mb-6">
+            <p className="text-[hsl(var(--muted-foreground))] text-center mb-6">
               Ha ocurrido un error inesperado. Nuestro equipo ha sido notificado y
               estamos trabajando para solucionarlo.
             </p>
@@ -178,7 +178,7 @@ export class ErrorBoundary extends Component<Props, State> {
             {/* Error ID */}
             {this.state.errorId && (
               <div className="mb-4 p-3 bg-gray-100 dark:bg-neutral-800 rounded-lg">
-                <p className="text-xs text-gray-600 dark:text-gray-400 text-center font-mono">
+                <p className="text-xs text-[hsl(var(--muted-foreground))] text-center font-mono">
                   ID de Error: {this.state.errorId}
                 </p>
               </div>
@@ -253,7 +253,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
             {/* Support info */}
             <div className="mt-8 pt-6 border-t border-gray-200 dark:border-neutral-800 text-center">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-[hsl(var(--muted-foreground))]">
                 Si el problema persiste, contacta a soporte técnico
               </p>
             </div>

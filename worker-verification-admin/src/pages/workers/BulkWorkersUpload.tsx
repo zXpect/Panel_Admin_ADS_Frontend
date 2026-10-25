@@ -188,7 +188,7 @@ const BulkWorkersUpload: React.FC = () => {
       {/* Instrucciones */}
       <div className="bg-[hsl(var(--primary))]/10 border border-[hsl(var(--primary))]/20 rounded-2xl p-6 transition-colors">
         <div className="flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-[hsl(var(--primary))] flex-shrink-0 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-[hsl(var(--brand-text))] flex-shrink-0 mt-0.5" />
           <div className="text-sm text-[hsl(var(--foreground))]">
             <p className="font-semibold mb-2">Instrucciones:</p>
             <ul className="list-disc list-inside space-y-1 text-[hsl(var(--muted-foreground))]">
@@ -241,7 +241,7 @@ const BulkWorkersUpload: React.FC = () => {
                 <button
                   onClick={handleUpload}
                   disabled={isUploading}
-                  className="flex items-center gap-2 px-6 py-3 bg-[hsl(var(--chart-3))] text-white rounded-lg 
+                  className="flex items-center gap-2 px-6 py-3 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg 
                              hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isUploading ? (
@@ -307,7 +307,7 @@ const BulkWorkersUpload: React.FC = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <div className="bg-[hsl(var(--chart-1))]/10 rounded-xl p-4 border border-[hsl(var(--chart-1))]/20">
-                <p className="text-sm text-[hsl(var(--chart-1))] font-medium">Total Procesados</p>
+                <p className="text-sm text-[hsl(var(--brand-text))] font-medium">Total Procesados</p>
                 <p className="text-3xl font-bold text-[hsl(var(--foreground))]">{uploadResult.total_processed}</p>
               </div>
               
@@ -332,7 +332,7 @@ const BulkWorkersUpload: React.FC = () => {
             {uploadResult.successful > 0 && (
               <button
                 onClick={handleDownloadCredentials}
-                className="flex items-center gap-2 px-4 py-2 bg-[hsl(var(--chart-1))] text-white rounded-lg 
+                className="flex items-center gap-2 px-4 py-2 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg 
                            hover:opacity-90 transition-colors"
               >
                 <Download className="w-5 h-5" />

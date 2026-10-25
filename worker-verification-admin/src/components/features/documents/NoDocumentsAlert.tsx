@@ -9,7 +9,7 @@ export const NoDocumentsAlert = () => {
             <FileX className="w-14 h-14 text-[hsl(var(--muted-foreground))]" />
           </div>
           <div className="absolute -bottom-2 -right-2 w-12 h-12 rounded-xl bg-[hsl(var(--primary))]/10 border-2 border-[hsl(var(--primary))]/30 flex items-center justify-center">
-            <Upload className="w-6 h-6 text-[hsl(var(--primary))]" />
+            <Upload className="w-6 h-6 text-[hsl(var(--brand-text))]" />
           </div>
         </div>
 
@@ -23,7 +23,7 @@ export const NoDocumentsAlert = () => {
 
         <div className="mt-2 flex items-start gap-3 p-6 bg-[hsl(var(--primary))]/10 border-2 border-[hsl(var(--primary))]/20 rounded-xl max-w-xl shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="w-10 h-10 rounded-lg bg-[hsl(var(--primary))]/20 flex items-center justify-center flex-shrink-0">
-            <Info className="w-5 h-5 text-[hsl(var(--primary))]" />
+            <Info className="w-5 h-5 text-[hsl(var(--brand-text))]" />
           </div>
           <div className="text-left">
             <p className="text-sm font-semibold text-[hsl(var(--foreground))] mb-2">

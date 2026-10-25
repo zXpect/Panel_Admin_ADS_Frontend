@@ -137,7 +137,7 @@ export class ErrorDebugger {
   showErrorStats(): void {
     const summary = this.getErrorSummary();
 
-    console.group('%c📊 Error Statistics', 'color: #3b82f6; font-weight: bold; font-size: 1.2em;');
+    console.group('%cError Statistics', 'color: #3b82f6; font-weight: bold; font-size: 1.2em;');
 
     console.log('%cTotal Errors:', 'font-weight: bold;', summary.total);
 

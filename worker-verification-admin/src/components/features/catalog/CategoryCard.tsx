@@ -93,7 +93,7 @@ export const CategoryCard = ({ category, onUpdateCategory, onUpdateTask, onCreat
               <button
                 onClick={() => setCreating(true)}
                 className="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold
-                           bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/20"
+                           bg-[hsl(var(--primary))]/10 text-[hsl(var(--brand-text))] hover:bg-[hsl(var(--primary))]/20"
               >
                 <Plus className="w-4 h-4" />
                 Nueva tarea

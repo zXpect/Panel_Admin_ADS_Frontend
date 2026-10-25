@@ -245,7 +245,7 @@ export const WorkersListPage = () => {
                     </td>
                     <td className="whitespace-nowrap">
                       <span className="inline-flex items-center gap-1">
-                        <Star className="w-4 h-4 text-[hsl(var(--primary))]" aria-hidden="true" />
+                        <Star className="w-4 h-4 text-[hsl(var(--brand-text))]" aria-hidden="true" />
                         {(worker.rating || 0).toFixed(1)}
                         <span className="text-[hsl(var(--muted-foreground))]">({worker.totalRatings || 0})</span>
                       </span>

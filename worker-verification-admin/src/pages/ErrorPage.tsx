@@ -66,7 +66,7 @@ export const ErrorPage = ({ error }: ErrorPageProps) => {
         </div>
 
         {/* Description */}
-        <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">
+        <p className="text-lg text-[hsl(var(--muted-foreground))] mb-2">
           {getErrorDescription(status)}
         </p>
         <p className="text-sm text-gray-500 dark:text-gray-500 mb-8">
@@ -76,7 +76,7 @@ export const ErrorPage = ({ error }: ErrorPageProps) => {
         {/* Error Code */}
         {error?.code && (
           <div className="mb-8 p-3 bg-gray-100 dark:bg-neutral-800 rounded-lg inline-block">
-            <p className="text-xs text-gray-600 dark:text-gray-400">
+            <p className="text-xs text-[hsl(var(--muted-foreground))]">
               Código de error: <span className="font-mono font-semibold">{error.code}</span>
             </p>
           </div>
@@ -109,10 +109,10 @@ export const ErrorPage = ({ error }: ErrorPageProps) => {
 
         {/* Additional Help */}
         <div className="pt-6 border-t border-gray-200 dark:border-neutral-800">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+          <p className="text-sm text-[hsl(var(--muted-foreground))] mb-2">
             Si el problema persiste, puedes:
           </p>
-          <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+          <ul className="text-sm text-[hsl(var(--muted-foreground))] space-y-1">
             <li>• Verificar tu conexión a internet</li>
             <li>• Limpiar el caché del navegador</li>
             <li>• Contactar al soporte técnico</li>
@@ -120,7 +120,7 @@ export const ErrorPage = ({ error }: ErrorPageProps) => {
         </div>
 
         {/* Timestamp */}
-        <div className="mt-6 text-xs text-gray-400 dark:text-gray-500">
+        <div className="mt-6 text-xs text-[hsl(var(--muted-foreground))]">
           {new Date().toLocaleString('es-CO', {
             dateStyle: 'full',
             timeStyle: 'long',

@@ -1,4 +1,4 @@
-import { CheckCircle2, Calendar, User, FileCheck, XCircle, Clock } from 'lucide-react';
+import { CheckCircle2, Calendar, User, FileCheck, XCircle, Clock, Info } from 'lucide-react';
 import { formatDate } from '@/lib/utils/helpers';
 
 interface ReviewStatusBannerProps {
@@ -26,19 +26,19 @@ export const ReviewStatusBanner = ({
   // Si hay documentos pendientes, mostrar alerta
   if (hasPendingDocs) {
     return (
-      <div className="bg-[hsl(var(--chart-5))]/10 border border-[hsl(var(--chart-5))]/30 rounded-2xl p-6 transition-colors">
+      <div className="bg-[hsl(var(--warning-soft))] border border-[hsl(var(--warning-foreground))]/25 rounded-2xl p-6 transition-colors">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-full bg-[hsl(var(--chart-5))]/20 flex items-center justify-center flex-shrink-0">
-            <Clock className="w-6 h-6 text-[hsl(var(--chart-5))]" />
+          <div className="w-12 h-12 rounded-full bg-[hsl(var(--warning-foreground))]/15 flex items-center justify-center flex-shrink-0">
+            <Clock className="w-6 h-6 text-[hsl(var(--warning-foreground))]" />
           </div>
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-[hsl(var(--foreground))] mb-2">
-              {newDocsCount > 0 ? '⚠️ Nuevos documentos requieren revisión' : '⏳ Revisión pendiente'}
+              {newDocsCount > 0 ? 'Nuevos documentos requieren revisión' : 'Revisión pendiente'}
             </h3>
             <p className="text-sm text-[hsl(var(--muted-foreground))] mb-3">
               {newDocsCount > 0 ? (
                 <>
-                  <span className="font-medium text-[hsl(var(--chart-5))]">
+                  <span className="font-medium text-[hsl(var(--warning-foreground))]">
                     {newDocsCount} documento{newDocsCount > 1 ? 's nuevos' : ' nuevo'}
                   </span>{' '}
                   subido{newDocsCount > 1 ? 's' : ''} después de la última revisión
@@ -76,7 +76,7 @@ export const ReviewStatusBanner = ({
       className={`rounded-2xl p-6 transition-colors border ${
         allApproved
           ? 'bg-[hsl(var(--chart-2))]/10 border-[hsl(var(--chart-2))]/30'
-          : 'bg-[hsl(var(--chart-5))]/10 border-[hsl(var(--chart-5))]/30'
+          : 'bg-[hsl(var(--warning-soft))] border-[hsl(var(--warning-foreground))]/25'
       }`}
     >
       <div className="flex items-start gap-4">
@@ -84,19 +84,19 @@ export const ReviewStatusBanner = ({
           className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
             allApproved
               ? 'bg-[hsl(var(--chart-2))]/20'
-              : 'bg-[hsl(var(--chart-5))]/20'
+              : 'bg-[hsl(var(--warning-foreground))]/15'
           }`}
         >
           {allApproved ? (
             <CheckCircle2 className="w-6 h-6 text-[hsl(var(--chart-2))]" />
           ) : (
-            <FileCheck className="w-6 h-6 text-[hsl(var(--chart-5))]" />
+            <FileCheck className="w-6 h-6 text-[hsl(var(--warning-foreground))]" />
           )}
         </div>
 
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-[hsl(var(--foreground))] mb-2">
-            ✅ Revisión completada
+            Revisión completada
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
@@ -149,7 +149,7 @@ export const ReviewStatusBanner = ({
 
           {/* Mensaje informativo */}
           <div className="mt-4 flex items-start gap-2 text-sm text-[hsl(var(--muted-foreground))]">
-            <span className="text-lg">ℹ️</span>
+            <Info className="w-4 h-4 mt-0.5 shrink-0" aria-hidden="true" />
             <p>
               {allApproved
                 ? 'Todos los documentos fueron aprobados. No hay documentos nuevos pendientes de revisión.'

@@ -38,7 +38,7 @@ export const ConfigPanel = ({ configs, onSave, isSaving }: ConfigPanelProps) => 
   return (
     <div className="panel p-4 sm:p-6 space-y-4">
       <div className="flex items-center gap-2">
-        <SlidersHorizontal className="w-5 h-5 text-[hsl(var(--primary))]" />
+        <SlidersHorizontal className="w-5 h-5 text-[hsl(var(--brand-text))]" />
         <h2 className="text-lg font-bold text-[hsl(var(--foreground))]">Parámetros de cotización y búsqueda</h2>
       </div>
       <p className="text-sm text-[hsl(var(--muted-foreground))]">
