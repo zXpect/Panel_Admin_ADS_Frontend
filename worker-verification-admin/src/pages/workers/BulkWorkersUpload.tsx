@@ -1,6 +1,9 @@
 import React, { useState, useRef } from 'react';
-import { Upload, Download, X, CheckCircle, XCircle, FileSpreadsheet, AlertCircle, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Upload, Download, X, CheckCircle, XCircle, FileSpreadsheet, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
+import { PageHeader } from '@/components/layout/PageHeader';
 import axiosInstance from '@/api/axiosConfig';
+import { getServerErrorMessage } from '@/lib/utils/errorHandler';
 
 interface BulkUploadResult {
   total_processed: number;
@@ -96,10 +99,9 @@ const BulkWorkersUpload: React.FC = () => {
       } else {
         setError(response.data.error || 'Error al procesar el archivo');
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error uploading file:', err);
-      const errorMessage = err.response?.data?.error || err.response?.data?.details || err.message || 'Error al subir el archivo';
-      setError(errorMessage);
+      setError(getServerErrorMessage(err, err instanceof Error ? err.message : 'Error al subir el archivo'));
     } finally {
       setIsUploading(false);
     }
@@ -122,7 +124,7 @@ const BulkWorkersUpload: React.FC = () => {
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error downloading template:', err);
       setError('Error al descargar la plantilla');
     } finally {
@@ -164,52 +166,36 @@ const BulkWorkersUpload: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
-      {/* Header mejorado */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[hsl(var(--primary))]/10 via-[hsl(var(--card))] to-[hsl(var(--primary))]/5
-                      rounded-2xl shadow-lg border border-[hsl(var(--border))] p-6">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[hsl(var(--primary))]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-        <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-[hsl(var(--primary))]/20 flex items-center justify-center">
-              <Upload className="w-6 h-6 text-[hsl(var(--primary))]" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
-                Carga Masiva de Trabajadores
-              </h1>
-              <p className="text-[hsl(var(--muted-foreground))] mt-1 font-medium">
-                Sube un archivo Excel con los datos de múltiples trabajadores
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={handleDownloadTemplate}
-            disabled={isDownloadingTemplate}
-            className="group flex items-center gap-2 px-5 py-3 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]
-                       rounded-xl hover:shadow-lg transition-all duration-300 hover:scale-105 font-semibold
-                       disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isDownloadingTemplate ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <Download className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            )}
-            <span>Descargar Plantilla</span>
+    <div className="space-y-6">
+      <Link to="/workers" className="inline-flex items-center gap-2 min-h-[44px] text-sm font-semibold
+                                     text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]">
+        <ArrowLeft className="w-4 h-4" />
+        Volver a trabajadores
+      </Link>
+
+      <PageHeader
+        icon={Upload}
+        title="Carga masiva de trabajadores"
+        subtitle="Sube un archivo Excel con los datos de varios trabajadores"
+        actions={(
+          <button onClick={handleDownloadTemplate} disabled={isDownloadingTemplate} className="btn-secondary">
+            {isDownloadingTemplate ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+            Descargar plantilla
           </button>
-        </div>
-      </div>
+        )}
+      />
 
       {/* Instrucciones */}
       <div className="bg-[hsl(var(--primary))]/10 border border-[hsl(var(--primary))]/20 rounded-2xl p-6 transition-colors">
         <div className="flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-[hsl(var(--primary))] flex-shrink-0 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-[hsl(var(--brand-text))] flex-shrink-0 mt-0.5" />
           <div className="text-sm text-[hsl(var(--foreground))]">
             <p className="font-semibold mb-2">Instrucciones:</p>
             <ul className="list-disc list-inside space-y-1 text-[hsl(var(--muted-foreground))]">
               <li>Descarga la plantilla de Excel haciendo clic en "Descargar Plantilla"</li>
               <li>Completa los datos de los trabajadores en el archivo</li>
               <li>Los campos obligatorios son: nombre, apellido, email, teléfono y categoría</li>
+              <li>En categoría van hasta 3 oficios del catálogo separados por coma (p. ej. «Plomería, Pintura»); una fila con un oficio que no existe no se crea</li>
               <li>La contraseña es opcional - si no la proporcionas, se generará automáticamente</li>
               <li>El ID se generará automáticamente en Firebase Realtime Database</li>
               <li>Sube el archivo completado usando el área de carga o arrastrando el archivo</li>
@@ -255,7 +241,7 @@ const BulkWorkersUpload: React.FC = () => {
                 <button
                   onClick={handleUpload}
                   disabled={isUploading}
-                  className="flex items-center gap-2 px-6 py-3 bg-[hsl(var(--chart-3))] text-white rounded-lg 
+                  className="flex items-center gap-2 px-6 py-3 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg 
                              hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isUploading ? (
@@ -321,7 +307,7 @@ const BulkWorkersUpload: React.FC = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <div className="bg-[hsl(var(--chart-1))]/10 rounded-xl p-4 border border-[hsl(var(--chart-1))]/20">
-                <p className="text-sm text-[hsl(var(--chart-1))] font-medium">Total Procesados</p>
+                <p className="text-sm text-[hsl(var(--brand-text))] font-medium">Total Procesados</p>
                 <p className="text-3xl font-bold text-[hsl(var(--foreground))]">{uploadResult.total_processed}</p>
               </div>
               
@@ -346,7 +332,7 @@ const BulkWorkersUpload: React.FC = () => {
             {uploadResult.successful > 0 && (
               <button
                 onClick={handleDownloadCredentials}
-                className="flex items-center gap-2 px-4 py-2 bg-[hsl(var(--chart-1))] text-white rounded-lg 
+                className="flex items-center gap-2 px-4 py-2 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg 
                            hover:opacity-90 transition-colors"
               >
                 <Download className="w-5 h-5" />

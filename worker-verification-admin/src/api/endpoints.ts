@@ -54,4 +54,27 @@ export const API_ENDPOINTS = {
     DETAIL: (id: string) => `/api/clients/${id}/`,
     COUNT: '/api/clients/count/',
   },
+
+  // Transacciones (pagos digitales y en efectivo)
+  PAYMENTS: {
+    LIST: '/api/payments/',
+  },
+
+  // Catálogo, parámetros y auditoría (cada cambio queda auditado)
+  ADMIN: {
+    CATALOG: '/api/admin/catalog/',
+    CATEGORY: (id: number) => `/api/admin/catalog/categories/${id}/`,
+    TASKS: '/api/admin/catalog/tasks/',
+    TASK: (id: number) => `/api/admin/catalog/tasks/${id}/`,
+    CONFIG: '/api/admin/config/',
+    CONFIG_KEY: (key: string) => `/api/admin/config/${key}/`,
+    AUDIT: '/api/admin/audit/',
+    ACCOUNT_STATUS: (uid: string) => `/api/admin/accounts/${uid}/status/`,
+  },
+
+  // PQR
+  PQR: {
+    LIST: '/api/pqr/',
+    DETAIL: (id: number) => `/api/pqr/${id}/`,
+  },
 } as const;

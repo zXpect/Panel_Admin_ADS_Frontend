@@ -1,7 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { workerService } from '@/api/services/workerService';
-import { WorkerFilters, WorkerCreateInput, WorkerUpdateInput } from '@/types/worker.types';
+import { WorkerFilters, WorkerCreateInput, WorkerUpdateInput, WorkerCreateResponse } from '@/types/worker.types';
 import toast from 'react-hot-toast';
+import { getServerErrorMessage } from '@/lib/utils/errorHandler';
+import { toastWarning } from '@/lib/utils/notify';
 
 export const useWorkers = (filters?: WorkerFilters) => {
   const queryClient = useQueryClient();
@@ -21,12 +23,42 @@ export const useWorkers = (filters?: WorkerFilters) => {
   // Mutation para crear trabajador
   const createMutation = useMutation({
     mutationFn: (data: WorkerCreateInput) => workerService.createWorker(data),
-    onSuccess: () => {
+    onSuccess: (response: WorkerCreateResponse) => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
-      toast.success('Trabajador creado exitosamente');
+
+      // Mostrar contraseña si fue generada automáticamente
+      if (response.password) {
+        // Copiar al portapapeles
+        navigator.clipboard.writeText(response.password).catch(() => {
+          console.error('No se pudo copiar la contraseña al portapapeles');
+        });
+
+        // Mostrar contraseña en toast con formato especial
+        toast.success(
+          `¡Trabajador creado exitosamente!\n\n` +
+          `Contraseña generada (copiada al portapapeles):\n${response.password}\n\n` +
+          `Importante: guarda esta contraseña, no se volverá a mostrar`,
+          {
+            duration: 15000,
+            style: {
+              whiteSpace: 'pre-line',
+              minWidth: '350px',
+              fontFamily: 'monospace',
+            },
+          }
+        );
+      } else {
+        toast.success('Trabajador creado exitosamente');
+      }
+
+      // Mostrar advertencia si el usuario ya existía
+      if (response.warning) {
+        toastWarning(response.warning, { duration: 5000 });
+      }
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.error || 'Error al crear trabajador');
+    onError: (error) => {
+      const errorMsg = getServerErrorMessage(error, 'Error al crear trabajador');
+      toast.error(errorMsg);
     },
   });
 
@@ -38,8 +70,8 @@ export const useWorkers = (filters?: WorkerFilters) => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
       toast.success('Trabajador actualizado exitosamente');
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.error || 'Error al actualizar trabajador');
+    onError: (error) => {
+      toast.error(getServerErrorMessage(error, 'Error al actualizar trabajador'));
     },
   });
 
@@ -50,8 +82,8 @@ export const useWorkers = (filters?: WorkerFilters) => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
       toast.success('Trabajador eliminado exitosamente');
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.error || 'Error al eliminar trabajador');
+    onError: (error) => {
+      toast.error(getServerErrorMessage(error, 'Error al eliminar trabajador'));
     },
   });
 
@@ -63,8 +95,8 @@ export const useWorkers = (filters?: WorkerFilters) => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
       toast.success('Disponibilidad actualizada');
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.error || 'Error al actualizar disponibilidad');
+    onError: (error) => {
+      toast.error(getServerErrorMessage(error, 'Error al actualizar disponibilidad'));
     },
   });
 
@@ -76,8 +108,8 @@ export const useWorkers = (filters?: WorkerFilters) => {
       queryClient.invalidateQueries({ queryKey: ['workers'] });
       toast.success('Estado actualizado');
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.error || 'Error al actualizar estado');
+    onError: (error) => {
+      toast.error(getServerErrorMessage(error, 'Error al actualizar estado'));
     },
   });
 
@@ -88,8 +120,8 @@ export const useWorkers = (filters?: WorkerFilters) => {
     queryClient.invalidateQueries({ queryKey: ['workers'] });
     toast.success('Estado de verificación actualizado');
   },
-  onError: (error: any) => {
-    toast.error(error.response?.data?.error || 'Error al actualizar estado de verificación');
+  onError: (error) => {
+    toast.error(getServerErrorMessage(error, 'Error al actualizar estado de verificación'));
   },
 });
 

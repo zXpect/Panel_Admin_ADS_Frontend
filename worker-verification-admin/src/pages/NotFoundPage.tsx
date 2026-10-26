@@ -34,7 +34,7 @@ export const NotFoundPage = () => {
             404
           </h1>
           <div className="absolute inset-0 flex items-center justify-center">
-            <FileQuestion className="w-24 h-24 md:w-32 md:h-32 text-[hsl(var(--primary))] animate-bounce" />
+            <FileQuestion className="w-24 h-24 md:w-32 md:h-32 text-[hsl(var(--brand-text))] animate-bounce" />
           </div>
         </div>
 

@@ -1,11 +1,12 @@
 import axiosInstance from '../axiosConfig';
 import { API_ENDPOINTS } from '../endpoints';
-import { 
-  Worker, 
-  WorkerCreateInput, 
-  WorkerUpdateInput, 
-  WorkerFilters, 
-  WorkerStatistics 
+import {
+  Worker,
+  WorkerCreateInput,
+  WorkerCreateResponse,
+  WorkerUpdateInput,
+  WorkerFilters,
+  WorkerStatistics
 } from '@/types/worker.types';
 import { ApiResponse, PaginatedResponse } from '@/types/api.types';
 
@@ -43,14 +44,14 @@ export const workerService = {
   /**
    * Crear trabajador
    */
-  createWorker: async (workerData: WorkerCreateInput): Promise<Worker> => {
-    const { data } = await axiosInstance.post<ApiResponse<Worker>>(
+  createWorker: async (workerData: WorkerCreateInput): Promise<WorkerCreateResponse> => {
+    const { data } = await axiosInstance.post<WorkerCreateResponse>(
       API_ENDPOINTS.WORKERS.CREATE,
       workerData
     );
-    
+
     if (!data.data) throw new Error('Failed to create worker');
-    return data.data;
+    return data;
   },
 
   /**

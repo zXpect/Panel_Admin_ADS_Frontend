@@ -23,15 +23,15 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           // Mobile: no margin (sidebar is overlay)
           // Desktop: margin based on sidebar state
           'ml-0',
-          sidebarOpen ? 'md:ml-64' : 'md:ml-16'
+          sidebarOpen ? 'md:ml-[248px]' : 'md:ml-[76px]'
         )}
       >
         {/* Header */}
         <Header />
 
         {/* Contenido de página */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-background text-foreground">
-          <div className="animate-fade-in">
+        <main className="flex-1 overflow-y-auto px-4 py-6 md:px-10 md:py-8 bg-background text-foreground">
+          <div className="max-w-[1280px] mx-auto">
             {children}
           </div>
         </main>

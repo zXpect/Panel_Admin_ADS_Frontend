@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { isAxiosError } from 'axios';
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
 import { AppRoutes } from './routes/AppRoutes';
@@ -12,10 +13,11 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      retry: (failureCount, error: any) => {
+      retry: (failureCount, error) => {
         // No reintentar en errores 4xx (excepto 429)
-        if (error?.response?.status >= 400 && error?.response?.status < 500) {
-          if (error?.response?.status === 429) {
+        const status = isAxiosError(error) ? error.response?.status ?? 0 : 0;
+        if (status >= 400 && status < 500) {
+          if (status === 429) {
             return failureCount < 2;
           }
           return false;
@@ -63,23 +65,23 @@ function App() {
               success: {
                 duration: 3000,
                 iconTheme: {
-                  primary: '#10b981',
+                  primary: '#34C759',
                   secondary: '#fff',
                 },
                 style: {
                   background: 'hsl(var(--card))',
-                  border: '1px solid #10b981',
+                  border: '1px solid #34C759',
                 },
               },
               error: {
                 duration: 5000,
                 iconTheme: {
-                  primary: '#ef4444',
+                  primary: '#E65245',
                   secondary: '#fff',
                 },
                 style: {
                   background: 'hsl(var(--card))',
-                  border: '1px solid #ef4444',
+                  border: '1px solid #E65245',
                 },
               },
             }}

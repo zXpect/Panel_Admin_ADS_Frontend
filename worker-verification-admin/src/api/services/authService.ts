@@ -7,21 +7,17 @@ export const authService = {
    * Login de usuario
    */
 login: async (credentials: LoginCredentials): Promise<AuthTokens> => {
-  try {
-    const { data } = await axiosInstance.post<AuthTokens>(
-      API_ENDPOINTS.AUTH.LOGIN,
-      credentials
-    );
+  // Los errores los propaga axios; el interceptor y useAuth los muestran
+  const { data } = await axiosInstance.post<AuthTokens>(
+    API_ENDPOINTS.AUTH.LOGIN,
+    credentials
+  );
 
-    // Guardar tokens en localStorage
-    localStorage.setItem('access_token', data.access);
-    localStorage.setItem('refresh_token', data.refresh);
+  // Guardar tokens en localStorage
+  localStorage.setItem('access_token', data.access);
+  localStorage.setItem('refresh_token', data.refresh);
 
-    return data; 
-  } catch (error: any) {
-
-    throw error;
-  }
+  return data;
 },
 
 

@@ -1,0 +1,32 @@
+# Blueprint de Render: panel de administración como Static Site (gratis, no se duerme).
+# En Render: New → Blueprint → este repositorio. Cada push a la rama elegida vuelve a desplegar.
+# Después de crearlo, agregar la URL del panel a CORS_ALLOWED_ORIGINS del backend (ads-api).
+services:
+  - type: web
+    runtime: static
+    name: ads-panel
+    rootDir: worker-verification-admin
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    pullRequestPreviewsEnabled: false
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      # Se lee al compilar (Vite); es la URL pública del backend, sin /api
+      - key: VITE_API_BASE_URL
+        value: https://ads-api-4o89.onrender.com
+    routes:
+      # El panel maneja las rutas en el navegador: sin esto, recargar /workers/… da 404
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin

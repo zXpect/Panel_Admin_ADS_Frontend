@@ -33,7 +33,7 @@ interface LogEntry {
   timestamp: number;
   level: LogLevel;
   message: string;
-  data?: any;
+  data?: unknown;
   context?: ErrorContext;
   category?: string;
 }
@@ -85,7 +85,7 @@ class Logger {
   /**
    * Registra un log
    */
-  private log(level: LogLevel, message: string, data?: any, context?: ErrorContext, category?: string): void {
+  private log(level: LogLevel, message: string, data?: unknown, context?: ErrorContext, category?: string): void {
     if (!this.shouldLog(level)) return;
 
     const entry: LogEntry = {
@@ -191,23 +191,23 @@ class Logger {
    * Métodos públicos de logging
    */
 
-  debug(message: string, data?: any, context?: ErrorContext): void {
+  debug(message: string, data?: unknown, context?: ErrorContext): void {
     this.log(LogLevel.DEBUG, message, data, context, 'DEBUG');
   }
 
-  info(message: string, data?: any, context?: ErrorContext): void {
+  info(message: string, data?: unknown, context?: ErrorContext): void {
     this.log(LogLevel.INFO, message, data, context, 'INFO');
   }
 
-  warn(message: string, data?: any, context?: ErrorContext): void {
+  warn(message: string, data?: unknown, context?: ErrorContext): void {
     this.log(LogLevel.WARN, message, data, context, 'WARNING');
   }
 
-  error(message: string, data?: any, context?: ErrorContext): void {
+  error(message: string, data?: unknown, context?: ErrorContext): void {
     this.log(LogLevel.ERROR, message, data, context, 'ERROR');
   }
 
-  critical(message: string, data?: any, context?: ErrorContext): void {
+  critical(message: string, data?: unknown, context?: ErrorContext): void {
     this.log(LogLevel.CRITICAL, message, data, context, 'CRITICAL');
   }
 
@@ -243,7 +243,7 @@ class Logger {
   /**
    * Registra actividad de usuario (para debugging)
    */
-  logUserActivity(action: string, details?: any, context?: ErrorContext): void {
+  logUserActivity(action: string, details?: unknown, context?: ErrorContext): void {
     this.info(`User Action: ${action}`, details, context);
   }
 
@@ -358,6 +358,13 @@ class Logger {
 
 export const logger = new Logger();
 
+declare global {
+  interface Window {
+    // Solo en desarrollo (useDevLogger)
+    __APP_LOGGER__?: Logger;
+  }
+}
+
 // ============================================
 // UTILIDADES DE LOGGING
 // ============================================
@@ -368,7 +375,7 @@ export const logger = new Logger();
 export function useDevLogger(): void {
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     // Exponer el logger globalmente en desarrollo
-    (window as any).__APP_LOGGER__ = logger;
+    window.__APP_LOGGER__ = logger;
     console.info(
       '%c[Dev Logger] Logger disponible en window.__APP_LOGGER__',
       'color: #3b82f6; font-weight: bold;'
@@ -381,13 +388,13 @@ export function useDevLogger(): void {
  */
 export function logFunction(category: string) {
   return function (
-    _target: any,
+    _target: object,
     propertyKey: string,
     descriptor: PropertyDescriptor
   ) {
     const originalMethod = descriptor.value;
 
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function (this: unknown, ...args: unknown[]) {
       const start = performance.now();
 
       logger.debug(`[${category}] ${propertyKey} called`, { args });

@@ -58,7 +58,9 @@ const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      "border-b transition-all duration-200 hover:bg-muted/50 data-[state=selected]:bg-muted hover:scale-[1.001] animate-fade-in",
+      // Sin escala al pasar el mouse: cambiaba el alto de la página y, al final del
+      // scroll, la hacía subir y bajar
+      "border-b transition-colors duration-200 hover:bg-muted/50 data-[state=selected]:bg-muted",
       className
     )}
     {...props}

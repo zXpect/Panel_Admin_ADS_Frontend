@@ -15,15 +15,48 @@ export const ROUTES = {
   CLIENT_DETAIL: '/clients/:id',
 } as const;
 
+// Oficios oficiales del catálogo (ServiceCategory en ADS_AdminBack, migración
+// pricing/0002_seed_catalog). GET /api/catalog/ solo acepta el ID token de
+// Firebase de la app, así que el panel usa esta lista fija: mantenerla igual.
 export const WORKER_CATEGORIES = [
-  'Plomería',
-  'Electricista',
-  'Jardinería',
-  'Carpintería',
-  'Pintor',
-  'Albañilería',
-  'Ferretería'
+  { slug: 'electricidad', name: 'Electricidad' },
+  { slug: 'plomeria', name: 'Plomería' },
+  { slug: 'pintura', name: 'Pintura' },
+  { slug: 'albanileria', name: 'Albañilería' },
+  { slug: 'cerrajeria', name: 'Cerrajería' },
+  { slug: 'jardineria', name: 'Jardinería' },
+  { slug: 'carpinteria', name: 'Carpintería' },
 ] as const;
+
+export type WorkerCategorySlug = (typeof WORKER_CATEGORIES)[number]['slug'];
+
+// Valores viejos del campo `work` que no coinciden con un slug al quitar tildes
+// (igual que LEGACY_WORK_TO_CATEGORY en pricing/services/worker_categories.py).
+const LEGACY_WORK_TO_CATEGORY: Record<string, WorkerCategorySlug> = {
+  electricista: 'electricidad',
+  plomero: 'plomeria',
+  pintor: 'pintura',
+  albanil: 'albanileria',
+  cerrajero: 'cerrajeria',
+  jardinero: 'jardineria',
+  carpintero: 'carpinteria',
+};
+
+/**
+ * Slug del oficio que corresponde al texto de `work` ('Electricista' -> 'electricidad'),
+ * o null si no hay equivalencia (p. ej. 'Ferretería', que no es un oficio).
+ */
+export const workToCategorySlug = (work?: string | null): WorkerCategorySlug | null => {
+  const value = (work ?? '').normalize('NFKD').replace(/\p{Diacritic}/gu, '').trim().toLowerCase();
+  const slug = LEGACY_WORK_TO_CATEGORY[value] ?? value;
+  return WORKER_CATEGORIES.find((category) => category.slug === slug)?.slug ?? null;
+};
+
+/** Nombre oficial del oficio para un `work` viejo o nuevo ('Pintor' -> 'Pintura'), o '' si no hay. */
+export const workToCategoryName = (work?: string | null): string => {
+  const slug = workToCategorySlug(work);
+  return WORKER_CATEGORIES.find((category) => category.slug === slug)?.name ?? '';
+};
 
 export const DOCUMENT_TYPES = {
   HOJA_VIDA: 'hoja_de_vida',
@@ -64,3 +97,16 @@ export const PAGINATION = {
   DEFAULT_PAGE: 1,
   DEFAULT_PAGE_SIZE: 20,
 } as const;
+/** Oficios del trabajador: `categories` si existe; si no, el que se deduce de `work`. */
+export const workerCategorySlugs = (worker: { categories?: string[]; work?: string | null }): string[] => {
+  const slugs = (worker.categories || []).filter((slug) => WORKER_CATEGORIES.some((c) => c.slug === slug));
+  if (slugs.length) return slugs;
+  const legacy = workToCategorySlug(worker.work);
+  return legacy ? [legacy] : [];
+};
+
+/** «Plomería, Pintura» para mostrar. */
+export const workerCategoryNames = (worker: { categories?: string[]; work?: string | null }): string =>
+  workerCategorySlugs(worker)
+    .map((slug) => WORKER_CATEGORIES.find((category) => category.slug === slug)?.name || slug)
+    .join(', ');

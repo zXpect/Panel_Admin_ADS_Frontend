@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { documentService } from '@/api/services/documentService';
 import { DocumentApprovalInput, DocumentRejectionInput } from '@/types/document.types';
 import toast from 'react-hot-toast';
+import { getServerErrorMessage } from '@/lib/utils/errorHandler';
 
 export const useDocuments = () => {
   const queryClient = useQueryClient();
@@ -20,8 +21,8 @@ export const useDocuments = () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
       toast.success('Documento aprobado exitosamente');
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.error || 'Error al aprobar documento');
+    onError: (error) => {
+      toast.error(getServerErrorMessage(error, 'Error al aprobar documento'));
     },
   });
 
@@ -32,8 +33,8 @@ export const useDocuments = () => {
       queryClient.invalidateQueries({ queryKey: ['documents'] });
       toast.success('Documento rechazado');
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.error || 'Error al rechazar documento');
+    onError: (error) => {
+      toast.error(getServerErrorMessage(error, 'Error al rechazar documento'));
     },
   });
 
