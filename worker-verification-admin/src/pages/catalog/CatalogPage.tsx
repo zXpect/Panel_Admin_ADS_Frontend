@@ -4,12 +4,14 @@ import { useCatalogAdmin } from '@/hooks/useCatalogAdmin';
 import { ConfigPanel } from '@/components/features/catalog/ConfigPanel';
 import { CategoryCard } from '@/components/features/catalog/CategoryCard';
 import { AuditPanel } from '@/components/features/catalog/AuditPanel';
+import { usePanelRole } from '@/hooks/usePanelRole';
 
 /** Catálogo y tarifas (HU-29, A4): oficios, tareas, rangos, parámetros e historial. */
 export const CatalogPage = () => {
   const {
     categories, configs, isLoading, updateCategory, updateTask, createTask, updateConfig, isSaving,
   } = useCatalogAdmin();
+  const { isEvaluator } = usePanelRole();
 
   if (isLoading) {
     return (
@@ -22,8 +24,12 @@ export const CatalogPage = () => {
   return (
     <div className="space-y-6">
       <PageHeader icon={Tag} title="Catálogo y tarifas"
-        subtitle={`${categories.length} oficios · los cambios quedan en el historial`} />
+        subtitle={isEvaluator
+          ? `${categories.length} oficios · solo lectura en modo evaluación`
+          : `${categories.length} oficios · los cambios quedan en el historial`} />
 
+      {/* En modo evaluación se ven las tarifas, pero sus controles quedan deshabilitados */}
+      <fieldset disabled={isEvaluator} className="contents">
       <ConfigPanel
         configs={configs}
         onSave={(key, value) => updateConfig({ key, value })}
@@ -43,6 +49,7 @@ export const CatalogPage = () => {
           />
         ))}
       </div>
+      </fieldset>
 
       <AuditPanel />
     </div>

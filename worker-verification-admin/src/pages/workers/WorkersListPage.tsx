@@ -12,10 +12,12 @@ import { WorkerFormModal } from '@/components/features/workers/WorkerFormModal';
 import { DeleteConfirmModal } from '@/components/common/DeleteConfirmModal';
 import { Worker, WorkerCreateInput, WorkerUpdateInput } from '@/types/worker.types';
 import { WORKER_CATEGORIES, workerCategoryNames, workerCategorySlugs } from '@/lib/utils/constants';
+import { usePanelRole } from '@/hooks/usePanelRole';
 
 type VerificationFilter = '' | 'approved' | 'documents_submitted' | 'rejected' | 'none';
 
 export const WorkersListPage = () => {
+  const { isEvaluator } = usePanelRole();
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [availableFilter, setAvailableFilter] = useState<boolean | undefined>();
@@ -130,7 +132,8 @@ export const WorkersListPage = () => {
         icon={Users}
         title="Trabajadores"
         subtitle={`Total: ${workers.length} trabajadores`}
-        actions={(
+        // En modo evaluación no se crean trabajadores ni se hace carga masiva
+        actions={isEvaluator ? undefined : (
           <>
             <Link to="/workers/bulk-upload" className="btn-secondary">
               <Upload className="w-4 h-4" />
@@ -255,13 +258,17 @@ export const WorkersListPage = () => {
                         <Link to={`/workers/${worker.id}`} className="icon-btn" aria-label={`Ver a ${worker.name}`} title="Ver">
                           <Eye className="w-4 h-4" />
                         </Link>
-                        <button onClick={() => handleEdit(worker)} className="icon-btn" aria-label={`Editar a ${worker.name}`} title="Editar">
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button onClick={() => handleDelete(worker)} aria-label={`Eliminar a ${worker.name}`} title="Eliminar"
-                          className="icon-btn text-[hsl(var(--destructive))] border-[hsl(var(--destructive))]/40 hover:bg-[hsl(var(--danger-soft))]">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        {!isEvaluator && (
+                          <>
+                            <button onClick={() => handleEdit(worker)} className="icon-btn" aria-label={`Editar a ${worker.name}`} title="Editar">
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button onClick={() => handleDelete(worker)} aria-label={`Eliminar a ${worker.name}`} title="Eliminar"
+                              className="icon-btn text-[hsl(var(--destructive))] border-[hsl(var(--destructive))]/40 hover:bg-[hsl(var(--danger-soft))]">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>

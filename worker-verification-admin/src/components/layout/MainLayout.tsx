@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
+import { EvaluatorBanner } from './EvaluatorBanner';
 import { useUIStore } from '@/store/uiStore';
 import { cn } from '@/lib/utils/helpers';
 
@@ -28,6 +29,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       >
         {/* Header */}
         <Header />
+        <EvaluatorBanner />
 
         {/* Contenido de página */}
         <main className="flex-1 overflow-y-auto px-4 py-6 md:px-10 md:py-8 bg-background text-foreground">

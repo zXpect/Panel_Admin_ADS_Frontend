@@ -4,6 +4,7 @@ import { Upload, Download, X, CheckCircle, XCircle, FileSpreadsheet, AlertCircle
 import { PageHeader } from '@/components/layout/PageHeader';
 import axiosInstance from '@/api/axiosConfig';
 import { getServerErrorMessage } from '@/lib/utils/errorHandler';
+import { usePanelRole } from '@/hooks/usePanelRole';
 
 interface BulkUploadResult {
   total_processed: number;
@@ -33,6 +34,7 @@ const BulkWorkersUpload: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isDownloadingTemplate, setIsDownloadingTemplate] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { isEvaluator } = usePanelRole();
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -176,7 +178,9 @@ const BulkWorkersUpload: React.FC = () => {
       <PageHeader
         icon={Upload}
         title="Carga masiva de trabajadores"
-        subtitle="Sube un archivo Excel con los datos de varios trabajadores"
+        subtitle={isEvaluator
+          ? 'Puedes ver la plantilla; la carga está desactivada en modo evaluación'
+          : 'Sube un archivo Excel con los datos de varios trabajadores'}
         actions={(
           <button onClick={handleDownloadTemplate} disabled={isDownloadingTemplate} className="btn-secondary">
             {isDownloadingTemplate ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
@@ -204,7 +208,8 @@ const BulkWorkersUpload: React.FC = () => {
         </div>
       </div>
 
-      {/* Área de carga */}
+      {/* Área de carga (deshabilitada en modo evaluación: la API también la bloquea) */}
+      <fieldset disabled={isEvaluator} className="contents">
       <div className="bg-[hsl(var(--card))] rounded-2xl shadow border border-[hsl(var(--border))] p-6 transition-colors">
         <div
           onDragOver={handleDragOver}
@@ -284,6 +289,7 @@ const BulkWorkersUpload: React.FC = () => {
           )}
         </div>
       </div>
+      </fieldset>
 
       {/* Error */}
       {error && (
