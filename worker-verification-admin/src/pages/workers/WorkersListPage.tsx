@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import { useWorkers } from '@/hooks/useWorkers';
 import { usePagination } from '@/hooks/usePagination';
 import { Search, Eye, Star, Plus, Edit, Trash2, Upload, Users } from 'lucide-react';
-import { getInitials } from '@/lib/utils/helpers';
+import { formatDate, getInitials } from '@/lib/utils/helpers';
+import { ACCOUNT_SORT_OPTIONS, AccountSort, sortAccounts } from '@/lib/utils/sorting';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { VerificationChip } from '@/components/features/workers/VerificationChip';
 import { Pagination } from '@/components/common/Pagination';
@@ -22,6 +23,7 @@ export const WorkersListPage = () => {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [availableFilter, setAvailableFilter] = useState<boolean | undefined>();
   const [verificationFilter, setVerificationFilter] = useState<VerificationFilter>('');
+  const [sort, setSort] = useState<AccountSort>('newest');
 
   const { 
     workers: allWorkers, 
@@ -40,7 +42,7 @@ export const WorkersListPage = () => {
   // Oficio y verificación se filtran aquí: el oficio usa `categories` con respaldo en
   // `work`, igual que el backend (DEF-10), y la verificación no tiene filtro en la API
   const workers = useMemo(
-    () => allWorkers.filter((worker) => {
+    () => sortAccounts(allWorkers.filter((worker) => {
       if (categoryFilter && !workerCategorySlugs(worker).includes(categoryFilter)) return false;
       if (verificationFilter) {
         const status = worker.verificationStatus?.status;
@@ -48,8 +50,8 @@ export const WorkersListPage = () => {
         if (verificationFilter === 'none' ? !!status : normalized !== verificationFilter) return false;
       }
       return true;
-    }),
-    [allWorkers, categoryFilter, verificationFilter]
+    }), sort),
+    [allWorkers, categoryFilter, verificationFilter, sort]
   );
 
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
@@ -69,7 +71,7 @@ export const WorkersListPage = () => {
 
   useEffect(() => {
     resetPage();
-  }, [search, categoryFilter, availableFilter, verificationFilter, resetPage]);
+  }, [search, categoryFilter, availableFilter, verificationFilter, sort, resetPage]);
 
   const handleCreate = () => {
     setSelectedWorker(null);
@@ -148,7 +150,7 @@ export const WorkersListPage = () => {
       />
 
       {/* Filtros */}
-      <div className="panel p-4 grid grid-cols-1 md:grid-cols-[1.6fr_1fr_1fr_1fr] gap-3 md:items-end">
+      <div className="panel p-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-[1.6fr_1fr_1fr_1fr_1fr] gap-3 md:items-end">
         <div className="relative">
           <label htmlFor="worker-search" className="sr-only">Buscar</label>
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[hsl(var(--muted-foreground))]" />
@@ -194,6 +196,14 @@ export const WorkersListPage = () => {
             <option value="false">No disponibles</option>
           </select>
         </div>
+        <div>
+          <label htmlFor="worker-sort" className="field-label">Ordenar</label>
+          <select id="worker-sort" value={sort} onChange={(e) => setSort(e.target.value as AccountSort)} className="field">
+            {ACCOUNT_SORT_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Tabla */}
@@ -202,7 +212,7 @@ export const WorkersListPage = () => {
           <p className="p-12 text-center text-[hsl(var(--muted-foreground))]">No se encontraron trabajadores</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="data-table min-w-[820px]">
+            <table className="data-table min-w-[900px]">
               <thead>
                 <tr>
                   <th>Trabajador</th>
@@ -210,6 +220,7 @@ export const WorkersListPage = () => {
                   <th>Verificación</th>
                   <th>Estado</th>
                   <th>Calificación</th>
+                  <th>Registro</th>
                   <th className="text-right">Acciones</th>
                 </tr>
               </thead>
@@ -253,6 +264,7 @@ export const WorkersListPage = () => {
                         <span className="text-[hsl(var(--muted-foreground))]">({worker.totalRatings || 0})</span>
                       </span>
                     </td>
+                    <td className="whitespace-nowrap">{worker.createdAt ? formatDate(worker.createdAt, 'dd/MM/yyyy') : '—'}</td>
                     <td>
                       <div className="flex justify-end gap-2">
                         <Link to={`/workers/${worker.id}`} className="icon-btn" aria-label={`Ver a ${worker.name}`} title="Ver">

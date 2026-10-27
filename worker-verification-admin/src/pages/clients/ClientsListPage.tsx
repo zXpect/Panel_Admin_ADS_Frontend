@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useClients } from '@/hooks/useClients';
 import { usePagination } from '@/hooks/usePagination';
 import { Search, Eye, UserCheck } from 'lucide-react';
-import { getInitials } from '@/lib/utils/helpers';
+import { formatDate, getInitials } from '@/lib/utils/helpers';
+import { ACCOUNT_SORT_OPTIONS, AccountSort, sortAccounts } from '@/lib/utils/sorting';
 import { Pagination } from '@/components/common/Pagination';
 import { ClientDetailModal } from '@/components/features/clients/ClientDetailModal';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -14,13 +15,17 @@ type StatusFilter = '' | 'active' | 'suspended';
 export const ClientsListPage = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('');
+  const [sort, setSort] = useState<AccountSort>('newest');
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   const { clients: allClients, isLoading } = useClients({ search });
-  const clients = statusFilter
-    ? allClients.filter((client) => (client.isActive === false) === (statusFilter === 'suspended'))
-    : allClients;
+  const clients = sortAccounts(
+    statusFilter
+      ? allClients.filter((client) => (client.isActive === false) === (statusFilter === 'suspended'))
+      : allClients,
+    sort
+  );
 
   const {
     currentPage,
@@ -34,7 +39,7 @@ export const ClientsListPage = () => {
 
   useEffect(() => {
     resetPage();
-  }, [search, statusFilter, resetPage]);
+  }, [search, statusFilter, sort, resetPage]);
 
   const handleViewClient = (client: Client) => {
     setSelectedClient(client);
@@ -53,7 +58,7 @@ export const ClientsListPage = () => {
     <div className="space-y-6">
       <PageHeader icon={UserCheck} title="Clientes" subtitle={`Total: ${clients.length} clientes`} />
 
-      <div className="panel p-4 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-3 md:items-end">
+      <div className="panel p-4 grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-3 md:items-end">
         <div className="relative">
           <label htmlFor="client-search" className="sr-only">Buscar</label>
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[hsl(var(--muted-foreground))]" />
@@ -74,6 +79,14 @@ export const ClientsListPage = () => {
             <option value="suspended">Suspendidas</option>
           </select>
         </div>
+        <div>
+          <label htmlFor="client-sort" className="field-label">Ordenar</label>
+          <select id="client-sort" value={sort} onChange={(e) => setSort(e.target.value as AccountSort)} className="field">
+            {ACCOUNT_SORT_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="panel overflow-hidden">
@@ -87,6 +100,7 @@ export const ClientsListPage = () => {
                   <th>Cliente</th>
                   <th>Correo</th>
                   <th>Teléfono</th>
+                  <th>Registro</th>
                   <th>Cuenta</th>
                   <th className="text-right">Acciones</th>
                 </tr>
@@ -106,6 +120,7 @@ export const ClientsListPage = () => {
                     </td>
                     <td className="max-w-[260px] truncate">{client.email || '—'}</td>
                     <td className="whitespace-nowrap">{client.phone || '—'}</td>
+                    <td className="whitespace-nowrap">{client.createdAt ? formatDate(client.createdAt, 'dd/MM/yyyy') : '—'}</td>
                     <td>
                       {client.isActive === false
                         ? <span className="chip chip-danger">Suspendida</span>
