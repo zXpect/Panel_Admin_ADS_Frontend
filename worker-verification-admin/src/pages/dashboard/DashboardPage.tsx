@@ -23,6 +23,7 @@ import {
 import { LoadingNut } from '@/components/common/LoadingNut';
 import { EmptyState } from '@/components/common/EmptyState';
 import { EmptyToolboxIcon } from '@/components/common/AdsIcons';
+import { useCountUp } from '@/hooks/useCountUp';
 
 
 export const DashboardPage = () => {
@@ -111,10 +112,10 @@ export const DashboardPage = () => {
 
       {/* Indicadores secundarios */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <MiniStat icon={CheckCircle2} label="Verificados" value={verifiedWorkers} />
-        <MiniStat icon={Activity} label="Actividad" value={`${activityRate}%`} />
-        <MiniStat icon={FileText} label="Aprobados" value={stats?.documents.approved || 0} />
-        <MiniStat icon={TrendingUp} label="Aprobación" value={`${approvalRate}%`} />
+        <MiniStat icon={CheckCircle2} label="Verificados" value={<CountUp value={verifiedWorkers} />} />
+        <MiniStat icon={Activity} label="Actividad" value={<CountUp value={activityRate} suffix="%" />} />
+        <MiniStat icon={FileText} label="Aprobados" value={<CountUp value={stats?.documents.approved || 0} />} />
+        <MiniStat icon={TrendingUp} label="Aprobación" value={<CountUp value={approvalRate} suffix="%" />} />
       </div>
 
       {/* Tendencia */}
@@ -266,13 +267,15 @@ interface KpiCardProps {
   detail: ReactNode;
 }
 
-const KpiCard = ({ to, icon: Icon, label, value, detail }: KpiCardProps) => (
+const KpiCard = ({ to, icon: Icon, label, value, detail }: KpiCardProps) => {
+  const shown = useCountUp(value);
+  return (
   <Link to={to} className="panel panel-press p-5 block hover:border-[hsl(var(--primary))]">
     <div className="flex items-start justify-between gap-3">
       <div>
         <p className="text-xs font-semibold uppercase tracking-wide text-[hsl(var(--muted-foreground))]">{label}</p>
         <p className="text-[34px] leading-[44px] font-extrabold text-[hsl(var(--secondary-foreground))] dark:text-[hsl(var(--foreground))]">
-          {value}
+          {shown}
         </p>
       </div>
       <div className="w-12 h-12 rounded-xl bg-[hsl(var(--chip))] text-[hsl(var(--chip-foreground))] flex items-center justify-center">
@@ -281,7 +284,11 @@ const KpiCard = ({ to, icon: Icon, label, value, detail }: KpiCardProps) => (
     </div>
     <div className="mt-2 flex gap-4 text-sm text-[hsl(var(--muted-foreground))]">{detail}</div>
   </Link>
-);
+  );
+};
+
+// Cuenta hasta el valor; con sufijo (p. ej. «%») si se pasa
+const CountUp = ({ value, suffix = '' }: { value: number; suffix?: string }) => <>{useCountUp(value)}{suffix}</>;
 
 const MiniStat = ({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: ReactNode }) => (
   <div className="panel p-4 flex items-center gap-3">

@@ -79,3 +79,42 @@ export const PqrIcon = ({ strokeWidth = 2, ...props }: IconProps) => (
     <path d={WRENCH} strokeWidth={3.4} transform="translate(6.7 4.9) scale(0.52)" />
   </Svg>
 );
+
+// Oficios de la app (res/drawable/icon_*.xml, fuente en iconos_tipos_trabajo/vectoriales/), por slug del catálogo
+const TRADE_PATHS: Record<string, string[]> = {
+  electricidad: ['M13,2L4,14h7l-1,8 9,-12h-7l1,-8z'],
+  plomeria: ['M12,3s6,6.5 6,11a6,6 0,0 1,-12,0c0,-4.5 6,-11 6,-11z'],
+  pintura: [
+    'M4.5,3h11a1.5,1.5 0,0 1,1.5,1.5v3a1.5,1.5 0,0 1,-1.5,1.5h-11a1.5,1.5 0,0 1,-1.5,-1.5v-3a1.5,1.5 0,0 1,1.5,-1.5z',
+    'M17,6h2.5a1.5,1.5 0,0 1,1.5,1.5v3a1.5,1.5 0,0 1,-1.5,1.5H12v2',
+    'M11,14h2a1,1 0,0 1,1,1v5a1,1 0,0 1,-1,1h-2a1,1 0,0 1,-1,-1v-5a1,1 0,0 1,1,-1z',
+  ],
+  albanileria: [
+    'M5,4.5h14a2,2 0,0 1,2,2v11a2,2 0,0 1,-2,2H5a2,2 0,0 1,-2,-2v-11a2,2 0,0 1,2,-2z',
+    'M3,9.5h18M3,14.5h18M15,4.5v5M9,9.5v5M15,14.5v5',
+  ],
+  cerrajeria: [
+    'M6,11h12a2,2 0,0 1,2,2v6a2,2 0,0 1,-2,2H6a2,2 0,0 1,-2,-2v-6a2,2 0,0 1,2,-2z',
+    'M8,11V7a4,4 0,0 1,8,0v4',
+    'M12,15v2',
+  ],
+  jardineria: ['M5,19c0,-8 5,-13 14,-14 0,9 -5,14 -13,14z', 'M5,19l7,-7'],
+  carpinteria: ['M11.5,3.5l9,9 -3.3,3.3 -9,-9z', 'M12.7,11.3L4.5,19.5'],
+};
+
+/** Ícono del oficio (rayo, gota, rodillo…); si el slug no es del catálogo, la llave. */
+export const TradeIcon = ({ slug, ...props }: IconProps & { slug: string }) => (
+  <Svg strokeWidth={1.9} {...props}>
+    {(TRADE_PATHS[slug] || [WRENCH]).map((d) => <path key={d} d={d} />)}
+  </Svg>
+);
+
+/** Check de éxito (avd_ads_check): el trazo se dibuja y sale un anillo naranja una vez. */
+export const SuccessCheckIcon = (props: IconProps) => (
+  <span className="ads-success-check" aria-hidden="true">
+    <Svg strokeWidth={2.4} {...props}>
+      <circle cx="12" cy="12" r="10" fill="hsl(var(--success))" stroke="none" />
+      <path className="ads-check-draw" d="M7.5,12.5l3,3 6,-6.5" stroke="#fff" pathLength={1} />
+    </Svg>
+  </span>
+);

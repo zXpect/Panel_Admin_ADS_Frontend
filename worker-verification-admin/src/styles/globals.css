@@ -229,6 +229,39 @@
   .panel-press:active { transform: scale(0.97); transition-duration: 90ms; }
 }
 
+/* Más movimiento de la app (helpers/Motion.java) */
+@layer components {
+  /* Campo o formulario con error: tiembla de lado a lado (Motion.shake) */
+  .ads-shake { animation: ads-shake 300ms ease-out; }
+
+  /* Check de éxito: entra creciendo con un leve sobrepaso (popIn), el trazo se dibuja
+     (avd_ads_check) y un anillo naranja sale una vez desde el borde (ringOnce) */
+  .ads-success-check { position: relative; display: inline-flex; width: 22px; height: 22px; flex-shrink: 0;
+    animation: ads-pop-in 280ms cubic-bezier(0.34, 1.8, 0.64, 1) both; }
+  .ads-success-check svg { width: 100%; height: 100%; }
+  .ads-success-check::after { content: ''; position: absolute; inset: 0; border-radius: 9999px;
+    border: 3px solid hsl(var(--primary)); opacity: 0; animation: ads-ring-once 600ms 220ms ease-out; }
+  .ads-check-draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ads-draw 320ms 120ms ease-out forwards; }
+}
+
+@keyframes ads-shake {
+  0%, 100% { transform: none; }
+  16% { transform: translateX(-10px); }
+  33% { transform: translateX(10px); }
+  50% { transform: translateX(-6px); }
+  66% { transform: translateX(6px); }
+  83% { transform: translateX(-2px); }
+}
+@keyframes ads-pop-in {
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ads-ring-once {
+  from { opacity: 0.8; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.6); }
+}
+@keyframes ads-draw { to { stroke-dashoffset: 0; } }
+
 @keyframes ads-spin { to { transform: rotate(360deg); } }
 @keyframes ads-page-enter {
   from { opacity: 0; transform: translateX(24px); }
@@ -241,7 +274,8 @@
 
 /* Sin animaciones si el sistema pide reducir el movimiento; la tuerca gira más lento */
 @media (prefers-reduced-motion: reduce) {
-  .ads-page-enter, .ads-rise, .data-table tbody tr { animation: none; }
+  .ads-page-enter, .ads-rise, .data-table tbody tr, .ads-shake, .ads-success-check, .ads-success-check::after { animation: none; }
+  .ads-check-draw { animation: none; stroke-dashoffset: 0; }
   .ads-nut-spin { animation-duration: 3s; }
   .btn-primary:active, .btn-secondary:active, .btn-danger:active, .icon-btn:active, .panel-press:active { transform: none; }
 }

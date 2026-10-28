@@ -7,6 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import { AppRoutes } from './routes/AppRoutes';
 import { useAuthStore } from './store/authStore';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { SuccessCheckIcon } from '@/components/common/AdsIcons';
 
 // Configurar React Query con manejo de errores mejorado
 const queryClient = new QueryClient({
@@ -64,10 +65,8 @@ function App() {
               },
               success: {
                 duration: 3000,
-                iconTheme: {
-                  primary: '#34C759',
-                  secondary: '#fff',
-                },
+                // Check que se dibuja con un anillo naranja, como el resultado de la app
+                icon: <SuccessCheckIcon />,
                 style: {
                   background: 'hsl(var(--card))',
                   border: '1px solid #34C759',

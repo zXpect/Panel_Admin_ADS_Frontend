@@ -5,10 +5,13 @@ import { ErrorAlert } from "@/components/common/ErrorAlert";
 import { Eye, EyeOff, LogIn, Sun, Moon } from "lucide-react";
 import { AdsLogo } from "@/components/layout/AdsLogo";
 import { LoadingNut } from '@/components/common/LoadingNut';
+import { useShake } from '@/hooks/useShake';
 
 export const LoginPage = () => {
   const { login, isLoggingIn } = useAuth();
   const { error, clearError, handleError, getFieldError } = useErrorHandler();
+  // La tarjeta tiembla con cada error, como los campos con error de la app
+  const cardRef = useShake<HTMLDivElement>(error);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
@@ -90,7 +93,7 @@ export const LoginPage = () => {
         {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
       </button>
 
-      <div className="panel w-full max-w-[430px] p-8">
+      <div ref={cardRef} className="panel w-full max-w-[430px] p-8">
         {/* Logo y título (mockup A1) */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-3">

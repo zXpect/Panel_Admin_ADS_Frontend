@@ -4,6 +4,8 @@ import { Worker, WorkerCreateInput, WorkerUpdateInput } from '@/types/worker.typ
 import { useCatalogAdmin } from '@/hooks/useCatalogAdmin';
 import { WORKER_CATEGORIES, workerCategorySlugs } from '@/lib/utils/constants';
 import { cn } from '@/lib/utils/helpers';
+import { TradeIcon } from '@/components/common/AdsIcons';
+import { useShake } from '@/hooks/useShake';
 
 interface WorkerFormModalProps {
   isOpen: boolean;
@@ -41,6 +43,7 @@ export const WorkerFormModal = ({
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [categories, setCategories] = useState<string[]>([]);
   const [categoriesError, setCategoriesError] = useState('');
+  const categoriesRef = useShake<HTMLDivElement>(categoriesError);
 
   // Oficios activos y el máximo vienen del catálogo; mientras carga se usa la lista fija
   const { categories: catalog, configs } = useCatalogAdmin();
@@ -169,7 +172,7 @@ export const WorkerFormModal = ({
                   {categories.length} de {maxCategories}
                 </span>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div ref={categoriesRef} className="flex flex-wrap gap-2">
                 {options.map(({ slug, name, isActive }) => {
                   const selected = categories.includes(slug);
                   return (
@@ -185,7 +188,7 @@ export const WorkerFormModal = ({
                           : 'bg-[hsl(var(--card))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] hover:bg-[hsl(var(--muted))]'
                       )}
                     >
-                      {selected && <Check className="w-4 h-4" aria-hidden="true" />}
+                      {selected ? <Check className="w-4 h-4" aria-hidden="true" /> : <TradeIcon slug={slug} className="w-4 h-4" />}
                       {name}
                       {!isActive && <span className="font-normal">(inactivo)</span>}
                     </button>

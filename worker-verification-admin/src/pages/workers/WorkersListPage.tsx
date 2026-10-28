@@ -12,11 +12,12 @@ import { Pagination } from '@/components/common/Pagination';
 import { WorkerFormModal } from '@/components/features/workers/WorkerFormModal';
 import { DeleteConfirmModal } from '@/components/common/DeleteConfirmModal';
 import { Worker, WorkerCreateInput, WorkerUpdateInput } from '@/types/worker.types';
-import { WORKER_CATEGORIES, workerCategoryNames, workerCategorySlugs } from '@/lib/utils/constants';
+import { WORKER_CATEGORIES, workerCategorySlugs } from '@/lib/utils/constants';
 import { usePanelRole } from '@/hooks/usePanelRole';
 import { LoadingNut } from '@/components/common/LoadingNut';
 import { EmptyState } from '@/components/common/EmptyState';
 import { EmptyNoWorkersIcon } from '@/components/common/AdsIcons';
+import { TradeChips } from '@/components/features/workers/TradeChips';
 
 type VerificationFilter = '' | 'approved' | 'documents_submitted' | 'rejected' | 'none';
 
@@ -245,7 +246,7 @@ export const WorkersListPage = () => {
                         </span>
                       </Link>
                     </td>
-                    <td className="max-w-[200px]">{workerCategoryNames(worker) || <span className="text-[hsl(var(--muted-foreground))]">Sin oficio</span>}</td>
+                    <td className="max-w-[240px]"><TradeChips worker={worker} /></td>
                     <td><VerificationChip status={worker.verificationStatus?.status} /></td>
                     <td>
                       <div className="flex flex-wrap gap-1">
