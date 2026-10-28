@@ -51,6 +51,8 @@ export const AppRoutes = () => {
         
         {/* Documents */}
         <Route path="/documents">
+          {/* El menú lleva a /documents: sin esto la pantalla quedaba en blanco */}
+          <Route index element={<Navigate to="pending" replace />} />
           <Route path="pending" element={<PendingDocumentsPage />} />
           <Route path="review/:workerId" element={<DocumentReviewPage />} />
         </Route>
