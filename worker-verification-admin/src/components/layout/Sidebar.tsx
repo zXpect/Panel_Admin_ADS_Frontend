@@ -6,7 +6,6 @@ import {
   FileText,
   UserCheck,
   CreditCard,
-  MessageSquareText,
   Tag,
   ChevronLeft,
   ChevronRight,
@@ -17,6 +16,7 @@ import { cn } from '@/lib/utils/helpers';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { useEffect } from 'react';
 import { AdsLogo } from './AdsLogo';
+import { PqrIcon } from '@/components/common/AdsIcons';
 
 const menuItems = [
   { title: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
@@ -24,7 +24,7 @@ const menuItems = [
   { title: 'Documentos', icon: FileText, path: '/documents' },
   { title: 'Clientes', icon: UserCheck, path: '/clients' },
   { title: 'Transacciones', icon: CreditCard, path: '/transactions' },
-  { title: 'PQR', icon: MessageSquareText, path: '/pqr' },
+  { title: 'PQR', icon: PqrIcon, path: '/pqr' },
   { title: 'Catálogo y tarifas', icon: Tag, path: '/catalog' },
 ];
 

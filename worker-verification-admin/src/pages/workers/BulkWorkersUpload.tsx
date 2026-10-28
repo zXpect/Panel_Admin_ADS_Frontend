@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Upload, Download, X, CheckCircle, XCircle, FileSpreadsheet, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
+import { Upload, Download, X, CheckCircle, XCircle, FileSpreadsheet, AlertCircle, ArrowLeft } from 'lucide-react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import axiosInstance from '@/api/axiosConfig';
 import { getServerErrorMessage } from '@/lib/utils/errorHandler';
 import { usePanelRole } from '@/hooks/usePanelRole';
+import { LoadingNut } from '@/components/common/LoadingNut';
 
 interface BulkUploadResult {
   total_processed: number;
@@ -183,7 +184,7 @@ const BulkWorkersUpload: React.FC = () => {
           : 'Sube un archivo Excel con los datos de varios trabajadores'}
         actions={(
           <button onClick={handleDownloadTemplate} disabled={isDownloadingTemplate} className="btn-secondary">
-            {isDownloadingTemplate ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+            {isDownloadingTemplate ? <LoadingNut size="sm" /> : <Download className="w-4 h-4" />}
             Descargar plantilla
           </button>
         )}
@@ -251,7 +252,7 @@ const BulkWorkersUpload: React.FC = () => {
                 >
                   {isUploading ? (
                     <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <LoadingNut size="sm" />
                       <span>Procesando...</span>
                     </>
                   ) : (

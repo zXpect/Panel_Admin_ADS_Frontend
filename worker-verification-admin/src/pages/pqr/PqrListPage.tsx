@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MessageSquareText, MessageSquareWarning, AlertTriangle, Eye } from 'lucide-react';
+import { AlertTriangle, Eye } from 'lucide-react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { usePqrs } from '@/hooks/usePqrs';
 import { Pagination } from '@/components/common/Pagination';
@@ -9,6 +9,9 @@ import {
 } from '@/components/features/pqr/pqrLabels';
 import { cn, formatDate, truncateText } from '@/lib/utils/helpers';
 import { Pqr, PqrFilters, PqrStatus } from '@/types/pqr.types';
+import { LoadingNut } from '@/components/common/LoadingNut';
+import { EmptyState } from '@/components/common/EmptyState';
+import { EmptyPqrIcon, PqrIcon } from '@/components/common/AdsIcons';
 
 // El backend pagina de a 20 (REST_FRAMEWORK.PAGE_SIZE)
 const PAGE_SIZE = 20;
@@ -32,7 +35,7 @@ export const PqrListPage = () => {
 
   return (
     <div className="space-y-6">
-      <PageHeader icon={MessageSquareText} title="PQR"
+      <PageHeader icon={PqrIcon} title="PQR"
         subtitle="Peticiones, quejas y reclamos · plazo de respuesta de 15 días hábiles" />
 
       {/* Filtro por estado */}
@@ -57,13 +60,11 @@ export const PqrListPage = () => {
       <div className="panel overflow-hidden">
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[hsl(var(--primary))]"></div>
+            <LoadingNut />
           </div>
         ) : pqrs.length === 0 ? (
-          <div className="p-12 text-center">
-            <MessageSquareWarning className="w-16 h-16 text-[hsl(var(--muted-foreground))] mx-auto mb-4" />
-            <p className="text-[hsl(var(--muted-foreground))]">No hay PQR en este estado</p>
-          </div>
+          <EmptyState icon={EmptyPqrIcon} title="No hay PQR en este estado"
+            description="Las peticiones, quejas y reclamos de clientes y trabajadores aparecerán aquí." />
         ) : (
           <div className="overflow-x-auto">
             <table className="data-table">

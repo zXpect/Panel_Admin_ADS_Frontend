@@ -8,6 +8,9 @@ import { Pagination } from '@/components/common/Pagination';
 import { ClientDetailModal } from '@/components/features/clients/ClientDetailModal';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Client } from '@/types/client.types';
+import { LoadingNut } from '@/components/common/LoadingNut';
+import { EmptyState } from '@/components/common/EmptyState';
+import { EmptyHomeIcon } from '@/components/common/AdsIcons';
 
 type StatusFilter = '' | 'active' | 'suspended';
 
@@ -48,8 +51,8 @@ export const ClientsListPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[hsl(var(--primary))]"></div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <LoadingNut />
       </div>
     );
   }
@@ -91,7 +94,8 @@ export const ClientsListPage = () => {
 
       <div className="panel overflow-hidden">
         {clients.length === 0 ? (
-          <p className="p-12 text-center text-[hsl(var(--muted-foreground))]">No se encontraron clientes</p>
+          <EmptyState icon={EmptyHomeIcon} title="No se encontraron clientes"
+            description="Prueba con otra búsqueda o cambia el filtro de cuenta." />
         ) : (
           <div className="overflow-x-auto">
             <table className="data-table min-w-[820px]">

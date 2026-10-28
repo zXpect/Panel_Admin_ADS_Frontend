@@ -14,6 +14,9 @@ import { DeleteConfirmModal } from '@/components/common/DeleteConfirmModal';
 import { Worker, WorkerCreateInput, WorkerUpdateInput } from '@/types/worker.types';
 import { WORKER_CATEGORIES, workerCategoryNames, workerCategorySlugs } from '@/lib/utils/constants';
 import { usePanelRole } from '@/hooks/usePanelRole';
+import { LoadingNut } from '@/components/common/LoadingNut';
+import { EmptyState } from '@/components/common/EmptyState';
+import { EmptyNoWorkersIcon } from '@/components/common/AdsIcons';
 
 type VerificationFilter = '' | 'approved' | 'documents_submitted' | 'rejected' | 'none';
 
@@ -122,8 +125,8 @@ export const WorkersListPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[hsl(var(--primary))]"></div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <LoadingNut />
       </div>
     );
   }
@@ -209,7 +212,8 @@ export const WorkersListPage = () => {
       {/* Tabla */}
       <div className="panel overflow-hidden">
         {workers.length === 0 ? (
-          <p className="p-12 text-center text-[hsl(var(--muted-foreground))]">No se encontraron trabajadores</p>
+          <EmptyState icon={EmptyNoWorkersIcon} title="No se encontraron trabajadores"
+            description="Prueba con otra búsqueda o quita algún filtro." />
         ) : (
           <div className="overflow-x-auto">
             <table className="data-table min-w-[900px]">

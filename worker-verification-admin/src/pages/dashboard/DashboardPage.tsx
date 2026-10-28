@@ -20,6 +20,9 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
+import { LoadingNut } from '@/components/common/LoadingNut';
+import { EmptyState } from '@/components/common/EmptyState';
+import { EmptyToolboxIcon } from '@/components/common/AdsIcons';
 
 
 export const DashboardPage = () => {
@@ -44,8 +47,8 @@ export const DashboardPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[hsl(var(--primary))]"></div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <LoadingNut />
       </div>
     );
   }
@@ -138,7 +141,7 @@ export const DashboardPage = () => {
         </div>
         {isLoadingTrends ? (
           <div className="flex items-center justify-center h-[280px]">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(var(--primary))]"></div>
+            <LoadingNut size="md" />
           </div>
         ) : trendsData && trendsData.length > 0 ? (
           <ResponsiveContainer width="100%" height={280}>
@@ -159,9 +162,7 @@ export const DashboardPage = () => {
             </LineChart>
           </ResponsiveContainer>
         ) : (
-          <div className="flex items-center justify-center h-[280px] text-[hsl(var(--muted-foreground))]">
-            No hay datos disponibles
-          </div>
+          <EmptyState icon={EmptyToolboxIcon} title="No hay datos disponibles" className="h-[280px] justify-center" />
         )}
         {trendsSummary && (
           <div className="mt-4 grid grid-cols-3 gap-4 pt-4 border-t border-[hsl(var(--border))] text-center">
@@ -266,7 +267,7 @@ interface KpiCardProps {
 }
 
 const KpiCard = ({ to, icon: Icon, label, value, detail }: KpiCardProps) => (
-  <Link to={to} className="panel p-5 block hover:border-[hsl(var(--primary))] transition-colors">
+  <Link to={to} className="panel panel-press p-5 block hover:border-[hsl(var(--primary))]">
     <div className="flex items-start justify-between gap-3">
       <div>
         <p className="text-xs font-semibold uppercase tracking-wide text-[hsl(var(--muted-foreground))]">{label}</p>

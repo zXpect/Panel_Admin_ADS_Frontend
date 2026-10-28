@@ -5,6 +5,7 @@ import { ConfigPanel } from '@/components/features/catalog/ConfigPanel';
 import { CategoryCard } from '@/components/features/catalog/CategoryCard';
 import { AuditPanel } from '@/components/features/catalog/AuditPanel';
 import { usePanelRole } from '@/hooks/usePanelRole';
+import { LoadingNut } from '@/components/common/LoadingNut';
 
 /** Catálogo y tarifas (HU-29, A4): oficios, tareas, rangos, parámetros e historial. */
 export const CatalogPage = () => {
@@ -15,8 +16,8 @@ export const CatalogPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[hsl(var(--primary))]"></div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <LoadingNut />
       </div>
     );
   }

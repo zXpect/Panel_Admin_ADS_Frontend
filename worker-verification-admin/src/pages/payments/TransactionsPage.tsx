@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { Receipt, Search, Wallet, Banknote, CreditCard, Clock, CheckCircle, XCircle, Ban } from 'lucide-react';
+import { Search, Wallet, Banknote, CreditCard, Clock, CheckCircle, XCircle, Ban } from 'lucide-react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { usePayments } from '@/hooks/usePayments';
 import { Pagination } from '@/components/common/Pagination';
 import { cn, formatDate, formatPrice } from '@/lib/utils/helpers';
 import { PaymentFilters, PaymentGateway, PaymentStatus } from '@/types/payment.types';
+import { LoadingNut } from '@/components/common/LoadingNut';
+import { EmptyState } from '@/components/common/EmptyState';
+import { EmptyToolboxIcon } from '@/components/common/AdsIcons';
 
 // El backend pagina de a 20 (REST_FRAMEWORK.PAGE_SIZE)
 const PAGE_SIZE = 20;
@@ -114,13 +117,11 @@ export const TransactionsPage = () => {
       )}>
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[hsl(var(--primary))]"></div>
+            <LoadingNut />
           </div>
         ) : payments.length === 0 ? (
-          <div className="p-12 text-center">
-            <Receipt className="w-16 h-16 text-[hsl(var(--muted-foreground))] mx-auto mb-4" />
-            <p className="text-[hsl(var(--muted-foreground))]">No hay transacciones con estos filtros</p>
-          </div>
+          <EmptyState icon={EmptyToolboxIcon} title="No hay transacciones con estos filtros"
+            description="Los pagos de los servicios aparecerán aquí." />
         ) : (
           // Misma tabla que PQR, trabajadores y clientes (data-table, A6): sin la
           // escala al pasar el mouse de la tabla de shadcn, que al final del scroll

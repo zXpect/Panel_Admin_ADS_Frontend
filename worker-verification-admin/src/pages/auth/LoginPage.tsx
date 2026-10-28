@@ -4,6 +4,7 @@ import { useErrorHandler } from "@/hooks/useErrorHandler";
 import { ErrorAlert } from "@/components/common/ErrorAlert";
 import { Eye, EyeOff, LogIn, Sun, Moon } from "lucide-react";
 import { AdsLogo } from "@/components/layout/AdsLogo";
+import { LoadingNut } from '@/components/common/LoadingNut';
 
 export const LoginPage = () => {
   const { login, isLoggingIn } = useAuth();
@@ -161,7 +162,7 @@ export const LoginPage = () => {
           <button type="submit" disabled={isLoggingIn} className="btn-primary w-full min-h-[52px] text-base">
             {isLoggingIn ? (
               <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
+                <LoadingNut size="sm" />
                 Iniciando sesión…
               </>
             ) : (
