@@ -279,3 +279,49 @@
   .ads-nut-spin { animation-duration: 3s; }
   .btn-primary:active, .btn-secondary:active, .btn-danger:active, .icon-btn:active, .panel-press:active { transform: none; }
 }
+
+/* Pantalla de login: mismo resplandor y animaciones de entrada que el inicio del demo web */
+@layer components {
+  .login-screen {
+    @apply relative overflow-hidden;
+    background: radial-gradient(1200px 500px at 50% -10%, hsl(var(--primary) / 0.16), transparent 70%),
+      hsl(var(--background));
+  }
+  .dark .login-screen {
+    background: radial-gradient(1200px 500px at 50% -10%, hsl(var(--primary) / 0.14), transparent 70%),
+      hsl(var(--background));
+  }
+  /* Halo que respira detrás de la tarjeta */
+  .login-screen::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 640px;
+    height: 640px;
+    margin: -320px 0 0 -320px;
+    border-radius: 9999px;
+    background: radial-gradient(circle, hsl(var(--primary) / 0.12), transparent 65%);
+    pointer-events: none;
+    animation: login-glow 6s ease-in-out infinite;
+  }
+  .login-screen > * { position: relative; }
+  .login-screen > .login-theme { position: absolute; }
+
+  .login-card { animation: login-rise 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; }
+  .login-card:hover { box-shadow: 0 10px 30px hsl(var(--primary) / 0.12); }
+  /* El temblor por error (useShake) gana sobre la entrada de la tarjeta */
+  .login-card.ads-shake { animation: ads-shake 300ms ease-out; }
+  .login-logo-wrap { animation: login-logo-in 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.2) 0.1s backwards; }
+  .login-logo { animation: login-float 4s ease-in-out 1s infinite; }
+  .login-stagger { animation: login-rise 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; }
+
+  @keyframes login-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @keyframes login-logo-in { from { opacity: 0; transform: translateY(-16px) scale(0.85); } to { opacity: 1; transform: none; } }
+  @keyframes login-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  @keyframes login-glow { 0%, 100% { opacity: 0.6; transform: scale(0.92); } 50% { opacity: 1; transform: scale(1.05); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .login-screen::before, .login-card, .login-card.ads-shake, .login-logo-wrap, .login-logo, .login-stagger { animation: none; }
+  }
+}
