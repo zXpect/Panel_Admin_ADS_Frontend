@@ -105,6 +105,11 @@ function extractDjangoValidationErrors(data: ServerErrorResponse | undefined): {
     result.mainMessage = data.non_field_errors.join(', ');
   }
 
+  // Caso 3b: formato propio del backend { success: false, error: '...' }
+  if (!result.mainMessage && typeof data?.error === 'string') {
+    result.mainMessage = data.error;
+  }
+
   // Caso 4: detail como string
   if (typeof data?.detail === 'string') {
     result.mainMessage = data.detail;

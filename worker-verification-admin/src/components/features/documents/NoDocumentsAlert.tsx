@@ -1,12 +1,13 @@
-import { FileX, Info, Upload } from 'lucide-react';
+import { Info, Upload } from 'lucide-react';
+import { EmptyRequestsIcon } from '@/components/common/AdsIcons';
 
 export const NoDocumentsAlert = () => {
   return (
-    <div className="bg-gradient-to-br from-[hsl(var(--muted))] to-[hsl(var(--muted))]/50 border-2 border-[hsl(var(--border))] rounded-2xl p-16 text-center transition-all duration-300 hover:shadow-lg animate-in fade-in zoom-in-95">
+    <div className="bg-gradient-to-br from-[hsl(var(--muted))] to-[hsl(var(--muted))]/50 border-2 border-[hsl(var(--border))] rounded-2xl p-16 text-center transition-all duration-300 hover:shadow-lg ads-rise">
       <div className="flex flex-col items-center">
         <div className="relative mb-6">
           <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-[hsl(var(--primary))]/20 to-[hsl(var(--primary))]/5 border-2 border-[hsl(var(--border))] flex items-center justify-center shadow-lg">
-            <FileX className="w-14 h-14 text-[hsl(var(--muted-foreground))]" />
+            <EmptyRequestsIcon className="w-14 h-14 text-[hsl(var(--muted-foreground))]" />
           </div>
           <div className="absolute -bottom-2 -right-2 w-12 h-12 rounded-xl bg-[hsl(var(--primary))]/10 border-2 border-[hsl(var(--primary))]/30 flex items-center justify-center">
             <Upload className="w-6 h-6 text-[hsl(var(--brand-text))]" />

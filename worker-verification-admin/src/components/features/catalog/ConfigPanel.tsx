@@ -1,20 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Save, SlidersHorizontal } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { SystemConfigItem } from '@/types/catalog.types';
-import { formatDate } from '@/lib/utils/helpers';
-
-// Nombre y ayuda visibles de cada parámetro; los demás muestran su clave y descripción
-const CONFIG_LABELS: Record<string, { label: string; hint: string }> = {
-  quote_min_visit_fee_cop: { label: 'Tarifa mínima por visita (COP)', hint: 'Piso del precio de cualquier solicitud' },
-  quote_regional_factor_pct: { label: 'Factor regional (%)', hint: 'Ajuste de la referencia de ciudades grandes para Ubaté (−15 = 15 % menos)' },
-  quote_max_price_cop: { label: 'Precio máximo de una cotización (COP)', hint: 'Tope del valor que puede cotizar un técnico' },
-  worker_max_categories: { label: 'Oficios máximos por trabajador', hint: 'Entre 1 y 7' },
-  search_weight_distance: { label: 'Peso de la cercanía en la búsqueda', hint: 'Entre 0 y 1' },
-  search_weight_rating: { label: 'Peso de la calificación en la búsqueda', hint: 'Entre 0 y 1' },
-  search_neutral_rating: { label: 'Calificación de un técnico nuevo', hint: 'Se usa mientras no tiene calificaciones (0 a 5)' },
-};
-
-const ORDER = Object.keys(CONFIG_LABELS);
+import { cn, formatDate } from '@/lib/utils/helpers';
+import { CONFIG_GROUPS, CONFIG_LABELS } from './catalogLabels';
 
 interface ConfigPanelProps {
   configs: SystemConfigItem[];
@@ -22,7 +10,7 @@ interface ConfigPanelProps {
   isSaving: boolean;
 }
 
-/** Parámetros de cotización y búsqueda; los cambios aplican a las solicitudes nuevas. */
+/** Parámetros de cotización y búsqueda, en grupos; los cambios aplican a las solicitudes nuevas. */
 export const ConfigPanel = ({ configs, onSave, isSaving }: ConfigPanelProps) => {
   const [drafts, setDrafts] = useState<Record<string, string>>({});
 
@@ -30,51 +18,104 @@ export const ConfigPanel = ({ configs, onSave, isSaving }: ConfigPanelProps) => 
     setDrafts(Object.fromEntries(configs.map((item) => [item.key, item.value])));
   }, [configs]);
 
-  const sorted = [...configs].sort((a, b) => {
-    const ia = ORDER.indexOf(a.key), ib = ORDER.indexOf(b.key);
-    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib) || a.key.localeCompare(b.key);
-  });
+  const byKey = Object.fromEntries(configs.map((item) => [item.key, item]));
+  const grouped = new Set(CONFIG_GROUPS.flatMap((group) => group.keys));
+  // Un parámetro nuevo del backend que el panel todavía no conoce no se pierde: va a «Otros»
+  const groups = [
+    ...CONFIG_GROUPS,
+    { title: 'Otros', description: '', keys: configs.map((item) => item.key).filter((key) => !grouped.has(key)) },
+  ]
+    .map((group) => ({ ...group, items: group.keys.map((key) => byKey[key]).filter(Boolean) }))
+    .filter((group) => group.items.length > 0);
 
   return (
-    <div className="panel p-4 sm:p-6 space-y-4">
-      <div className="flex items-center gap-2">
-        <SlidersHorizontal className="w-5 h-5 text-[hsl(var(--brand-text))]" />
-        <h2 className="text-lg font-bold text-[hsl(var(--foreground))]">Parámetros de cotización y búsqueda</h2>
-      </div>
+    <div className="space-y-4">
       <p className="text-sm text-[hsl(var(--muted-foreground))]">
         Los cambios aplican a las solicitudes nuevas; las ya creadas conservan el precio de referencia con el que se crearon.
       </p>
 
-      <div className="divide-y divide-[hsl(var(--border))]">
-        {sorted.map((item) => {
-          const meta = CONFIG_LABELS[item.key];
-          const draft = drafts[item.key] ?? item.value;
-          const changed = draft.trim() !== item.value;
-          return (
-            <div key={item.key} className="py-3 grid grid-cols-1 md:grid-cols-[1fr_12rem_auto] gap-2 md:items-center">
-              <div>
-                <p className="font-semibold text-[hsl(var(--foreground))]">{meta?.label || item.key}</p>
-                <p className="text-xs text-[hsl(var(--muted-foreground))]">
-                  {meta?.hint || item.description} · Actualizado {formatDate(new Date(item.updated_at).getTime())}
-                </p>
-              </div>
-              <input
-                aria-label={meta?.label || item.key}
-                value={draft}
-                onChange={(e) => setDrafts((current) => ({ ...current, [item.key]: e.target.value }))}
-                className="field"
-              />
-              <button
-                disabled={!changed || isSaving}
-                onClick={() => onSave(item.key, draft.trim()).catch(() => undefined)}
-                className="btn-primary min-h-[44px] px-4"
-              >
-                <Save className="w-4 h-4" />
-                Guardar
-              </button>
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 items-start">
+        {groups.map((group) => (
+          <section key={group.title} className="panel p-4 sm:p-6 space-y-2">
+            <h2 className="text-lg font-bold text-[hsl(var(--foreground))]">{group.title}</h2>
+            {group.description && (
+              <p className="text-sm text-[hsl(var(--muted-foreground))]">{group.description}</p>
+            )}
+
+            <div className="divide-y divide-[hsl(var(--border))]">
+              {group.items.map((item) => (
+                <ConfigRow
+                  key={item.key}
+                  item={item}
+                  draft={drafts[item.key] ?? item.value}
+                  onChange={(value) => setDrafts((current) => ({ ...current, [item.key]: value }))}
+                  onSave={onSave}
+                  isSaving={isSaving}
+                />
+              ))}
             </div>
-          );
-        })}
+          </section>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+interface ConfigRowProps {
+  item: SystemConfigItem;
+  draft: string;
+  onChange: (value: string) => void;
+  onSave: (key: string, value: string) => Promise<unknown>;
+  isSaving: boolean;
+}
+
+const ConfigRow = ({ item, draft, onChange, onSave, isSaving }: ConfigRowProps) => {
+  const meta = CONFIG_LABELS[item.key];
+  const changed = draft.trim() !== item.value;
+
+  return (
+    <div className="py-3 space-y-2">
+      <div>
+        <p className="font-semibold text-[hsl(var(--foreground))]">{meta?.label || item.key}</p>
+        <p className="text-xs text-[hsl(var(--muted-foreground))]">
+          {meta?.hint || item.description} · Actualizado {formatDate(new Date(item.updated_at).getTime())}
+        </p>
+      </div>
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1 max-w-[14rem]">
+          {meta?.prefix && (
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[hsl(var(--muted-foreground))]">
+              {meta.prefix}
+            </span>
+          )}
+          <input
+            aria-label={meta?.label || item.key}
+            value={draft}
+            onChange={(e) => onChange(e.target.value)}
+            className={cn('field', meta?.prefix && 'pl-7', meta?.suffix && 'pr-8')}
+          />
+          {meta?.suffix && (
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-[hsl(var(--muted-foreground))]">
+              {meta.suffix}
+            </span>
+          )}
+        </div>
+        {/* Solo aparece cuando el valor cambió */}
+        {changed && (
+          <>
+            <button
+              disabled={isSaving}
+              onClick={() => onSave(item.key, draft.trim()).catch(() => undefined)}
+              className="btn-primary min-h-[44px] px-4"
+            >
+              <Save className="w-4 h-4" />
+              Guardar
+            </button>
+            <button type="button" onClick={() => onChange(item.value)} className="btn-secondary min-h-[44px] px-3">
+              Deshacer
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

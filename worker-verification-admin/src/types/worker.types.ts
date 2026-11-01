@@ -16,6 +16,8 @@ export interface Worker {
   totalRatings: number;
   experience?: string;
   timestamp: number;
+  // Creación de la cuenta en Firebase Auth (ms); solo en el listado
+  createdAt?: number | null;
   // Cuenta habilitada (HU-32); false si el administrador la suspendió
   isActive?: boolean;
   // Oficios del catálogo (slugs) y verificación documental; solo lectura

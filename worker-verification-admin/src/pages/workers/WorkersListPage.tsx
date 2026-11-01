@@ -4,22 +4,30 @@ import { Link } from 'react-router-dom';
 import { useWorkers } from '@/hooks/useWorkers';
 import { usePagination } from '@/hooks/usePagination';
 import { Search, Eye, Star, Plus, Edit, Trash2, Upload, Users } from 'lucide-react';
-import { getInitials } from '@/lib/utils/helpers';
+import { formatDate, getInitials } from '@/lib/utils/helpers';
+import { ACCOUNT_SORT_OPTIONS, AccountSort, sortAccounts } from '@/lib/utils/sorting';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { VerificationChip } from '@/components/features/workers/VerificationChip';
 import { Pagination } from '@/components/common/Pagination';
 import { WorkerFormModal } from '@/components/features/workers/WorkerFormModal';
 import { DeleteConfirmModal } from '@/components/common/DeleteConfirmModal';
 import { Worker, WorkerCreateInput, WorkerUpdateInput } from '@/types/worker.types';
-import { WORKER_CATEGORIES, workerCategoryNames, workerCategorySlugs } from '@/lib/utils/constants';
+import { WORKER_CATEGORIES, workerCategorySlugs } from '@/lib/utils/constants';
+import { usePanelRole } from '@/hooks/usePanelRole';
+import { LoadingNut } from '@/components/common/LoadingNut';
+import { EmptyState } from '@/components/common/EmptyState';
+import { EmptyNoWorkersIcon } from '@/components/common/AdsIcons';
+import { TradeChips } from '@/components/features/workers/TradeChips';
 
 type VerificationFilter = '' | 'approved' | 'documents_submitted' | 'rejected' | 'none';
 
 export const WorkersListPage = () => {
+  const { isEvaluator } = usePanelRole();
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [availableFilter, setAvailableFilter] = useState<boolean | undefined>();
   const [verificationFilter, setVerificationFilter] = useState<VerificationFilter>('');
+  const [sort, setSort] = useState<AccountSort>('newest');
 
   const { 
     workers: allWorkers, 
@@ -38,7 +46,7 @@ export const WorkersListPage = () => {
   // Oficio y verificación se filtran aquí: el oficio usa `categories` con respaldo en
   // `work`, igual que el backend (DEF-10), y la verificación no tiene filtro en la API
   const workers = useMemo(
-    () => allWorkers.filter((worker) => {
+    () => sortAccounts(allWorkers.filter((worker) => {
       if (categoryFilter && !workerCategorySlugs(worker).includes(categoryFilter)) return false;
       if (verificationFilter) {
         const status = worker.verificationStatus?.status;
@@ -46,8 +54,8 @@ export const WorkersListPage = () => {
         if (verificationFilter === 'none' ? !!status : normalized !== verificationFilter) return false;
       }
       return true;
-    }),
-    [allWorkers, categoryFilter, verificationFilter]
+    }), sort),
+    [allWorkers, categoryFilter, verificationFilter, sort]
   );
 
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
@@ -67,7 +75,7 @@ export const WorkersListPage = () => {
 
   useEffect(() => {
     resetPage();
-  }, [search, categoryFilter, availableFilter, verificationFilter, resetPage]);
+  }, [search, categoryFilter, availableFilter, verificationFilter, sort, resetPage]);
 
   const handleCreate = () => {
     setSelectedWorker(null);
@@ -118,8 +126,8 @@ export const WorkersListPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[hsl(var(--primary))]"></div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <LoadingNut />
       </div>
     );
   }
@@ -130,7 +138,8 @@ export const WorkersListPage = () => {
         icon={Users}
         title="Trabajadores"
         subtitle={`Total: ${workers.length} trabajadores`}
-        actions={(
+        // En modo evaluación no se crean trabajadores ni se hace carga masiva
+        actions={isEvaluator ? undefined : (
           <>
             <Link to="/workers/bulk-upload" className="btn-secondary">
               <Upload className="w-4 h-4" />
@@ -145,7 +154,7 @@ export const WorkersListPage = () => {
       />
 
       {/* Filtros */}
-      <div className="panel p-4 grid grid-cols-1 md:grid-cols-[1.6fr_1fr_1fr_1fr] gap-3 md:items-end">
+      <div className="panel p-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-[1.6fr_1fr_1fr_1fr_1fr] gap-3 md:items-end">
         <div className="relative">
           <label htmlFor="worker-search" className="sr-only">Buscar</label>
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[hsl(var(--muted-foreground))]" />
@@ -191,15 +200,24 @@ export const WorkersListPage = () => {
             <option value="false">No disponibles</option>
           </select>
         </div>
+        <div>
+          <label htmlFor="worker-sort" className="field-label">Ordenar</label>
+          <select id="worker-sort" value={sort} onChange={(e) => setSort(e.target.value as AccountSort)} className="field">
+            {ACCOUNT_SORT_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Tabla */}
       <div className="panel overflow-hidden">
         {workers.length === 0 ? (
-          <p className="p-12 text-center text-[hsl(var(--muted-foreground))]">No se encontraron trabajadores</p>
+          <EmptyState icon={EmptyNoWorkersIcon} title="No se encontraron trabajadores"
+            description="Prueba con otra búsqueda o quita algún filtro." />
         ) : (
           <div className="overflow-x-auto">
-            <table className="data-table min-w-[820px]">
+            <table className="data-table min-w-[900px]">
               <thead>
                 <tr>
                   <th>Trabajador</th>
@@ -207,6 +225,7 @@ export const WorkersListPage = () => {
                   <th>Verificación</th>
                   <th>Estado</th>
                   <th>Calificación</th>
+                  <th>Registro</th>
                   <th className="text-right">Acciones</th>
                 </tr>
               </thead>
@@ -227,7 +246,7 @@ export const WorkersListPage = () => {
                         </span>
                       </Link>
                     </td>
-                    <td className="max-w-[200px]">{workerCategoryNames(worker) || <span className="text-[hsl(var(--muted-foreground))]">Sin oficio</span>}</td>
+                    <td className="max-w-[240px]"><TradeChips worker={worker} /></td>
                     <td><VerificationChip status={worker.verificationStatus?.status} /></td>
                     <td>
                       <div className="flex flex-wrap gap-1">
@@ -250,18 +269,23 @@ export const WorkersListPage = () => {
                         <span className="text-[hsl(var(--muted-foreground))]">({worker.totalRatings || 0})</span>
                       </span>
                     </td>
+                    <td className="whitespace-nowrap">{worker.createdAt ? formatDate(worker.createdAt, 'dd/MM/yyyy') : '—'}</td>
                     <td>
                       <div className="flex justify-end gap-2">
                         <Link to={`/workers/${worker.id}`} className="icon-btn" aria-label={`Ver a ${worker.name}`} title="Ver">
                           <Eye className="w-4 h-4" />
                         </Link>
-                        <button onClick={() => handleEdit(worker)} className="icon-btn" aria-label={`Editar a ${worker.name}`} title="Editar">
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button onClick={() => handleDelete(worker)} aria-label={`Eliminar a ${worker.name}`} title="Eliminar"
-                          className="icon-btn text-[hsl(var(--destructive))] border-[hsl(var(--destructive))]/40 hover:bg-[hsl(var(--danger-soft))]">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        {!isEvaluator && (
+                          <>
+                            <button onClick={() => handleEdit(worker)} className="icon-btn" aria-label={`Editar a ${worker.name}`} title="Editar">
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button onClick={() => handleDelete(worker)} aria-label={`Eliminar a ${worker.name}`} title="Eliminar"
+                              className="icon-btn text-[hsl(var(--destructive))] border-[hsl(var(--destructive))]/40 hover:bg-[hsl(var(--danger-soft))]">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>

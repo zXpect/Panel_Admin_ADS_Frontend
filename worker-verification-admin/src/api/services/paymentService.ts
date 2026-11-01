@@ -1,6 +1,6 @@
 import axiosInstance from '../axiosConfig';
 import { API_ENDPOINTS } from '../endpoints';
-import { PaymentFilters, PaymentListResponse } from '@/types/payment.types';
+import { PaymentDetail, PaymentFilters, PaymentListResponse } from '@/types/payment.types';
 
 export const paymentService = {
   /**
@@ -21,5 +21,16 @@ export const paymentService = {
     );
 
     return data;
+  },
+
+  /**
+   * Detalle de un pago con su historial de eventos
+   */
+  getPayment: async (reference: string): Promise<PaymentDetail> => {
+    const { data } = await axiosInstance.get<{ success: boolean; data: PaymentDetail }>(
+      API_ENDPOINTS.PAYMENTS.DETAIL(reference)
+    );
+
+    return data.data;
   },
 };

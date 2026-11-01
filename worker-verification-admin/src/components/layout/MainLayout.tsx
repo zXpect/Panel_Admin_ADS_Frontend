@@ -1,6 +1,8 @@
 import { ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
+import { EvaluatorBanner } from './EvaluatorBanner';
 import { useUIStore } from '@/store/uiStore';
 import { cn } from '@/lib/utils/helpers';
 
@@ -10,6 +12,7 @@ interface MainLayoutProps {
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
   const { sidebarOpen } = useUIStore();
+  const location = useLocation();
 
   return (
     <div className={cn("flex h-screen bg-background text-foreground transition-colors")}>
@@ -28,10 +31,12 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       >
         {/* Header */}
         <Header />
+        <EvaluatorBanner />
 
         {/* Contenido de página */}
         <main className="flex-1 overflow-y-auto px-4 py-6 md:px-10 md:py-8 bg-background text-foreground">
-          <div className="max-w-[1280px] mx-auto">
+          {/* La key reinicia la entrada de la pantalla al cambiar de sección (ads_open_enter) */}
+          <div key={location.pathname} className="max-w-[1280px] mx-auto ads-page-enter">
             {children}
           </div>
         </main>

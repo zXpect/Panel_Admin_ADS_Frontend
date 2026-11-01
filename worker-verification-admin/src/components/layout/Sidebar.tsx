@@ -6,10 +6,8 @@ import {
   FileText,
   UserCheck,
   CreditCard,
-  MessageSquareText,
   Tag,
   ChevronLeft,
-  ChevronRight,
   X,
 } from 'lucide-react';
 import { useUIStore } from '@/store/uiStore';
@@ -17,6 +15,7 @@ import { cn } from '@/lib/utils/helpers';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { useEffect } from 'react';
 import { AdsLogo } from './AdsLogo';
+import { PqrIcon } from '@/components/common/AdsIcons';
 
 const menuItems = [
   { title: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
@@ -24,7 +23,7 @@ const menuItems = [
   { title: 'Documentos', icon: FileText, path: '/documents' },
   { title: 'Clientes', icon: UserCheck, path: '/clients' },
   { title: 'Transacciones', icon: CreditCard, path: '/transactions' },
-  { title: 'PQR', icon: MessageSquareText, path: '/pqr' },
+  { title: 'PQR', icon: PqrIcon, path: '/pqr' },
   { title: 'Catálogo y tarifas', icon: Tag, path: '/catalog' },
 ];
 
@@ -46,6 +45,18 @@ export const Sidebar = () => {
     return () => document.removeEventListener('keydown', handleEscape);
   }, [setMobileMenuOpen]);
 
+  // Ctrl+B (⌘+B en Mac) contrae o expande el menú en escritorio
+  useEffect(() => {
+    const handleShortcut = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        toggleSidebar();
+      }
+    };
+    document.addEventListener('keydown', handleShortcut);
+    return () => document.removeEventListener('keydown', handleShortcut);
+  }, [toggleSidebar]);
+
   // En móvil siempre se ve completo; en escritorio depende de sidebarOpen
   const expanded = sidebarOpen || mobileMenuOpen;
 
@@ -66,6 +77,41 @@ export const Sidebar = () => {
           sidebarOpen ? 'md:w-[248px]' : 'md:w-[76px] md:px-3'
         )}
       >
+        {/* Pestaña sobre el borde, a la altura del logo: siempre a la vista para contraer o expandir */}
+        <Tooltip.Provider delayDuration={200}>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <button
+                onClick={toggleSidebar}
+                aria-label={sidebarOpen ? 'Contraer menú' : 'Expandir menú'}
+                aria-expanded={sidebarOpen}
+                className={cn(
+                  'hidden md:flex absolute -right-4 top-7 w-8 h-8 items-center justify-center rounded-full',
+                  'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] shadow-md',
+                  'ring-4 ring-[hsl(var(--background))] transition-transform duration-200',
+                  'hover:scale-110 focus-visible:outline-none focus-visible:ring-[hsl(var(--on-navy))]'
+                )}
+              >
+                <ChevronLeft
+                  className={cn('w-4 h-4 transition-transform duration-300', !sidebarOpen && 'rotate-180')}
+                  strokeWidth={2.5}
+                />
+              </button>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content
+                side="right"
+                sideOffset={8}
+                className="z-[60] rounded-lg px-3 py-1.5 text-sm font-semibold bg-[hsl(var(--sidebar))] text-[hsl(var(--on-navy))] shadow-lg"
+              >
+                {sidebarOpen ? 'Contraer menú' : 'Expandir menú'}
+                <span className="ml-2 font-normal opacity-70">Ctrl+B</span>
+                <Tooltip.Arrow className="fill-[hsl(var(--sidebar))]" />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>
+
         {/* Logo */}
         <div className={cn('flex items-center gap-2.5 pb-5', expanded ? 'px-1.5' : 'justify-center')}>
           <AdsLogo size={40} variant="onNavy" />
@@ -139,13 +185,6 @@ export const Sidebar = () => {
           ) : (
             <span className="w-2 h-2 rounded-full bg-[hsl(var(--brand-on-navy))]" aria-label="Sistema activo" />
           )}
-          <button
-            onClick={toggleSidebar}
-            aria-label={sidebarOpen ? 'Contraer menú' : 'Expandir menú'}
-            className="hidden md:flex mt-3 w-9 h-9 items-center justify-center rounded-xl hover:bg-white/10"
-          >
-            {sidebarOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-          </button>
         </div>
       </aside>
     </>

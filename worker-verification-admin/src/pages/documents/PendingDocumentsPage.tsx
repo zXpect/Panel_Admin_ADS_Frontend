@@ -7,6 +7,9 @@ import { FileText, Eye, Clock } from 'lucide-react';
 import { formatDate, getInitials } from '@/lib/utils/helpers';
 import { workerCategoryNames } from '@/lib/utils/constants';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { LoadingNut } from '@/components/common/LoadingNut';
+import { EmptyState } from '@/components/common/EmptyState';
+import { EmptyRequestsIcon } from '@/components/common/AdsIcons';
 
 const DOCUMENT_TYPE_LABELS: Record<string, string> = {
   hoja_de_vida: 'Hoja de vida',
@@ -24,8 +27,8 @@ export const PendingDocumentsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[hsl(var(--primary))]"></div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <LoadingNut />
       </div>
     );
   }
@@ -41,9 +44,9 @@ export const PendingDocumentsPage = () => {
       <PageHeader icon={Clock} title="Documentos pendientes" subtitle={`${pendingDocuments.length} requieren revisión`} />
 
       {pendingDocuments.length === 0 ? (
-        <div className="panel p-12 text-center">
-          <Clock className="w-12 h-12 text-[hsl(var(--muted-foreground))] mx-auto mb-3" />
-          <p className="text-[hsl(var(--muted-foreground))]">No hay documentos pendientes de revisión</p>
+        <div className="panel">
+          <EmptyState icon={EmptyRequestsIcon} title="No hay documentos pendientes de revisión"
+            description="Cuando un trabajador suba documentos, aparecerán aquí." />
         </div>
       ) : (
         <div className="space-y-4">

@@ -21,3 +21,18 @@ export const usePayments = (filters?: PaymentFilters) => {
     error: paymentsQuery.error,
   };
 };
+
+/** Detalle de un pago; no consulta nada mientras no haya uno seleccionado */
+export const usePayment = (reference: string | null) => {
+  const paymentQuery = useQuery({
+    queryKey: ['payment', reference],
+    queryFn: () => paymentService.getPayment(reference as string),
+    enabled: !!reference,
+  });
+
+  return {
+    payment: paymentQuery.data,
+    isLoading: paymentQuery.isLoading,
+    isError: paymentQuery.isError,
+  };
+};

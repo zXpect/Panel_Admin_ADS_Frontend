@@ -3,11 +3,13 @@ import { useAuth } from '@/hooks/useAuth';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { useUIStore } from '@/store/uiStore';
 import { AdsLogo } from './AdsLogo';
+import { usePanelRole } from '@/hooks/usePanelRole';
 
-/** Barra superior (mockups A1-A8): título, modo oscuro, administrador y cerrar sesión. */
+/** Barra superior (mockups A1-A8): título, modo oscuro, cuenta que inició sesión y cerrar sesión. */
 export const Header = () => {
   const { logout } = useAuth();
   const { toggleMobileMenu } = useUIStore();
+  const { displayName, initials, isEvaluator } = usePanelRole();
 
   return (
     <header className="min-h-[68px] flex items-center justify-between gap-3 px-4 md:px-10 py-3
@@ -30,11 +32,13 @@ export const Header = () => {
 
       <div className="flex items-center gap-3">
         <ThemeToggle />
-        <div className="flex items-center gap-2.5 text-sm font-semibold text-[hsl(var(--foreground))]">
-          <div className="w-9 h-9 rounded-full bg-[hsl(var(--navy))] text-[hsl(var(--brand-on-navy))] flex items-center justify-center text-xs font-extrabold">
-            AD
+        <div className="flex items-center gap-2.5 text-sm font-semibold text-[hsl(var(--foreground))] min-w-0"
+          title={isEvaluator ? `${displayName} · evaluador` : displayName}>
+          <div aria-hidden="true"
+            className="w-9 h-9 flex-shrink-0 rounded-full bg-[hsl(var(--navy))] text-[hsl(var(--brand-on-navy))] flex items-center justify-center text-xs font-extrabold">
+            {initials}
           </div>
-          <span className="hidden md:inline">Admin</span>
+          <span className="hidden md:inline max-w-[180px] truncate">{displayName}</span>
         </div>
         <button
           onClick={logout}

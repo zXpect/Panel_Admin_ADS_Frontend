@@ -58,6 +58,7 @@ export const API_ENDPOINTS = {
   // Transacciones (pagos digitales y en efectivo)
   PAYMENTS: {
     LIST: '/api/payments/',
+    DETAIL: (reference: string) => `/api/payments/${encodeURIComponent(reference)}/`,
   },
 
   // Catálogo, parámetros y auditoría (cada cambio queda auditado)

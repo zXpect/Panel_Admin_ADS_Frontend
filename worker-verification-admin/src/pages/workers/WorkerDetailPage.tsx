@@ -16,8 +16,9 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import { formatDate, getInitials } from '@/lib/utils/helpers';
-import { workerCategoryNames } from '@/lib/utils/constants';
 import { AccountStatusControl, SuspendedBadge } from '@/components/features/accounts/AccountStatusControl';
+import { LoadingNut } from '@/components/common/LoadingNut';
+import { TradeChips } from '@/components/features/workers/TradeChips';
 
 export const WorkerDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,8 +27,8 @@ export const WorkerDetailPage = () => {
 
   if (isLoading || isLoadingRequirements) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[hsl(var(--primary))]"></div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <LoadingNut />
       </div>
     );
   }
@@ -74,9 +75,7 @@ export const WorkerDetailPage = () => {
                 <h1 className="text-[28px] leading-9 font-extrabold text-[hsl(var(--secondary-foreground))] dark:text-[hsl(var(--foreground))]">
                   {worker.name} {worker.lastName}
                 </h1>
-                <p className="text-base text-[hsl(var(--muted-foreground))]">
-                  {workerCategoryNames(worker) || 'Sin oficio registrado'}
-                </p>
+                <TradeChips worker={worker} empty="Sin oficio registrado" className="mt-1" />
               </div>
               <div className="flex gap-2 flex-wrap">
                 {worker.isActive === false && <SuspendedBadge />}

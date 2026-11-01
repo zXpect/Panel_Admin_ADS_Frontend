@@ -1,5 +1,5 @@
 // src/hooks/useCatalogAdmin.ts
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { catalogService } from '@/api/services/catalogService';
 import { AuditEntity, CatalogCategoryInput, CatalogTaskInput } from '@/types/catalog.types';
 import toast from 'react-hot-toast';
@@ -48,10 +48,17 @@ export const useCatalogAdmin = () => {
   };
 };
 
-export const useAuditLog = (entity?: AuditEntity) => {
+export const useAuditLog = (entity?: AuditEntity, page = 1) => {
   const auditQuery = useQuery({
-    queryKey: ['admin-audit', entity],
-    queryFn: () => catalogService.getAudit(entity),
+    queryKey: ['admin-audit', entity, page],
+    queryFn: () => catalogService.getAudit(entity, page),
+    // Al cambiar de página no se vacía la tabla mientras llega la siguiente
+    placeholderData: keepPreviousData,
   });
-  return { entries: auditQuery.data?.data || [], isLoading: auditQuery.isLoading };
+  return {
+    entries: auditQuery.data?.data || [],
+    count: auditQuery.data?.count || 0,
+    isLoading: auditQuery.isLoading,
+    isFetching: auditQuery.isFetching,
+  };
 };

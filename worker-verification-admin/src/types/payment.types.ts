@@ -20,6 +20,21 @@ export interface Payment {
   updated_at: string;
 }
 
+/** Evento de la pasarela o del servidor (PaymentEvent); payload es el cuerpo recibido */
+export interface PaymentEvent {
+  id: number;
+  event_type: string;
+  checksum_valid: boolean;
+  payload: Record<string, unknown>;
+  received_at: string;
+}
+
+/** Detalle de un pago para el panel (GET /api/payments/{reference}/) */
+export interface PaymentDetail extends Payment {
+  gateway_transaction_id: string;
+  events: PaymentEvent[];
+}
+
 /** Totales de los pagos aprobados que cumplen el filtro */
 export interface PaymentSummary {
   approved_count: number;

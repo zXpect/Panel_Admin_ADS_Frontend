@@ -4,10 +4,14 @@ import { useErrorHandler } from "@/hooks/useErrorHandler";
 import { ErrorAlert } from "@/components/common/ErrorAlert";
 import { Eye, EyeOff, LogIn, Sun, Moon } from "lucide-react";
 import { AdsLogo } from "@/components/layout/AdsLogo";
+import { LoadingNut } from '@/components/common/LoadingNut';
+import { useShake } from '@/hooks/useShake';
 
 export const LoginPage = () => {
   const { login, isLoggingIn } = useAuth();
   const { error, clearError, handleError, getFieldError } = useErrorHandler();
+  // La tarjeta tiembla con cada error, como los campos con error de la app
+  const cardRef = useShake<HTMLDivElement>(error);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
@@ -78,27 +82,31 @@ export const LoginPage = () => {
     `field ${getFieldError(field) ? 'border-[hsl(var(--destructive))] bg-[hsl(var(--danger-soft))]' : ''}`;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[hsl(var(--background))] px-4 py-10 relative">
+    <div className="login-screen min-h-screen flex items-center justify-center px-4 py-10">
       {/* Modo claro u oscuro */}
       <button
         onClick={toggleTheme}
-        className="absolute top-5 right-5 w-11 h-11 rounded-full border-[1.5px] border-[hsl(var(--border))]
+        className="login-theme absolute top-5 right-5 w-11 h-11 rounded-full border-[1.5px] border-[hsl(var(--border))]
                    bg-[hsl(var(--card))] flex items-center justify-center text-[hsl(var(--foreground))]"
         aria-label={darkMode ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
       >
         {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
       </button>
 
-      <div className="panel w-full max-w-[430px] p-8">
+      <div ref={cardRef} className="panel login-card w-full max-w-[430px] p-8 transition-shadow">
         {/* Logo y título (mockup A1) */}
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-3">
-            <AdsLogo size={72} />
+          <div className="login-logo-wrap flex justify-center mb-3">
+            <div className="login-logo">
+              <AdsLogo size={72} />
+            </div>
           </div>
-          <h1 className="text-[28px] leading-9 font-extrabold text-[hsl(var(--secondary-foreground))] dark:text-[hsl(var(--foreground))]">
+          <h1 style={{ animationDelay: '0.18s' }} className="login-stagger text-[28px] leading-9 font-extrabold text-[hsl(var(--secondary-foreground))] dark:text-[hsl(var(--foreground))]">
             ADS Admin
           </h1>
-          <p className="text-sm text-[hsl(var(--muted-foreground))] mt-1">Panel de administración</p>
+          <p style={{ animationDelay: '0.24s' }} className="login-stagger text-sm text-[hsl(var(--muted-foreground))] mt-1">
+            Panel de administración
+          </p>
         </div>
 
         {error && (
@@ -107,7 +115,7 @@ export const LoginPage = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} style={{ animationDelay: '0.32s' }} className="login-stagger space-y-4">
           <div>
             <label htmlFor="username" className="field-label">Usuario</label>
             <input
@@ -161,7 +169,7 @@ export const LoginPage = () => {
           <button type="submit" disabled={isLoggingIn} className="btn-primary w-full min-h-[52px] text-base">
             {isLoggingIn ? (
               <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current"></div>
+                <LoadingNut size="sm" />
                 Iniciando sesión…
               </>
             ) : (
@@ -173,7 +181,7 @@ export const LoginPage = () => {
           </button>
         </form>
 
-        <div className="mt-6 text-center text-xs">
+        <div style={{ animationDelay: '0.44s' }} className="login-stagger mt-6 text-center text-xs">
           <p className="font-semibold text-[hsl(var(--secondary-foreground))] dark:text-[hsl(var(--foreground))]">
             Sistema de administración del equipo de ADS
           </p>

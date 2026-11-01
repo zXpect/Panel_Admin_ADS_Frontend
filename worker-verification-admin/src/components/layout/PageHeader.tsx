@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
-import type { LucideIcon } from 'lucide-react';
+import type { ComponentType, ReactNode } from 'react';
 
 interface PageHeaderProps {
-  icon: LucideIcon;
+  // Ícono de lucide o de AdsIcons
+  icon: ComponentType<{ className?: string; strokeWidth?: string | number }>;
   title: string;
   subtitle?: ReactNode;
   actions?: ReactNode;
