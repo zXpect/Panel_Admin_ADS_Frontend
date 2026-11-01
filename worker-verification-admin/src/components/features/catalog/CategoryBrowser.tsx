@@ -1,22 +1,97 @@
 import { useEffect, useState } from 'react';
-import { ChevronDown, ChevronRight, Plus, Save } from 'lucide-react';
+import { Info, Plus, Save } from 'lucide-react';
 import { CatalogCategory, CatalogCategoryInput, CatalogTask, CatalogTaskInput, TaskUnit } from '@/types/catalog.types';
 import { cn, formatPrice } from '@/lib/utils/helpers';
 import { TradeIcon } from '@/components/common/AdsIcons';
-
-const UNIT_LABELS: Record<TaskUnit, string> = {
-  visita: 'Visita',
-  unidad: 'Unidad',
-  m2: 'm²',
-  jornada: 'Jornada',
-};
+import { UNIT_LABELS } from './catalogLabels';
 
 const fieldClass = `w-full px-2 py-1.5 border border-[hsl(var(--border))] rounded-md bg-[hsl(var(--input))]
   text-[hsl(var(--foreground))] focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent`;
 
 const toNumber = (value: string): number | null => (value.trim() === '' ? null : Number(value));
 
-interface CategoryCardProps {
+const countActive = (category: CatalogCategory) => category.tasks.filter((task) => task.is_active).length;
+
+interface CategoryBrowserProps {
+  categories: CatalogCategory[];
+  selectedSlug: string | null;
+  onSelect: (slug: string) => void;
+  readOnly: boolean;
+  onUpdateCategory: (id: number, input: CatalogCategoryInput) => Promise<unknown>;
+  onUpdateTask: (id: number, input: CatalogTaskInput) => Promise<unknown>;
+  onCreateTask: (input: CatalogTaskInput) => Promise<unknown>;
+  isSaving: boolean;
+}
+
+/** Lista de oficios a la izquierda y las tareas del oficio elegido a la derecha. */
+export const CategoryBrowser = ({ categories, selectedSlug, onSelect, readOnly, ...detailProps }: CategoryBrowserProps) => {
+  const selected = categories.find((category) => category.slug === selectedSlug) || categories[0];
+
+  if (!selected) {
+    return <p className="text-sm text-[hsl(var(--muted-foreground))]">No hay oficios en el catálogo.</p>;
+  }
+
+  return (
+    <div className="space-y-4">
+      <p className="flex items-start gap-2 text-sm text-[hsl(var(--muted-foreground))]">
+        <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+        Los rangos son de ciudades grandes: el estimado de Ubaté aplica el factor regional y la tarifa mínima por
+        visita. Una tarea sin rango la cotiza el técnico. Las tareas no se borran, se desactivan.
+      </p>
+
+      <div className="grid grid-cols-1 xl:grid-cols-[16rem_1fr] gap-4 items-start">
+        {/* En pantallas de menos de 1280 px la lista se vuelve un selector */}
+        <label className="xl:hidden block max-w-sm text-xs font-semibold text-[hsl(var(--foreground))] space-y-1">
+          Oficio
+          <select className="field" value={selected.slug} onChange={(e) => onSelect(e.target.value)}>
+            {categories.map((category) => (
+              <option key={category.slug} value={category.slug}>
+                {category.name} ({countActive(category)}/{category.tasks.length}){category.is_active ? '' : ' · inactivo'}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <nav aria-label="Oficios" className="hidden xl:block panel p-2 space-y-1">
+          {categories.map((category) => {
+            const current = category.slug === selected.slug;
+            return (
+              <button
+                key={category.slug}
+                onClick={() => onSelect(category.slug)}
+                aria-current={current ? 'true' : undefined}
+                className={cn(
+                  'w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left transition-colors',
+                  current
+                    ? 'bg-[hsl(var(--chip))] text-[hsl(var(--chip-foreground))]'
+                    : 'hover:bg-[hsl(var(--muted))] text-[hsl(var(--foreground))]',
+                  !category.is_active && 'opacity-60'
+                )}
+              >
+                <TradeIcon slug={category.slug} className="w-5 h-5 flex-shrink-0" />
+                <span className="flex-1 min-w-0">
+                  <span className="block font-semibold truncate">{category.name}</span>
+                  <span className="block text-xs text-[hsl(var(--muted-foreground))]">
+                    {category.is_active
+                      ? `${countActive(category)} de ${category.tasks.length} tareas activas`
+                      : 'Oficio inactivo'}
+                  </span>
+                </span>
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* En modo evaluación se ven las tarifas, pero sus controles quedan deshabilitados */}
+        <fieldset disabled={readOnly} className="contents">
+          <CategoryDetail key={selected.slug} category={selected} {...detailProps} />
+        </fieldset>
+      </div>
+    </div>
+  );
+};
+
+interface CategoryDetailProps {
   category: CatalogCategory;
   onUpdateCategory: (id: number, input: CatalogCategoryInput) => Promise<unknown>;
   onUpdateTask: (id: number, input: CatalogTaskInput) => Promise<unknown>;
@@ -25,27 +100,23 @@ interface CategoryCardProps {
 }
 
 /** Oficio con sus tareas: rango de referencia, activar o desactivar y crear tareas. */
-export const CategoryCard = ({ category, onUpdateCategory, onUpdateTask, onCreateTask, isSaving }: CategoryCardProps) => {
-  const [open, setOpen] = useState(false);
+const CategoryDetail = ({ category, onUpdateCategory, onUpdateTask, onCreateTask, isSaving }: CategoryDetailProps) => {
   const [creating, setCreating] = useState(false);
-  const activeTasks = category.tasks.filter((task) => task.is_active).length;
 
   return (
-    <div className={cn(
-      'panel overflow-hidden',
-      !category.is_active && 'opacity-70'
-    )}>
-      <div className="flex items-center justify-between gap-3 p-4">
-        <button onClick={() => setOpen(!open)} className="flex items-center gap-2 text-left flex-1 min-w-0">
-          {open ? <ChevronDown className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
-          <span className="w-9 h-9 rounded-xl bg-[hsl(var(--chip))] text-[hsl(var(--chip-foreground))] flex items-center justify-center flex-shrink-0">
+    <div className="panel overflow-hidden min-w-0">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="w-10 h-10 rounded-xl bg-[hsl(var(--chip))] text-[hsl(var(--chip-foreground))] flex items-center justify-center flex-shrink-0">
             <TradeIcon slug={category.slug} className="w-5 h-5" />
           </span>
-          <span className="font-bold text-[hsl(var(--foreground))]">{category.name}</span>
-          <span className="text-sm text-[hsl(var(--muted-foreground))]">
-            {activeTasks} de {category.tasks.length} tareas activas
-          </span>
-        </button>
+          <div className="min-w-0">
+            <h2 className="text-lg font-bold text-[hsl(var(--foreground))]">{category.name}</h2>
+            <p className="text-sm text-[hsl(var(--muted-foreground))]">
+              {countActive(category)} de {category.tasks.length} tareas activas
+            </p>
+          </div>
+        </div>
         <label className="flex items-center gap-2 text-sm font-medium text-[hsl(var(--muted-foreground))]">
           <input
             type="checkbox"
@@ -58,54 +129,48 @@ export const CategoryCard = ({ category, onUpdateCategory, onUpdateTask, onCreat
         </label>
       </div>
 
-      {open && (
-        <div className="border-t border-[hsl(var(--border))]">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="text-left text-[hsl(var(--muted-foreground))]">
-                <tr>
-                  <th className="px-4 py-2 font-medium">Tarea</th>
-                  <th className="px-2 py-2 font-medium">Unidad</th>
-                  <th className="px-2 py-2 font-medium">Mínimo (COP)</th>
-                  <th className="px-2 py-2 font-medium">Máximo (COP)</th>
-                  <th className="px-2 py-2 font-medium">Activa</th>
-                  <th className="px-4 py-2"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {category.tasks.map((task) => (
-                  <TaskRow key={task.id} task={task} onSave={onUpdateTask} isSaving={isSaving} />
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="px-4 py-2 text-xs text-[hsl(var(--muted-foreground))]">
-            Rangos de referencia de ciudades grandes: el estimado de Ubaté aplica el factor regional y la tarifa
-            mínima por visita. Una tarea sin rango la cotiza el técnico. Las tareas no se borran, se desactivan.
-          </p>
-
-          <div className="px-4 pb-4">
-            {creating ? (
-              <NewTaskForm
-                category={category.slug}
-                nextOrder={Math.max(0, ...category.tasks.map((task) => task.order)) + 1}
-                onCancel={() => setCreating(false)}
-                onCreate={(input) => onCreateTask(input).then(() => setCreating(false))}
-                isSaving={isSaving}
-              />
-            ) : (
-              <button
-                onClick={() => setCreating(true)}
-                className="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold
-                           bg-[hsl(var(--primary))]/10 text-[hsl(var(--brand-text))] hover:bg-[hsl(var(--primary))]/20"
-              >
-                <Plus className="w-4 h-4" />
-                Nueva tarea
-              </button>
-            )}
-          </div>
+      <div className="border-t border-[hsl(var(--border))]">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="text-left text-[hsl(var(--muted-foreground))]">
+              <tr>
+                <th className="px-4 py-2 font-medium">Tarea</th>
+                <th className="px-2 py-2 font-medium">Unidad</th>
+                <th className="px-2 py-2 font-medium">Mínimo (COP)</th>
+                <th className="px-2 py-2 font-medium">Máximo (COP)</th>
+                <th className="px-2 py-2 font-medium">Activa</th>
+                <th className="px-4 py-2"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {category.tasks.map((task) => (
+                <TaskRow key={task.id} task={task} onSave={onUpdateTask} isSaving={isSaving} />
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
+
+        <div className="px-4 py-4 border-t border-[hsl(var(--border))]">
+          {creating ? (
+            <NewTaskForm
+              category={category.slug}
+              nextOrder={Math.max(0, ...category.tasks.map((task) => task.order)) + 1}
+              onCancel={() => setCreating(false)}
+              onCreate={(input) => onCreateTask(input).then(() => setCreating(false))}
+              isSaving={isSaving}
+            />
+          ) : (
+            <button
+              onClick={() => setCreating(true)}
+              className="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold
+                         bg-[hsl(var(--primary))]/10 text-[hsl(var(--brand-text))] hover:bg-[hsl(var(--primary))]/20"
+            >
+              <Plus className="w-4 h-4" />
+              Nueva tarea
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
@@ -148,13 +213,19 @@ const TaskRow = ({ task, onSave, isSaving }: TaskRowProps) => {
           className="w-4 h-4 accent-[hsl(var(--primary))]" />
       </td>
       <td className="px-4 py-2 text-right">
+        {/* Solo se ve en la fila con cambios sin guardar */}
         <button
           disabled={!changed || isSaving}
+          aria-hidden={!changed}
+          tabIndex={changed ? undefined : -1}
           title={min && max ? `${formatPrice(Number(min))} – ${formatPrice(Number(max))}` : 'Sin rango'}
           onClick={() => onSave(task.id, { reference_min_cop: toNumber(min), reference_max_cop: toNumber(max) })
             .catch(() => undefined)}
-          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-semibold
-                     bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] disabled:opacity-40"
+          className={cn(
+            'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-semibold',
+            'bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] disabled:opacity-40',
+            !changed && 'invisible'
+          )}
         >
           <Save className="w-3.5 h-3.5" />
           Guardar
