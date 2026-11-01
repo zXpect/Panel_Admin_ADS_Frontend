@@ -1,8 +1,12 @@
 import { useState } from 'react';
-import { Search, Wallet, Banknote, CreditCard, Clock, CheckCircle, XCircle, Ban } from 'lucide-react';
+import { Search, Wallet, Banknote, CreditCard, Eye } from 'lucide-react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { usePayments } from '@/hooks/usePayments';
 import { Pagination } from '@/components/common/Pagination';
+import { PaymentDetailModal } from '@/components/features/payments/PaymentDetailModal';
+import {
+  GATEWAY_LABELS, PAYMENT_STATUS_LABELS as STATUS_LABELS, PAYMENT_STATUS_STYLES as STATUS_STYLES,
+} from '@/components/features/payments/paymentLabels';
 import { cn, formatDate, formatPrice } from '@/lib/utils/helpers';
 import { PaymentFilters, PaymentGateway, PaymentStatus } from '@/types/payment.types';
 import { LoadingNut } from '@/components/common/LoadingNut';
@@ -12,35 +16,13 @@ import { EmptyToolboxIcon } from '@/components/common/AdsIcons';
 // El backend pagina de a 20 (REST_FRAMEWORK.PAGE_SIZE)
 const PAGE_SIZE = 20;
 
-const STATUS_LABELS: Record<PaymentStatus, string> = {
-  PENDING: 'Pendiente',
-  APPROVED: 'Aprobado',
-  DECLINED: 'Rechazado',
-  ERROR: 'Error',
-  VOIDED: 'Anulado',
-};
-
-// Estado siempre con texto e ícono, no solo color
-const STATUS_STYLES: Record<PaymentStatus, { className: string; icon: typeof Clock }> = {
-  PENDING: { className: 'chip-warning', icon: Clock },
-  APPROVED: { className: 'chip-success', icon: CheckCircle },
-  DECLINED: { className: 'chip-danger', icon: XCircle },
-  ERROR: { className: 'chip-danger', icon: XCircle },
-  VOIDED: { className: 'chip-neutral', icon: Ban },
-};
-
-const GATEWAY_LABELS: Record<PaymentGateway, string> = {
-  wompi: 'Wompi (digital)',
-  cash: 'Efectivo',
-  mock: 'Simulado',
-};
-
 const inputClass = 'field';
 
 const shortId = (value: string) => (value.length > 10 ? `${value.slice(0, 10)}…` : value);
 
 export const TransactionsPage = () => {
   const [filters, setFilters] = useState<PaymentFilters>({ status: '', gateway: '', page: 1 });
+  const [selectedReference, setSelectedReference] = useState<string | null>(null);
   const { payments, count, summary, isLoading, isFetching } = usePayments(filters);
 
   // Cualquier cambio de filtro vuelve a la primera página
@@ -127,7 +109,7 @@ export const TransactionsPage = () => {
           // escala al pasar el mouse de la tabla de shadcn, que al final del scroll
           // hacía subir y bajar la página
           <div className="overflow-x-auto">
-            <table className="data-table min-w-[720px]">
+            <table className="data-table min-w-[800px]">
               <thead>
                 <tr>
                   <th>Fecha</th>
@@ -136,6 +118,7 @@ export const TransactionsPage = () => {
                   <th>Medio</th>
                   <th className="text-right">Valor</th>
                   <th>Estado</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -157,6 +140,15 @@ export const TransactionsPage = () => {
                     <td>
                       <StatusChip status={payment.status} />
                     </td>
+                    <td>
+                      <button
+                        onClick={() => setSelectedReference(payment.reference)}
+                        className="btn-secondary min-h-[36px] px-3 whitespace-nowrap"
+                      >
+                        <Eye className="w-4 h-4" />
+                        Ver
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -174,6 +166,8 @@ export const TransactionsPage = () => {
           totalItems={count}
         />
       )}
+
+      <PaymentDetailModal reference={selectedReference} onClose={() => setSelectedReference(null)} />
     </div>
   );
 };

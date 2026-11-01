@@ -197,7 +197,9 @@
   .ads-nut-spin { animation: ads-spin 1.4s linear infinite; }
 
   /* Pantalla nueva: entra desde la derecha con un fundido corto (ads_open_enter) */
-  .ads-page-enter { animation: ads-page-enter 260ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+  /* backwards y no both: si el transform se queda puesto al terminar, los modales
+     con position: fixed se ubican respecto a la página y no respecto a la pantalla */
+  .ads-page-enter { animation: ads-page-enter 260ms cubic-bezier(0.4, 0, 0.2, 1) backwards; }
 
   /* Estados vacíos y avisos: suben un poco con un fundido */
   .ads-rise { animation: ads-rise 260ms cubic-bezier(0.4, 0, 0.2, 1) both; }
